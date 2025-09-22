@@ -1,0 +1,60 @@
+{
+  "name": "basalam/php-sdk",
+  "description": "Basalam PHP SDK for interacting with Basalam API services",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "basalam",
+    "api",
+    "sdk",
+    "ecommerce",
+    "marketplace"
+  ],
+  "authors": [
+    {
+      "name": "Basalam Development Team",
+      "email": "developers@basalam.com"
+    }
+  ],
+  "homepage": "https://github.com/basalam/php-sdk",
+  "support": {
+    "issues": "https://github.com/basalam/php-sdk/issues",
+    "source": "https://github.com/basalam/php-sdk"
+  },
+  "autoload": {
+    "psr-4": {
+      "Basalam\\": "src/Basalam/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Basalam\\Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": ">=8.0",
+    "guzzlehttp/guzzle": "^7.0",
+    "psr/log": "^1.0 || ^2.0 || ^3.0",
+    "psr/http-message": "^1.0 || ^2.0",
+    "psr/http-client": "^1.0",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.0 || ^10.0",
+    "phpstan/phpstan": "^1.0",
+    "squizlabs/php_codesniffer": "^3.0",
+    "symfony/var-dumper": "^5.0 || ^6.0"
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit",
+    "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon",
+    "cs-check": "vendor/bin/phpcs",
+    "cs-fix": "vendor/bin/phpcbf"
+  },
+  "config": {
+    "sort-packages": true,
+    "optimize-autoloader": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

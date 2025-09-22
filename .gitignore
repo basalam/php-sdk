@@ -1,0 +1,251 @@
+# Composer dependencies
+/vendor/
+composer.lock
+
+# PHPUnit
+.phpunit.cache/
+.phpunit.result.cache
+coverage/
+phpunit.xml.dist
+.phpunit.xml
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.project
+.settings/
+.buildpath
+*.sublime-project
+*.sublime-workspace
+nbproject/
+.netbeans/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.test
+.env.production
+*.env
+
+# Build artifacts
+build/
+dist/
+*.phar
+
+# Logs
+*.log
+logs/
+error_log
+access_log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+tests/coverage/
+tests/reports/
+tests/.coverage
+*.coverage
+.coverage.*
+htmlcov/
+.tox/
+.pytest_cache/
+test-results/
+junit.xml
+
+# Cache
+.cache/
+cache/
+tmp/
+temp/
+*.cache
+
+# Documentation
+docs/_build/
+docs/api/
+phpdoc/
+apigen/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+
+# Package managers
+node_modules/
+bower_components/
+jspm_packages/
+
+# PHP specific
+*.pid
+*.seed
+*.pid.lock
+*.so
+*.dylib
+*.dll
+*.exe
+*.o
+*.a
+*.lib
+
+# PHP CS Fixer
+.php_cs.cache
+.php-cs-fixer.cache
+
+# PHPStan
+phpstan.neon.dist
+
+# Psalm
+psalm.xml.dist
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+*.tmp
+
+# Archives
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Database
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+
+# Docker
+docker-compose.override.yml
+.docker/
+
+# Vagrant
+.vagrant/
+Vagrantfile.local
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+
+# Private/Secret files
+secrets/
+private/
+credentials/
+*.secret
+
+# Generated files
+generated/
+out/
+
+# Symfony specific (if used)
+/var/
+/bin/
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+
+# Laravel specific (if used)
+/bootstrap/cache/
+/storage/
+.env.backup
+Homestead.yaml
+Homestead.json
+
+# Custom test tokens and configs
+test-token.txt
+test-config.php
+local-test.php
+
+# Performance profiling
+*.prof
+*.lprof
+cachegrind.out.*
+
+# Composer local files
+composer.local.json
+composer.local.lock
+
+# PHP CodeSniffer
+phpcs.xml.dist
+.phpcs-cache
+
+# Project specific
+/examples/credentials.php
+/examples/test-*.php
+debug/
+.sandbox/
+
+# Ignore everything in tests except the test files
+/tests/assets/temp/
+/tests/fixtures/output/
+/tests/_output/
+
+# Local development files
+*.local.php
+config.local.php
+database.local.php
+
+# Deployment
+deploy.php
+deployer.phar
+.deployer/
+
+# CI/CD
+.github/workflows/local/
+.gitlab-ci-local/
+.circleci/local/
+.travis/local/
+
+# Package development
+*.tgz
+package-lock.json
+yarn.lock
+
+# Documentation generation
+sami.phar
+.sami/
+
+# Benchmarking
+benchmark-results/
+benchmarks/output/
+
+# Security scanning
+security-checker.phar
+.security/
+
+# API documentation
+swagger-ui/
+openapi-local.yaml
+
+# Monitoring
+.monitoring/
+metrics/
+
+# Personal notes
+notes.txt
+notes.md
+TODO.md
+todo.txt
+scratch.php
+playground.php
+
+.claude/
