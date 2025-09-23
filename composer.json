@@ -19,7 +19,8 @@
   "homepage": "https://github.com/basalam/php-sdk",
   "support": {
     "issues": "https://github.com/basalam/php-sdk/issues",
-    "source": "https://github.com/basalam/php-sdk"
+    "source": "https://github.com/basalam/php-sdk",
+    "docs": "https://developers.basalam.com/docs/sdk/php/intro"
   },
   "autoload": {
     "psr-4": {
