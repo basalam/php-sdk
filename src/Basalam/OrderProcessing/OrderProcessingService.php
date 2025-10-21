@@ -29,10 +29,6 @@ class OrderProcessingService extends BaseClient
         parent::__construct($auth, $config, 'order-processing');
     }
 
-    // -------------------------------------------------------------------------
-    // Customer Order endpoints
-    // -------------------------------------------------------------------------
-
     /**
      * Get a list of customer orders.
      *
@@ -41,7 +37,7 @@ class OrderProcessingService extends BaseClient
      */
     public function getCustomerOrders(?OrderFilter $filters = null): OrdersResponse
     {
-        $endpoint = '/v3/customer-orders';
+        $endpoint = '/v1/customer-orders';
         $filters = $filters ?? new OrderFilter();
         $params = $filters->toArray();
 
@@ -71,7 +67,7 @@ class OrderProcessingService extends BaseClient
      */
     public function getCustomerOrder(int $orderId): Order
     {
-        $endpoint = "/v3/customer-orders/$orderId";
+        $endpoint = "/v1/customer-orders/$orderId";
         $response = $this->get($endpoint);
         return Order::fromArray($response);
     }
@@ -84,7 +80,7 @@ class OrderProcessingService extends BaseClient
      */
     public function getCustomerOrderItems(?ItemFilter $filters = null): CustomerItemsResponse
     {
-        $endpoint = '/v3/customer-items';
+        $endpoint = '/v1/customer-orders/items';
         $filters = $filters ?? new ItemFilter();
         $params = $filters->toArray();
 
@@ -100,14 +96,10 @@ class OrderProcessingService extends BaseClient
      */
     public function getCustomerOrderItem(int $itemId): CustomerItemResponse
     {
-        $endpoint = "/v3/customer-items/$itemId";
+        $endpoint = "/v1/customer-orders/items/$itemId";
         $response = $this->get($endpoint);
         return CustomerItemResponse::fromArray($response);
     }
-
-    // -------------------------------------------------------------------------
-    // Vendor Parcel endpoints
-    // -------------------------------------------------------------------------
 
     /**
      * Get a list of orders parcels.
@@ -117,7 +109,7 @@ class OrderProcessingService extends BaseClient
      */
     public function getVendorOrdersParcels(?OrderParcelFilter $filters = null): ParcelsResponse
     {
-        $endpoint = '/v3/vendor-parcels';
+        $endpoint = '/v1/vendor-parcels';
         $filters = $filters ?? new OrderParcelFilter();
 
         $params = [];
@@ -168,14 +160,10 @@ class OrderProcessingService extends BaseClient
      */
     public function getOrderParcel(int $parcelId): ParcelResponse
     {
-        $endpoint = "/v3/vendor-parcels/$parcelId";
+        $endpoint = "/v1/vendor-parcels/$parcelId";
         $response = $this->get($endpoint);
         return ParcelResponse::fromArray($response);
     }
-
-    // -------------------------------------------------------------------------
-    // Order Statistics endpoints
-    // -------------------------------------------------------------------------
 
     /**
      * Get order statistics.
@@ -197,7 +185,7 @@ class OrderProcessingService extends BaseClient
         ?string $cacheControl = null
     ): OrderStatsResponse
     {
-        $endpoint = '/v3/orders-calculate-stats';
+        $endpoint = '/v1/orders/stats';
 
         $params = ['resource_count' => $resourceCount];
         if ($vendorId !== null) {

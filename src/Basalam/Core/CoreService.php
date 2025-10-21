@@ -62,7 +62,7 @@ class CoreService extends BaseClient
      */
     public function createVendor(int $userId, CreateVendorSchema $request): PublicVendorResponse
     {
-        $endpoint = "/v3/users/$userId/vendors";
+        $endpoint = "/v1/users/$userId/vendors";
         $response = $this->post($endpoint, $request->toArray());
         return PublicVendorResponse::fromArray($response);
     }
@@ -76,7 +76,7 @@ class CoreService extends BaseClient
      */
     public function updateVendor(int $vendorId, UpdateVendorSchema $request): PublicVendorResponse
     {
-        $endpoint = "/v3/vendors/$vendorId";
+        $endpoint = "/v1/vendors/$vendorId";
         $response = $this->patch($endpoint, $request->toArray());
         return PublicVendorResponse::fromArray($response);
     }
@@ -90,7 +90,7 @@ class CoreService extends BaseClient
      */
     public function getVendor(int $vendorId, ?string $prefer = "return=minimal"): PublicVendorResponse|PrivateVendorResponse
     {
-        $endpoint = "/v3/vendors/$vendorId";
+        $endpoint = "/v1/vendors/$vendorId";
         $headers = [];
         if ($prefer) {
             $headers['Prefer'] = $prefer;
@@ -111,7 +111,7 @@ class CoreService extends BaseClient
      */
     public function getDefaultShippingMethods(): array
     {
-        $endpoint = "/v3/shipping-methods/defaults";
+        $endpoint = "/v1/shipping-methods/defaults";
         $response = $this->get($endpoint);
         return array_map(fn($item) => ShippingMethodResponse::fromArray($item), $response);
     }
@@ -134,7 +134,7 @@ class CoreService extends BaseClient
         ?string $prefer = null
     ): ShippingMethodListResponse
     {
-        $endpoint = "/v3/shipping-methods";
+        $endpoint = "/v1/shipping-methods";
         $params = [
             'page' => $page,
             'per_page' => $perPage
@@ -164,7 +164,7 @@ class CoreService extends BaseClient
      */
     public function getWorkingShippingMethods(int $vendorId): array
     {
-        $endpoint = "/v3/vendors/$vendorId/shipping-methods";
+        $endpoint = "/v1/vendors/$vendorId/shipping-methods";
         $response = $this->get($endpoint);
         return array_map(fn($item) => ShippingMethodResponse::fromArray($item), $response);
     }
@@ -178,7 +178,7 @@ class CoreService extends BaseClient
      */
     public function updateShippingMethods(int $vendorId, UpdateShippingMethodSchema $request): array
     {
-        $endpoint = "/v3/vendors/$vendorId/shipping-methods";
+        $endpoint = "/v1/vendors/$vendorId/shipping-methods";
         $response = $this->put($endpoint, $request->toArray());
         return array_map(fn($item) => ShippingMethodResponse::fromArray($item), $response);
     }
@@ -192,7 +192,7 @@ class CoreService extends BaseClient
      */
     public function getVendorProducts(int $vendorId, ?GetVendorProductsSchema $queryParams = null): ProductListResponse
     {
-        $endpoint = "/v3/vendors/$vendorId/products";
+        $endpoint = "/v1/vendors/$vendorId/products";
         $params = $queryParams ? $queryParams->toArray() : [];
         $response = $this->get($endpoint, $params);
         return ProductListResponse::fromArray($response);
@@ -207,7 +207,7 @@ class CoreService extends BaseClient
      */
     public function updateVendorStatus(int $vendorId, UpdateVendorStatusSchema $request): UpdateVendorStatusResponse
     {
-        $endpoint = "/v3/vendors/$vendorId/status";
+        $endpoint = "/v1/vendors/$vendorId/status";
         $response = $this->patch($endpoint, $request->toArray());
         return UpdateVendorStatusResponse::fromArray($response);
     }
@@ -221,7 +221,7 @@ class CoreService extends BaseClient
      */
     public function createVendorMobileChangeRequest(int $vendorId, ChangeVendorMobileRequestSchema $request): ResultResponse
     {
-        $endpoint = "/v3/vendors/$vendorId/change-mobile-request";
+        $endpoint = "/v1/vendors/$vendorId/mobile-change-requests";
         $response = $this->post($endpoint, $request->toArray());
         return ResultResponse::fromArray($response);
     }
@@ -235,7 +235,7 @@ class CoreService extends BaseClient
      */
     public function createVendorMobileChangeConfirmation(int $vendorId, ChangeVendorMobileConfirmSchema $request): ResultResponse
     {
-        $endpoint = "/v3/vendors/$vendorId/change-mobile-confirm";
+        $endpoint = "/v1/vendors/$vendorId/mobile-change-confirmations";
         $response = $this->post($endpoint, $request->toArray());
         return ResultResponse::fromArray($response);
     }
@@ -329,7 +329,7 @@ class CoreService extends BaseClient
         }
 
         // Create the product with enhanced request
-        $endpoint = "/v4/vendors/$vendorId/products";
+        $endpoint = "/v1/vendors/$vendorId/products";
         $response = $this->post($endpoint, $enhancedData);
         return ProductResponseSchema::fromArray($response);
     }
@@ -423,7 +423,7 @@ class CoreService extends BaseClient
         }
 
         // Update the product with enhanced request
-        $endpoint = "/v3/products/$productId";
+        $endpoint = "/v1/products/$productId";
         $response = $this->patch($endpoint, $enhancedData);
         return ProductResponseSchema::fromArray($response);
     }
@@ -437,7 +437,7 @@ class CoreService extends BaseClient
      */
     public function getProduct(int $productId, ?string $prefer = "return=minimal"): ProductResponseSchema
     {
-        $endpoint = "/v3/products/$productId";
+        $endpoint = "/v1/products/$productId";
         $headers = [];
         if ($prefer) {
             $headers['Prefer'] = $prefer;
@@ -455,7 +455,7 @@ class CoreService extends BaseClient
      */
     public function getProducts(?GetProductsQuerySchema $queryParams = null, ?string $prefer = "return=minimal"): ProductListResponse
     {
-        $endpoint = "/v3/products";
+        $endpoint = "/v1/products";
         $params = $queryParams ? $queryParams->toArray() : [];
         $headers = [];
         if ($prefer) {
@@ -475,7 +475,7 @@ class CoreService extends BaseClient
      */
     public function updateProductVariation(int $productId, int $variationId, UpdateProductVariationSchema $request): ProductResponseSchema
     {
-        $endpoint = "/v4/products/$productId/variations/$variationId";
+        $endpoint = "/v1/products/$productId/variations/$variationId";
         $data = $request->toArray();
         $response = $this->patch($endpoint, $data);
         return ProductResponseSchema::fromArray($response);
@@ -490,7 +490,7 @@ class CoreService extends BaseClient
      */
     public function createProductsBulkActionRequest(int $vendorId, BulkProductsUpdateRequestSchema $request): BulkProductsUpdateResponseSchema
     {
-        $endpoint = "/v4/vendors/$vendorId/bulk-update-product-request";
+        $endpoint = "/v1/vendors/$vendorId/batch-jobs";
         $response = $this->post($endpoint, $request->toArray());
         return BulkProductsUpdateResponseSchema::fromArray($response);
     }
@@ -509,7 +509,7 @@ class CoreService extends BaseClient
         int $perPage = 10
     ): BulkProductsUpdatesListResponse
     {
-        $endpoint = "/v3/vendors/$vendorId/bulk-update-product-request";
+        $endpoint = "/v1/vendors/$vendorId/batch-jobs";
         $params = [
             'page' => $page,
             'per_page' => $perPage
@@ -526,7 +526,7 @@ class CoreService extends BaseClient
      */
     public function getProductsBulkActionRequestsCount(int $vendorId): BulkProductsUpdatesCountResponse
     {
-        $endpoint = "/v3/vendors/$vendorId/bulk-update-product-request/count";
+        $endpoint = "/v1/vendors/$vendorId/batch-jobs/count";
         $response = $this->get($endpoint);
         return BulkProductsUpdatesCountResponse::fromArray($response);
     }
@@ -545,7 +545,7 @@ class CoreService extends BaseClient
         int $perPage = 10
     ): UnsuccessfulBulkUpdateProducts
     {
-        $endpoint = "/v3/bulk-update-product-request/$requestId/unsuccessful_products";
+        $endpoint = "/v1/batch-jobs/$requestId/failed-items";
         $params = [
             'page' => $page,
             'per_page' => $perPage
@@ -563,7 +563,7 @@ class CoreService extends BaseClient
      */
     public function getProductShelves(int $productId): array
     {
-        $endpoint = "/v3/products/$productId/shelves";
+        $endpoint = "/v1/products/$productId/shelves";
         $response = $this->get($endpoint);
         return array_map(fn($item) => ProductShelfResponse::fromArray($item), $response);
     }
@@ -577,7 +577,7 @@ class CoreService extends BaseClient
      */
     public function updateBulkProducts(int $vendorId, BatchUpdateProductsRequest|array $request): array
     {
-        $endpoint = "/v4/vendors/$vendorId/products";
+        $endpoint = "/v1/vendors/$vendorId/products/batch-updates";
         $data = is_array($request) ? $request : $request->toArray();
         $response = $this->patch($endpoint, $data);
         return array_map(fn($item) => UpdateProductResponseItem::fromArray($item), $response);
@@ -592,7 +592,7 @@ class CoreService extends BaseClient
      */
     public function createDiscount(int $vendorId, CreateDiscountRequestSchema $request): array
     {
-        $endpoint = "/v3/vendors/$vendorId/discounts";
+        $endpoint = "/v1/vendors/$vendorId/discounts";
         $data = $request->toArray();
         return $this->post($endpoint, $data);
     }
@@ -606,7 +606,7 @@ class CoreService extends BaseClient
      */
     public function deleteDiscount(int $vendorId, DeleteDiscountRequestSchema $request): array
     {
-        $endpoint = "/v3/vendors/$vendorId/discounts";
+        $endpoint = "/v1/vendors/$vendorId/discounts";
         $data = $request->toArray();
         return $this->delete($endpoint, [], $data);
     }
@@ -618,7 +618,7 @@ class CoreService extends BaseClient
      */
     public function getCurrentUser(): PrivateUserResponse
     {
-        $endpoint = "/v3/users/me";
+        $endpoint = "/v1/users/me";
         $response = $this->get($endpoint);
         return PrivateUserResponse::fromArray($response);
     }
@@ -631,7 +631,7 @@ class CoreService extends BaseClient
      */
     public function createUserMobileConfirmationRequest(int $userId): ResultResponse
     {
-        $endpoint = "/v3/users/$userId/confirm-mobile-request";
+        $endpoint = "/v1/users/$userId/mobile-verification-requests";
         $response = $this->post($endpoint, []);
         return ResultResponse::fromArray($response);
     }
@@ -645,7 +645,7 @@ class CoreService extends BaseClient
      */
     public function verifyUserMobileConfirmationRequest(int $userId, ConfirmCurrentUserMobileConfirmSchema $request): ResultResponse
     {
-        $endpoint = "/v3/users/$userId/confirm-mobile";
+        $endpoint = "/v1/users/$userId/mobile-verification-confirmations";
         $data = $request->toArray();
         $response = $this->post($endpoint, $data);
         return ResultResponse::fromArray($response);
@@ -660,7 +660,7 @@ class CoreService extends BaseClient
      */
     public function createUserMobileChangeRequest(int $userId, ChangeUserMobileRequestSchema $request): ResultResponse
     {
-        $endpoint = "/v3/users/$userId/change-mobile-request";
+        $endpoint = "/v1/users/$userId/mobile-change-requests";
         $data = $request->toArray();
         $response = $this->post($endpoint, $data);
         return ResultResponse::fromArray($response);
@@ -675,7 +675,7 @@ class CoreService extends BaseClient
      */
     public function verifyUserMobileChangeRequest(int $userId, ChangeUserMobileConfirmSchema $request): ResultResponse
     {
-        $endpoint = "/v3/users/$userId/change-mobile-confirm";
+        $endpoint = "/v1/users/$userId/mobile-change-confirmations";
         $data = $request->toArray();
         $response = $this->post($endpoint, $data);
         return ResultResponse::fromArray($response);
@@ -691,7 +691,7 @@ class CoreService extends BaseClient
      */
     public function createUserBankAccount(int $userId, UserCardsSchema $request, ?string $prefer = "return=minimal"): array
     {
-        $endpoint = "/v3/users/$userId/bank-information";
+        $endpoint = "/v1/users/$userId/bank-accounts";
         $data = $request->toArray();
         $headers = [];
         if ($prefer) {
@@ -710,7 +710,7 @@ class CoreService extends BaseClient
      */
     public function getUserBankAccounts(int $userId, ?string $prefer = "return=minimal"): array
     {
-        $endpoint = "/v3/users/$userId/bank-information";
+        $endpoint = "/v1/users/$userId/bank-accounts";
         $headers = [];
         if ($prefer) {
             $headers['Prefer'] = $prefer;
@@ -727,7 +727,7 @@ class CoreService extends BaseClient
      */
     public function deleteUserBankAccount(int $userId, int $bankAccountId): array
     {
-        $endpoint = "/v3/users/$userId/bank-information/$bankAccountId";
+        $endpoint = "/v1/users/$userId/bank-accounts/$bankAccountId";
         return $this->delete($endpoint);
     }
 
@@ -740,8 +740,9 @@ class CoreService extends BaseClient
      */
     public function updateUserBankAccount(int $bankAccountId, UpdateUserBankInformationSchema $request): array
     {
-        $endpoint = "/v3/bank-information/$bankAccountId";
         $data = $request->toArray();
+        $userId = $data['user_id'];
+        $endpoint = "/v1/users/$userId/bank-accounts/$bankAccountId";
         return $this->patch($endpoint, $data);
     }
 
@@ -754,7 +755,7 @@ class CoreService extends BaseClient
      */
     public function updateUserVerification(int $userId, UserVerificationSchema $request): PrivateUserResponse
     {
-        $endpoint = "/v3/users/$userId/verification-request";
+        $endpoint = "/v1/users/$userId/verification-requests";
         $data = $request->toArray();
         $response = $this->patch($endpoint, $data);
         return PrivateUserResponse::fromArray($response);
@@ -769,7 +770,7 @@ class CoreService extends BaseClient
      */
     public function verifyUserBankAccount(int $userId, UserVerifyBankInformationSchema $request): array
     {
-        $endpoint = "/v3/users/$userId/bank-information/verify";
+        $endpoint = "/v1/users/$userId/bank-accounts/verify";
         return $this->post($endpoint, $request->toArray());
     }
 
@@ -782,7 +783,7 @@ class CoreService extends BaseClient
      */
     public function verifyUserBankAccountOtp(int $userId, UserCardsOtpSchema $request): array
     {
-        $endpoint = "/v3/users/$userId/bank-information/verify-otp";
+        $endpoint = "/v1/users/$userId/bank-accounts/verify-otp";
         return $this->post($endpoint, $request->toArray());
     }
 
@@ -793,7 +794,7 @@ class CoreService extends BaseClient
      */
     public function getCategories(): CategoriesResponse
     {
-        $endpoint = "/v3/categories";
+        $endpoint = "/v1/categories";
         $response = $this->get($endpoint);
         return CategoriesResponse::fromArray($response);
     }
@@ -806,7 +807,7 @@ class CoreService extends BaseClient
      */
     public function getCategory(int $categoryId): CategoryResponse
     {
-        $endpoint = "/v3/categories/$categoryId";
+        $endpoint = "/v1/categories/$categoryId";
         $response = $this->get($endpoint);
         return CategoryResponse::fromArray($response);
     }
@@ -827,7 +828,7 @@ class CoreService extends BaseClient
         bool $excludeMultiSelects = true
     ): AttributesResponse
     {
-        $endpoint = "/v3/categories/$categoryId/attributes";
+        $endpoint = "/v1/categories/$categoryId/attributes";
         $params = [
             'exclude_multi_selects' => $excludeMultiSelects
         ];

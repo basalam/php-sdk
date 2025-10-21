@@ -30,7 +30,7 @@ class SearchService extends BaseClient
      */
     public function searchProducts(ProductSearchModel $request): array
     {
-        $endpoint = '/ai-engine/api/v2.0/product/search';
+        $endpoint = '/v1/products/search';
 
         // Pass requireAuth=false
         // This endpoint is publicly accessible and doesn't need authentication

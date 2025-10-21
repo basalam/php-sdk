@@ -31,7 +31,7 @@ class OrderService extends BaseClient
      */
     public function getBaskets(bool $refresh = false): BasketResponse
     {
-        $endpoint = '/v2/basket';  // Fixed: Changed from /v2/baskets to /v2/basket
+        $endpoint = '/v1/baskets';
         $params = ['refresh' => $refresh];
 
         $response = $this->get($endpoint, $params);
@@ -46,7 +46,7 @@ class OrderService extends BaseClient
      */
     public function getProductVariationStatus(int $productId): array
     {
-        $endpoint = "/v2/basket/product/$productId/status";  // Fixed endpoint
+        $endpoint = "/v1/baskets/products/$productId/status";
         return $this->get($endpoint);
     }
 
@@ -59,7 +59,7 @@ class OrderService extends BaseClient
      */
     public function createInvoicePayment(int $invoiceId, CreatePaymentRequestModel $request): array
     {
-        $endpoint = "/v2/invoice/$invoiceId/payment";  // Fixed: Changed from plural to singular
+        $endpoint = "/v1/invoices/$invoiceId/payments";
         return $this->post($endpoint, $request->toArray());
     }
 
@@ -72,7 +72,7 @@ class OrderService extends BaseClient
      */
     public function getPayableInvoices(int $page, int $perPage): array
     {
-        $endpoint = '/v2/invoice/payable';  // Fixed: Changed from plural to singular
+        $endpoint = '/v1/invoices/payable';
         $params = [
             'page' => $page,
             'per_page' => $perPage
@@ -98,7 +98,7 @@ class OrderService extends BaseClient
         string  $sort = OrderEnum::DESC
     ): array
     {
-        $endpoint = '/v2/invoice/unpaid';  // Fixed: Changed from plural to singular
+        $endpoint = '/v1/invoices/unpaid';
         $params = [
             'page' => $page,
             'per_page' => $perPage,
@@ -124,20 +124,21 @@ class OrderService extends BaseClient
      */
     public function getPaymentCallback(int $paymentId, PaymentCallbackRequestModel $request): array
     {
-        $endpoint = "/v2/payment/$paymentId/callback";  // Fixed: Changed from plural to singular
+        $endpoint = "/v1/payments/$paymentId/callbacks";
         return $this->get($endpoint, $request->toArray());
     }
 
     /**
      * Create payment callback.
      *
-     * @param int $paymentId
      * @param PaymentVerifyRequestModel $request
      * @return array
      */
-    public function createPaymentCallback(int $paymentId, PaymentVerifyRequestModel $request): array
+    public function createPaymentCallback(PaymentVerifyRequestModel $request): array
     {
-        $endpoint = "/v2/payment/$paymentId/callback";  // Fixed: Changed from plural to singular
-        return $this->post($endpoint, $request->toArray());
+        $requestData = $request->toArray();
+        $paymentId = $requestData['payment_id'];
+        $endpoint = "/v1/payments/{$paymentId}/callbacks";
+        return $this->post($endpoint, $requestData);
     }
 }

@@ -39,7 +39,7 @@ class UploadService extends BaseClient
         ?int $expireMinutes = null
     ): FileResponse
     {
-        $endpoint = '/v3/files';
+        $endpoint = '/v1/files';
 
         // Validate that fileType is a valid enum value
         if (!Models\UserUploadFileTypeEnum::isValid($fileType)) {

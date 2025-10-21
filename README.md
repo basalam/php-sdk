@@ -410,19 +410,15 @@ for handling user financial operations.
 
 **Methods:**
 
-| Method                      | Description                         | Parameters                                                             |
-|-----------------------------|-------------------------------------|------------------------------------------------------------------------|
-| `getBalance()`              | Get user's balance                  | `userId`, `filters`, `xOperatorId`                                     |
-| `getTransactions()`         | Get transaction history             | `userId`, `page`, `perPage`, `xOperatorId`                             |
-| `createExpense()`           | Create an expense                   | `userId`, `request`, `xOperatorId`                                     |
-| `createExpenseFromCredit()` | Create expense from specific credit | `userId`, `creditId`, `request`, `xOperatorId`                         |
-| `getExpense()`              | Get expense details                 | `userId`, `expenseId`, `xOperatorId`                                   |
-| `deleteExpense()`           | Delete/rollback expense             | `userId`, `expenseId`, `rollbackReasonId`, `xOperatorId`               |
-| `getExpenseByRef()`         | Get expense by reference            | `userId`, `reasonId`, `referenceId`, `xOperatorId`                     |
-| `deleteExpenseByRef()`      | Delete expense by reference         | `userId`, `reasonId`, `referenceId`, `rollbackReasonId`, `xOperatorId` |
-| `createRefund()`            | Process a refund                    | `request`, `xOperatorId`                                               |
-| `canRollbackRefund()`       | Check if refund can be rolled back  | `refundReason`, `refundReferenceId`, `xOperatorId`                     |
-| `rollbackRefund()`          | Rollback a refund                   | `request`, `xOperatorId`                                               |
+| Method                  | Description                 | Parameters                                                             |
+|-------------------------|-----------------------------|--------------------------------------------------------------------- --|
+| `getBalance()`          | Get user's balance          | `userId`, `filters`, `xOperatorId`                                     |
+| `getTransactions()`     | Get transaction history     | `userId`, `page`, `perPage`, `xOperatorId`                             |
+| `createExpense()`       | Create an expense           | `userId`, `request`, `xOperatorId`                                     |
+| `getExpense()`          | Get expense details         | `userId`, `expenseId`, `xOperatorId`                                   |
+| `deleteExpense()`       | Delete/rollback expense     | `userId`, `expenseId`, `rollbackReasonId`, `xOperatorId`               |
+| `getExpenseByRef()`     | Get expense by reference    | `userId`, `reasonId`, `referenceId`, `xOperatorId`                     |
+| `deleteExpenseByRef()`  | Delete expense by reference | `userId`, `reasonId`, `referenceId`, `rollbackReasonId`, `xOperatorId` |
 
 **Example:**
 

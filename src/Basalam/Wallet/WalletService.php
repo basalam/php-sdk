@@ -6,15 +6,9 @@ use Basalam\Auth\BaseAuth;
 use Basalam\Config\Config;
 use Basalam\Http\BaseClient;
 use Basalam\Wallet\Models\BalanceFilter;
-use Basalam\Wallet\Models\CanRollbackRefundResponse;
-use Basalam\Wallet\Models\CreditCreationResponse;
 use Basalam\Wallet\Models\HistoryPaginationResponse;
-use Basalam\Wallet\Models\RefundRequest;
-use Basalam\Wallet\Models\RollbackRefundRequest;
 use Basalam\Wallet\Models\SpendCreditRequest;
 use Basalam\Wallet\Models\SpendResponse;
-use Basalam\Wallet\Models\SpendSpecificCreditRequest;
-use Exception;
 
 /**
  * Client for the Basalam Wallet Service API.
@@ -39,7 +33,7 @@ class WalletService extends BaseClient
      */
     public function getBalance(int $userId, ?array $filters = null, ?int $xOperatorId = null): array
     {
-        $endpoint = "/v2/user/$userId/balance";
+        $endpoint = "/v1/users/$userId/balance";
         $headers = [];
         if ($xOperatorId !== null) {
             $headers['x-operator-id'] = (string)$xOperatorId;
@@ -80,7 +74,7 @@ class WalletService extends BaseClient
         ?int $xOperatorId = null
     ): HistoryPaginationResponse
     {
-        $endpoint = "/v2/user/$userId/history";
+        $endpoint = "/v1/users/$userId/transactions";
         $headers = [];
         if ($xOperatorId !== null) {
             $headers['x-operator-id'] = (string)$xOperatorId;
@@ -109,33 +103,7 @@ class WalletService extends BaseClient
         ?int               $xOperatorId = null
     ): SpendResponse
     {
-        $endpoint = "/v2/user/$userId/spend";
-        $headers = [];
-        if ($xOperatorId !== null) {
-            $headers['x-operator-id'] = (string)$xOperatorId;
-        }
-
-        $response = $this->post($endpoint, $request->toArray(), [], $headers);
-        return SpendResponse::fromArray($response);
-    }
-
-    /**
-     * Create an expense from a specific credit.
-     *
-     * @param int $userId The ID of the user
-     * @param int $creditId The ID of the credit to spend from
-     * @param SpendSpecificCreditRequest $request The spend credit request
-     * @param int|null $xOperatorId Optional operator ID for the request
-     * @return SpendResponse The spend response
-     */
-    public function createExpenseFromCredit(
-        int                        $userId,
-        int                        $creditId,
-        SpendSpecificCreditRequest $request,
-        ?int                       $xOperatorId = null
-    ): SpendResponse
-    {
-        $endpoint = "/v2/user/$userId/credit/$creditId/spend";
+        $endpoint = "/v1/users/$userId/expenses";
         $headers = [];
         if ($xOperatorId !== null) {
             $headers['x-operator-id'] = (string)$xOperatorId;
@@ -155,7 +123,7 @@ class WalletService extends BaseClient
      */
     public function getExpense(int $userId, int $expenseId, ?int $xOperatorId = null): SpendResponse
     {
-        $endpoint = "/v2/user/$userId/spend/$expenseId";
+        $endpoint = "/v1/users/$userId/expenses/$expenseId";
         $headers = [];
         if ($xOperatorId !== null) {
             $headers['x-operator-id'] = (string)$xOperatorId;
@@ -181,7 +149,7 @@ class WalletService extends BaseClient
         ?int $xOperatorId = null
     ): SpendResponse
     {
-        $endpoint = "/v2/user/$userId/spend/$expenseId";
+        $endpoint = "/v1/users/$userId/expenses/$expenseId";
         $headers = [];
         if ($xOperatorId !== null) {
             $headers['x-operator-id'] = (string)$xOperatorId;
@@ -208,7 +176,7 @@ class WalletService extends BaseClient
         ?int $xOperatorId = null
     ): SpendResponse
     {
-        $endpoint = "/v2/user/$userId/spend/by-ref/$reasonId/$referenceId";
+        $endpoint = "/v1/users/$userId/expenses/by-ref/$reasonId/$referenceId";
         $headers = [];
         if ($xOperatorId !== null) {
             $headers['x-operator-id'] = (string)$xOperatorId;
@@ -236,7 +204,7 @@ class WalletService extends BaseClient
         ?int $xOperatorId = null
     ): SpendResponse
     {
-        $endpoint = "/v2/user/$userId/spend/by-ref/$reasonId/$referenceId";
+        $endpoint = "/v1/users/$userId/expenses/by-ref/$reasonId/$referenceId";
         $headers = [];
         if ($xOperatorId !== null) {
             $headers['x-operator-id'] = (string)$xOperatorId;
@@ -247,80 +215,4 @@ class WalletService extends BaseClient
         return SpendResponse::fromArray($response);
     }
 
-    /**
-     * Create a refund.
-     *
-     * @param RefundRequest $request The refund request
-     * @param int|null $xOperatorId Optional operator ID for the request
-     * @return CreditCreationResponse|SpendResponse Either a credit creation response or a spend response
-     */
-    public function createRefund(RefundRequest $request, ?int $xOperatorId = null): SpendResponse|CreditCreationResponse
-    {
-        $endpoint = "/v2/refund";
-        $headers = [];
-        if ($xOperatorId !== null) {
-            $headers['x-operator-id'] = (string)$xOperatorId;
-        }
-
-        $response = $this->post($endpoint, $request->toArray(), [], $headers);
-
-        // The API can return either a CreditCreationResponse or a SpendResponse
-        // Try to parse as CreditCreationResponse first, then fallback to SpendResponse
-        try {
-            return CreditCreationResponse::fromArray($response);
-        } catch (Exception $e) {
-            return SpendResponse::fromArray($response);
-        }
-    }
-
-    /**
-     * Check if a refund can be rolled back.
-     *
-     * @param int $refundReason The refund reason
-     * @param int $refundReferenceId The refund reference ID
-     * @param int|null $xOperatorId Optional operator ID for the request
-     * @return CanRollbackRefundResponse Response containing status and message
-     */
-    public function canRollbackRefund(
-        int  $refundReason,
-        int  $refundReferenceId,
-        ?int $xOperatorId = null
-    ): CanRollbackRefundResponse
-    {
-        $endpoint = "/v2/can-rollback-refund";
-        $headers = [];
-        if ($xOperatorId !== null) {
-            $headers['x-operator-id'] = (string)$xOperatorId;
-        }
-
-        $payload = [
-            'refund_reason' => $refundReason,
-            'refund_reference_id' => $refundReferenceId
-        ];
-
-        $response = $this->post($endpoint, $payload, [], $headers);
-        return CanRollbackRefundResponse::fromArray($response);
-    }
-
-    /**
-     * Rollback a refund.
-     *
-     * @param RollbackRefundRequest $request The rollback refund request
-     * @param int|null $xOperatorId Optional operator ID for the request
-     * @return SpendResponse The rollback response
-     */
-    public function rollbackRefund(
-        RollbackRefundRequest $request,
-        ?int                  $xOperatorId = null
-    ): SpendResponse
-    {
-        $endpoint = "/v2/rollback-refund";
-        $headers = [];
-        if ($xOperatorId !== null) {
-            $headers['x-operator-id'] = (string)$xOperatorId;
-        }
-
-        $response = $this->delete($endpoint, $request->toArray(), [], $headers);
-        return SpendResponse::fromArray($response);
-    }
 }

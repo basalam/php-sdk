@@ -13,19 +13,15 @@ refunds, and handle credit-specific operations.
 
 ### Methods
 
-| Method                                                             | Description                         | Parameters                                                             |
-|--------------------------------------------------------------------|-------------------------------------|------------------------------------------------------------------------|
-| [`getBalance()`](#get-balance-example)                             | Get user's balance                  | `userId`, `filters`, `xOperatorId`                                     |
-| [`getTransactions()`](#get-transactions-example)                   | Get transaction history             | `userId`, `page`, `perPage`, `xOperatorId`                             |
-| [`createExpense()`](#create-expense-example)                       | Create an expense                   | `userId`, `request`, `xOperatorId`                                     |
-| [`createExpenseFromCredit()`](#create-expense-from-credit-example) | Create expense from specific credit | `userId`, `creditId`, `request`, `xOperatorId`                         |
-| [`getExpense()`](#get-expense-example)                             | Get expense details                 | `userId`, `expenseId`, `xOperatorId`                                   |
-| [`deleteExpense()`](#delete-expense-example)                       | Delete/rollback expense             | `userId`, `expenseId`, `rollbackReasonId`, `xOperatorId`               |
-| [`getExpenseByRef()`](#get-expense-by-ref-example)                 | Get expense by reference            | `userId`, `reasonId`, `referenceId`, `xOperatorId`                     |
-| [`deleteExpenseByRef()`](#delete-expense-by-ref-example)           | Delete expense by reference         | `userId`, `reasonId`, `referenceId`, `rollbackReasonId`, `xOperatorId` |
-| [`createRefund()`](#create-refund-example)                         | Process a refund                    | `request`, `xOperatorId`                                               |
-| [`canRollbackRefund()`](#can-rollback-refund-example)              | Check if refund can be rolled back  | `refundReason`, `refundReferenceId`, `xOperatorId`                     |
-| [`rollbackRefund()`](#rollback-refund-example)                     | Rollback a refund                   | `request`, `xOperatorId`                                               |
+| Method                                                   | Description                 | Parameters                                                             |
+|----------------------------------------------------------|-----------------------------|------------------------------------------------------------------------|
+| [`getBalance()`](#get-balance-example)                   | Get user's balance          | `userId`, `filters`, `xOperatorId`                                     |
+| [`getTransactions()`](#get-transactions-example)         | Get transaction history     | `userId`, `page`, `perPage`, `xOperatorId`                             |
+| [`createExpense()`](#create-expense-example)             | Create an expense           | `userId`, `request`, `xOperatorId`                                     |
+| [`getExpense()`](#get-expense-example)                   | Get expense details         | `userId`, `expenseId`, `xOperatorId`                                   |
+| [`deleteExpense()`](#delete-expense-example)             | Delete/rollback expense     | `userId`, `expenseId`, `rollbackReasonId`, `xOperatorId`               |
+| [`getExpenseByRef()`](#get-expense-by-ref-example)       | Get expense by reference    | `userId`, `reasonId`, `referenceId`, `xOperatorId`                     |
+| [`deleteExpenseByRef()`](#delete-expense-by-ref-example) | Delete expense by reference | `userId`, `reasonId`, `referenceId`, `rollbackReasonId`, `xOperatorId` |
 
 ## Examples
 
@@ -35,9 +31,6 @@ refunds, and handle credit-specific operations.
 use Basalam\BasalamClient;
 use Basalam\Auth\PersonalToken;
 use Basalam\Wallet\Models\SpendCreditRequest;
-use Basalam\Wallet\Models\SpendSpecificCreditRequest;
-use Basalam\Wallet\Models\RefundRequest;
-use Basalam\Wallet\Models\RollbackRefundRequest;
 use Basalam\Wallet\Models\BalanceFilter;
 
 $auth = new PersonalToken(
@@ -123,35 +116,6 @@ function createExpenseExample()
 }
 ```
 
-### Create Expense From Credit Example
-
-```php
-function createExpenseFromCreditExample()
-{
-    global $client;
-    
-    $expense = $client->createExpenseFromCredit(
-        userId: 123,
-        creditId: 789,
-        request: new SpendSpecificCreditRequest([
-            'reason_id' => 1,
-            'reference_id' => 456,
-            'amount' => 5000,
-            'description' => "Payment from specific credit",
-            'settleable' => true,
-            'references' => [
-                "order_id" => 456,
-                "credit_type" => 1
-            ]
-        ]),
-        xOperatorId: 456
-    );
-    
-    echo "Specific credit expense created: {$expense->getId()}\n";
-    return $expense;
-}
-```
-
 ### Get Expense Example
 
 ```php
@@ -228,85 +192,6 @@ function deleteExpenseByRefExample()
     );
     
     echo "Expense deleted by reference: {$result->getId()}\n";
-    return $result;
-}
-```
-
-### Create Refund Example
-
-```php
-function createRefundExample()
-{
-    global $client;
-    
-    $refund = $client->createRefund(
-        request: new RefundRequest([
-            'original_reason' => 1,
-            'original_reference_id' => 456,
-            'reason' => 2,
-            'reference_id' => 789,
-            'amount' => 5000,
-            'description' => "Refund for cancelled order",
-            'references' => [
-                [
-                    "reference_type_id" => 1,
-                    "reference_id" => 456
-                ]
-            ]
-        ]),
-        xOperatorId: 456
-    );
-    
-    echo "Refund processed: {$refund->getId()}\n";
-    return $refund;
-}
-```
-
-### Can Rollback Refund Example
-
-```php
-function canRollbackRefundExample()
-{
-    global $client;
-    
-    $canRollback = $client->canRollbackRefund(
-        refundReason: 2,
-        refundReferenceId: 789,
-        xOperatorId: 456
-    );
-    
-    echo "Can rollback refund: {$canRollback->getStatus()}\n";
-    echo "Message: {$canRollback->getMessage()}\n";
-    
-    return $canRollback;
-}
-```
-
-### Rollback Refund Example
-
-```php
-function rollbackRefundExample()
-{
-    global $client;
-    
-    $result = $client->rollbackRefund(
-        request: new RollbackRefundRequest([
-            'refund_reason' => 2,
-            'rollback_refund_reason' => 3,
-            'refund_reference_id' => 789,
-            'reference_id' => 456,
-            'description' => "Rollback refund due to error",
-            'references' => [
-                [
-                    "reference_type_id" => 1,
-                    "reference_id" => 456
-                ]
-            ]
-        ]),
-        xOperatorId: 456
-    );
-    
-    echo "Refund rolled back: {$result->getId()}\n";
     return $result;
 }
 ```

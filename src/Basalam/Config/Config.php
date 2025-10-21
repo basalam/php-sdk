@@ -97,42 +97,42 @@ class Config
         if (!isset(self::$serviceConfigs)) {
             self::$serviceConfigs = [
                 'core' => new ServiceConfig(
-                    baseUrl: 'https://core.basalam.com',
+                    baseUrl: 'https://openapi.basalam.com',
                     path: '',
-                    apiVersion: 'v3'
+                    apiVersion: 'v1'
                 ),
                 'wallet' => new ServiceConfig(
-                    baseUrl: 'https://wallet.basalam.com',
+                    baseUrl: 'https://openapi.basalam.com',
                     path: '',
-                    apiVersion: 'v2'
+                    apiVersion: 'v1'
                 ),
                 'chat' => new ServiceConfig(
-                    baseUrl: 'https://conversation.basalam.com',
+                    baseUrl: 'https://openapi.basalam.com',
                     path: '',
-                    apiVersion: 'v2'
+                    apiVersion: 'v1'
                 ),
                 'order' => new ServiceConfig(
-                    baseUrl: 'https://order.basalam.com',
+                    baseUrl: 'https://openapi.basalam.com',
                     path: '',
-                    apiVersion: 'v2'
+                    apiVersion: 'v1'
                 ),
                 'order-processing' => new ServiceConfig(
-                    baseUrl: 'https://order-processing.basalam.com',
+                    baseUrl: 'https://openapi.basalam.com',
                     path: '',
-                    apiVersion: 'v3'
+                    apiVersion: 'v1'
                 ),
                 'search' => new ServiceConfig(
-                    baseUrl: 'https://search.basalam.com',
-                    path: 'ai-engine/api',
-                    apiVersion: 'v2.0'
+                    baseUrl: 'https://openapi.basalam.com',
+                    path: '',
+                    apiVersion: 'v1'
                 ),
                 'upload' => new ServiceConfig(
-                    baseUrl: 'https://uploadio.basalam.com',
+                    baseUrl: 'https://openapi.basalam.com',
                     path: '',
-                    apiVersion: 'v3'
+                    apiVersion: 'v1'
                 ),
                 'webhook' => new ServiceConfig(
-                    baseUrl: 'https://webhook.basalam.com',
+                    baseUrl: 'https://openapi.basalam.com',
                     path: '',
                     apiVersion: 'v1'
                 ),

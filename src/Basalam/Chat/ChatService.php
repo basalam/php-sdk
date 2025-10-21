@@ -35,7 +35,9 @@ class ChatService extends BaseClient
         ?string        $xClientInfo = null
     ): MessageResponse
     {
-        $endpoint = '/v3/messages';
+        $requestData = $request->toArray();
+        $chatId = $requestData['chat_id'];
+        $endpoint = "/v1/chats/{$chatId}/messages";
         $headers = [];
 
         if ($userAgent !== null) {
@@ -65,7 +67,7 @@ class ChatService extends BaseClient
         ?string           $xClientInfo = null
     ): CreateChatResponse
     {
-        $endpoint = '/v3/chats';
+        $endpoint = '/v1/chats';
         $headers = [];
 
         if ($xCreationTags !== null) {
@@ -90,8 +92,9 @@ class ChatService extends BaseClient
      */
     public function getMessages(GetMessagesRequest $request): GetMessagesResponse
     {
-        $endpoint = '/v3/messages';
         $params = $request->toArray();
+        $chatId = $params['chat_id'];
+        $endpoint = "/v1/chats/{$chatId}/messages";
 
         $response = $this->get($endpoint, $params);
         return GetMessagesResponse::fromArray($response);
@@ -105,7 +108,7 @@ class ChatService extends BaseClient
      */
     public function getChats(GetChatsRequest $request): ChatListResponse
     {
-        $endpoint = '/v3/chats';
+        $endpoint = '/v1/chats';
         $params = $request->toArray();
 
         $response = $this->get($endpoint, $params);
