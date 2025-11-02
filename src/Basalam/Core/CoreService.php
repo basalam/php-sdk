@@ -30,12 +30,14 @@ use Basalam\Core\Models\ProductResponseSchema;
 use Basalam\Core\Models\ProductShelfResponse;
 use Basalam\Core\Models\PublicVendorResponse;
 use Basalam\Core\Models\ResultResponse;
+use Basalam\Core\Models\ShelveSchema;
 use Basalam\Core\Models\ShippingMethodListResponse;
 use Basalam\Core\Models\ShippingMethodResponse;
 use Basalam\Core\Models\UnsuccessfulBulkUpdateProducts;
 use Basalam\Core\Models\UpdateProductResponseItem;
 use Basalam\Core\Models\UpdateProductVariationSchema;
 use Basalam\Core\Models\UpdateShippingMethodSchema;
+use Basalam\Core\Models\UpdateShelveProductsSchema;
 use Basalam\Core\Models\UpdateUserBankInformationSchema;
 use Basalam\Core\Models\UpdateVendorSchema;
 use Basalam\Core\Models\UpdateVendorStatusResponse;
@@ -842,5 +844,87 @@ class CoreService extends BaseClient
 
         $response = $this->get($endpoint, $params);
         return AttributesResponse::fromArray($response);
+    }
+
+    /**
+     * Create a new shelve
+     *
+     * @param ShelveSchema $request
+     * @return array
+     */
+    public function createShelve(ShelveSchema $request): array
+    {
+        $endpoint = "/v1/shelves";
+        return $this->post($endpoint, $request->toArray());
+    }
+
+    /**
+     * Update shelve
+     *
+     * @param int $shelveId
+     * @param ShelveSchema $request
+     * @return array
+     */
+    public function updateShelve(int $shelveId, ShelveSchema $request): array
+    {
+        $endpoint = "/v1/shelves/$shelveId";
+        return $this->put($endpoint, $request->toArray());
+    }
+
+    /**
+     * Delete shelve
+     *
+     * @param int $shelveId
+     * @return array
+     */
+    public function deleteShelve(int $shelveId): array
+    {
+        $endpoint = "/v1/shelves/$shelveId";
+        return $this->delete($endpoint);
+    }
+
+    /**
+     * Get shelve products list
+     *
+     * @param int $shelveId
+     * @param string|null $title Optional title filter
+     * @return array
+     */
+    public function getShelveProducts(int $shelveId, ?string $title = null): array
+    {
+        $endpoint = "/v1/shelves/$shelveId/products";
+        $params = [];
+
+        if ($title !== null) {
+            $params['title'] = $title;
+        }
+
+        return $this->get($endpoint, $params);
+    }
+
+    /**
+     * Update shelve products
+     *
+     * @param int $shelveId
+     * @param UpdateShelveProductsSchema $request
+     * @return array
+     */
+    public function updateShelveProducts(int $shelveId, UpdateShelveProductsSchema $request): array
+    {
+        $endpoint = "/v1/shelves/$shelveId/products";
+        return $this->put($endpoint, $request->toArray());
+    }
+
+    /**
+     * Delete product from shelve
+     *
+     * @param int $shelveId
+     * @param int $productId
+     * @return array
+     */
+    public function deleteShelveProduct(int $shelveId, int $productId): array
+    {
+        $endpoint = "/v1/shelves/$shelveId/products/$productId";
+        return $this->delete($endpoint);
     }
 }

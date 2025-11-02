@@ -11,12 +11,17 @@ different message types, manage chat participants, and track chat history and up
 
 ## Chat Methods
 
-| Method                               | Description       | Parameters                    |
-|--------------------------------------|-------------------|-------------------------------|
-| [`createMessage()`](#create-message) | Create a message  | `request: MessageRequest`     |
-| [`createChat()`](#create-chat)       | Create a chat     | `request: CreateChatRequest`  |
-| [`getMessages()`](#get-messages)     | Get chat messages | `request: GetMessagesRequest` |
-| [`getChats()`](#get-chats)           | Get chats list    | `request: GetChatsRequest`    |
+| Method                                       | Description                   | Parameters                                               |
+|----------------------------------------------|-------------------------------|----------------------------------------------------------|
+| [`createMessage()`](#create-message)         | Create a message              | `request: MessageRequest`, `userAgent`, `xClientInfo`    |
+| [`createChat()`](#create-chat)               | Create a chat                 | `request: CreateChatRequest`, `xCreationTags`, etc.      |
+| [`getMessages()`](#get-messages)             | Get chat messages             | `request: GetMessagesRequest`                            |
+| [`getChats()`](#get-chats)                   | Get chats list                | `request: GetChatsRequest`                               |
+| [`editMessage()`](#edit-message)             | Edit a message                | `request: EditMessageRequest`, `xClientInfo`             |
+| [`deleteMessage()`](#delete-message)         | Delete messages               | `request: DeleteMessageRequest`                          |
+| [`deleteChats()`](#delete-chats)             | Delete chats                  | `request: DeleteChatRequest`                             |
+| [`forwardMessage()`](#forward-message)       | Forward messages to chats     | `request: ForwardMessageRequest`, `userAgent`, etc.      |
+| [`getUnseenChatCount()`](#get-unseen-count)  | Get unseen chat count         | `None`                                                   |
 
 ## Examples
 
@@ -103,7 +108,7 @@ use Basalam\Chat\Models\MessageFiltersEnum;
 function getChatsExample()
 {
     global $client;
-    
+
     $request = new GetChatsRequest([
         'limit' => 30,
         'order_by' => MessageOrderByEnum::UPDATED_AT,
@@ -111,6 +116,101 @@ function getChatsExample()
     ]);
     $chats = $client->getChats(request: $request);
     return $chats;
+}
+```
+
+### Edit Message
+
+```php
+use Basalam\Chat\Models\EditMessageRequest;
+use Basalam\Chat\Models\MessageInput;
+
+function editMessageExample()
+{
+    global $client;
+
+    $request = new EditMessageRequest([
+        'chat_id' => 123,
+        'message_id' => 456,
+        'content' => new MessageInput([
+            'text' => "Updated message text"
+        ])
+    ]);
+    $editedMessage = $client->editMessage(
+        request: $request,
+        xClientInfo: "web-app"
+    );
+    return $editedMessage;
+}
+```
+
+### Delete Message
+
+```php
+use Basalam\Chat\Models\DeleteMessageRequest;
+
+function deleteMessageExample()
+{
+    global $client;
+
+    $request = new DeleteMessageRequest([
+        'chat_id' => 123,
+        'message_ids' => [456, 457, 458]
+    ]);
+    $result = $client->deleteMessage(request: $request);
+    return $result;
+}
+```
+
+### Delete Chats
+
+```php
+use Basalam\Chat\Models\DeleteChatRequest;
+
+function deleteChatsExample()
+{
+    global $client;
+
+    $request = new DeleteChatRequest([
+        'chat_ids' => [123, 124, 125]
+    ]);
+    $result = $client->deleteChats(request: $request);
+    return $result;
+}
+```
+
+### Forward Message
+
+```php
+use Basalam\Chat\Models\ForwardMessageRequest;
+
+function forwardMessageExample()
+{
+    global $client;
+
+    $request = new ForwardMessageRequest([
+        'from_chat_id' => 123,
+        'message_ids' => [456, 457],
+        'to_chat_ids' => [124, 125]
+    ]);
+    $result = $client->forwardMessage(
+        request: $request,
+        userAgent: "Mozilla/5.0",
+        xClientInfo: "web-app"
+    );
+    return $result;
+}
+```
+
+### Get Unseen Chat Count
+
+```php
+function getUnseenChatCountExample()
+{
+    global $client;
+
+    $unseenCount = $client->getUnseenChatCount();
+    return $unseenCount;
 }
 ```
 

@@ -1,0 +1,1372 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Basalam OpenAPI Gateway",
+    "version": "1.0.0",
+    "description": "Filtered OpenAPI endpoints from core service"
+  },
+  "paths": {
+    "/v1/users/{user_id}/balance": {
+      "post": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "Balance",
+        "operationId": "balance_v2_user__user_id__balance_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "x-operator-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Operator-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_balance_v2_user__user_id__balance_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "title": "Response Balance V2 User  User Id  Balance Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/{user_id}/expenses": {
+      "post": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "Spend Credit",
+        "operationId": "spend_credit_v2_user__user_id__spend_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "x-operator-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Operator-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_spend_credit_v2_user__user_id__spend_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpendResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/{user_id}/expenses/{expense_id}": {
+      "get": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "Show Spend",
+        "operationId": "show_spend_v2_user__user_id__spend__spend_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "expense_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Spend Id"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "x-operator-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Operator-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpendResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "Rollback Spend",
+        "operationId": "rollback_spend_v2_user__user_id__spend__spend_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "expense_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Spend Id"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "x-operator-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Operator-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_rollback_spend_v2_user__user_id__spend__spend_id__delete"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpendResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/{user_id}/transactions": {
+      "get": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "History",
+        "operationId": "history_v2_user__user_id__history_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Per Page"
+            }
+          },
+          {
+            "name": "x-operator-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Operator-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryPaginationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/{user_id}/expenses/by-ref/{reason_id}/{reference_id}": {
+      "get": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "Show Spend By Ref",
+        "operationId": "show_spend_by_ref_v2_user__user_id__spend_by_ref__reason_id___reference_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "reason_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Reason Id"
+            }
+          },
+          {
+            "name": "reference_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Reference Id"
+            }
+          },
+          {
+            "name": "x-operator-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Operator-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpendResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "Rollback Spend By Ref",
+        "operationId": "rollback_spend_by_ref_v2_user__user_id__spend_by_ref__reason_id___reference_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "reason_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Reason Id"
+            }
+          },
+          {
+            "name": "reference_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Reference Id"
+            }
+          },
+          {
+            "name": "x-operator-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Operator-Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_rollback_spend_by_ref_v2_user__user_id__spend_by_ref__reason_id___reference_id__delete"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpendResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Body_rollback_spend_v2_user__user_id__spend__spend_id__delete": {
+        "properties": {
+          "rollback_reason_id": {
+            "type": "integer",
+            "title": "Rollback Reason Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "rollback_reason_id"
+        ],
+        "title": "Body_rollback_spend_v2_user__user_id__spend__spend_id__delete"
+      },
+      "SpendItemResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "amount": {
+            "type": "integer",
+            "title": "Amount"
+          },
+          "references": {
+            "items": {
+              "$ref": "#/components/schemas/ReferenceResponse"
+            },
+            "type": "array",
+            "title": "References"
+          },
+          "credit": {
+            "$ref": "#/components/schemas/api__routes__v2__responses__CreditResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "amount",
+          "references",
+          "credit"
+        ],
+        "title": "SpendItemResponse"
+      },
+      "HistoryItemResponse": {
+        "properties": {
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Time"
+          },
+          "amount": {
+            "type": "integer",
+            "title": "Amount"
+          },
+          "subtotal": {
+            "type": "integer",
+            "title": "Subtotal"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "main_reference_id": {
+            "type": "integer",
+            "title": "Main Reference Id"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReasonResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "references": {
+            "items": {
+              "$ref": "#/components/schemas/ReferenceResponse"
+            },
+            "type": "array",
+            "title": "References"
+          },
+          "related_credit": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NewHistoryCreditResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "related_spend": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HistorySpendResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "time",
+          "amount",
+          "subtotal",
+          "description",
+          "main_reference_id",
+          "references"
+        ],
+        "title": "HistoryItemResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "CreditItemResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "amount": {
+            "type": "integer",
+            "title": "Amount"
+          },
+          "remained_amount": {
+            "type": "integer",
+            "title": "Remained Amount"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "expire_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expire At"
+          },
+          "type": {
+            "$ref": "#/components/schemas/CreditTypeResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "amount",
+          "remained_amount",
+          "created_at",
+          "expire_at",
+          "type"
+        ],
+        "title": "CreditItemResponse"
+      },
+      "HistorySpendItemResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "amount": {
+            "type": "integer",
+            "title": "Amount"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "amount"
+        ],
+        "title": "HistorySpendItemResponse"
+      },
+      "Body_spend_credit_v2_user__user_id__spend_post": {
+        "properties": {
+          "reason_id": {
+            "type": "integer",
+            "title": "Reason Id"
+          },
+          "reference_id": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Reference Id"
+          },
+          "amount": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Amount"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "types": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Types"
+          },
+          "settleable": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Settleable"
+          },
+          "references": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "integer"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "References"
+          }
+        },
+        "type": "object",
+        "required": [
+          "reason_id",
+          "reference_id",
+          "amount",
+          "description"
+        ],
+        "title": "Body_spend_credit_v2_user__user_id__spend_post"
+      },
+      "Body_balance_v2_user__user_id__balance_post": {
+        "properties": {
+          "filters": {
+            "items": {
+              "$ref": "#/components/schemas/BalanceFilter"
+            },
+            "type": "array",
+            "title": "Filters"
+          }
+        },
+        "type": "object",
+        "required": [
+          "filters"
+        ],
+        "title": "Body_balance_v2_user__user_id__balance_post"
+      },
+      "BalanceFilter": {
+        "properties": {
+          "cash": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cash"
+          },
+          "settleable": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Settleable"
+          },
+          "vendor": {
+            "type": "boolean",
+            "title": "Vendor",
+            "default": true
+          },
+          "customer": {
+            "type": "boolean",
+            "title": "Customer",
+            "default": true
+          }
+        },
+        "type": "object",
+        "title": "BalanceFilter"
+      },
+      "SpendResponse": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "deleted_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deleted At"
+          },
+          "amount": {
+            "type": "integer",
+            "title": "Amount"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "client_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Id"
+          },
+          "reference_id": {
+            "type": "integer",
+            "title": "Reference Id"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/ReasonResponse"
+          },
+          "rollback_reason": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReasonResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SpendItemResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "references": {
+            "items": {
+              "$ref": "#/components/schemas/ReferenceResponse"
+            },
+            "type": "array",
+            "title": "References"
+          }
+        },
+        "type": "object",
+        "required": [
+          "created_at",
+          "updated_at",
+          "amount",
+          "user_id",
+          "reference_id",
+          "reason",
+          "rollback_reason",
+          "items",
+          "references"
+        ],
+        "title": "SpendResponse"
+      },
+      "Body_rollback_spend_by_ref_v2_user__user_id__spend_by_ref__reason_id___reference_id__delete": {
+        "properties": {
+          "rollback_reason_id": {
+            "type": "integer",
+            "title": "Rollback Reason Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "rollback_reason_id"
+        ],
+        "title": "Body_rollback_spend_by_ref_v2_user__user_id__spend_by_ref__reason_id___reference_id__delete"
+      },
+      "NewHistoryCreditResponse": {
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "title": "Amount"
+          },
+          "remained_amount": {
+            "type": "integer",
+            "title": "Remained Amount"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/CreditItemResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "amount",
+          "remained_amount",
+          "created_at",
+          "items"
+        ],
+        "title": "NewHistoryCreditResponse"
+      },
+      "HistorySpendResponse": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "amount": {
+            "type": "integer",
+            "title": "Amount"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/HistorySpendItemResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "created_at",
+          "amount",
+          "items"
+        ],
+        "title": "HistorySpendResponse"
+      },
+      "ReferenceResponse": {
+        "properties": {
+          "reference_type_id": {
+            "type": "integer",
+            "title": "Reference Type Id"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          },
+          "reference_id": {
+            "type": "integer",
+            "title": "Reference Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "reference_type_id",
+          "title",
+          "slug",
+          "reference_id"
+        ],
+        "title": "ReferenceResponse"
+      },
+      "api__routes__v2__responses__CreditResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "expire_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expire At"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "client_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Id"
+          },
+          "reference_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference Id"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReasonResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "amount": {
+            "type": "integer",
+            "title": "Amount"
+          },
+          "remained_amount": {
+            "type": "integer",
+            "title": "Remained Amount"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "type": {
+            "$ref": "#/components/schemas/CreditTypeResponse"
+          },
+          "references": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ReferenceResponse"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "References"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "created_at",
+          "updated_at",
+          "expire_at",
+          "user_id",
+          "client_id",
+          "reference_id",
+          "reason",
+          "amount",
+          "remained_amount",
+          "description",
+          "type",
+          "references"
+        ],
+        "title": "CreditResponse"
+      },
+      "ReasonResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "description"
+        ],
+        "title": "ReasonResponse"
+      },
+      "CreditTypeResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreditTypeResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "parent"
+        ],
+        "title": "CreditTypeResponse"
+      },
+      "HistoryPaginationResponse": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/HistoryItemResponse"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "per_page": {
+            "type": "integer",
+            "title": "Per Page"
+          },
+          "current_page": {
+            "type": "integer",
+            "title": "Current Page"
+          },
+          "last_page": {
+            "type": "integer",
+            "title": "Last Page"
+          },
+          "from_": {
+            "type": "integer",
+            "title": "From"
+          },
+          "to": {
+            "type": "integer",
+            "title": "To"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "total",
+          "per_page",
+          "current_page",
+          "last_page",
+          "from_",
+          "to"
+        ],
+        "title": "HistoryPaginationResponse"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://openapi.basalam.com",
+      "description": "Production Gateway"
+    }
+  ]
+}

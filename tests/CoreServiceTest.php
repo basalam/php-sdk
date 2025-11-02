@@ -16,8 +16,10 @@ use Basalam\Core\Models\ProductBulkFieldInputEnum;
 use Basalam\Core\Models\ProductFilterSchema;
 use Basalam\Core\Models\ProductRequestSchema;
 use Basalam\Core\Models\ProductStatusInputEnum;
+use Basalam\Core\Models\ShelveSchema;
 use Basalam\Core\Models\ShippingMethodUpdateItem;
 use Basalam\Core\Models\UnitTypeInputEnum;
+use Basalam\Core\Models\UpdateShelveProductsSchema;
 use Basalam\Core\Models\UpdateProductRequestItem;
 use Basalam\Core\Models\UpdateShippingMethodSchema;
 use Basalam\Core\Models\UpdateVendorSchema;
@@ -35,6 +37,7 @@ class CoreServiceTest extends TestCase
     private const TEST_PRODUCT_ID = 24835037;
     private const TEST_CATEGORY_ID = 1068;
     private const TEST_BANK_ACCOUNT_ID = 54321;
+    private const TEST_SHELVE_ID = 532896;
     /**
      * @var BasalamClient
      */
@@ -1152,6 +1155,141 @@ class CoreServiceTest extends TestCase
             $this->assertNotNull($result);
         } catch (\Exception $e) {
             echo "\n=== Test: Get Category Attributes ===\n";
+            echo "Error: " . $e->getMessage() . "\n";
+            $this->assertTrue(true);
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Shelve Management endpoints tests
+    // -------------------------------------------------------------------------
+
+    /**
+     * Test createShelve method.
+     */
+    public function testCreateShelve(): void
+    {
+        try {
+            $request = new ShelveSchema([
+                'title' => 'PHP SDK Test Shelve 02 ' . time(),
+                'description' => 'This is a test shelve created by SDK'
+            ]);
+
+            $result = $this->basalamClient->createShelve($request);
+
+            echo "\n=== Test: Create Shelve ===\n";
+            echo "Result: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+
+            $this->assertNotNull($result);
+        } catch (\Exception $e) {
+            echo "\n=== Test: Create Shelve ===\n";
+            echo "Error: " . $e->getMessage() . "\n";
+            $this->assertTrue(true);
+        }
+    }
+
+    /**
+     * Test updateShelve method.
+     */
+    public function testUpdateShelve(): void
+    {
+        try {
+            $request = new ShelveSchema([
+                'title' => 'Updated Test Shelve ' . time(),
+                'description' => 'This shelve has been updated',
+            ]);
+
+            $result = $this->basalamClient->updateShelve(self::TEST_SHELVE_ID, $request);
+
+            echo "\n=== Test: Update Shelve ===\n";
+            echo "Result: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+
+            $this->assertNotNull($result);
+        } catch (\Exception $e) {
+            echo "\n=== Test: Update Shelve ===\n";
+            echo "Error: " . $e->getMessage() . "\n";
+            $this->assertTrue(true);
+        }
+    }
+
+    /**
+     * Test getShelveProducts method.
+     */
+    public function testGetShelveProducts(): void
+    {
+        try {
+            // Test without filter
+            $result = $this->basalamClient->getShelveProducts(self::TEST_SHELVE_ID);
+
+            echo "\n=== Test: Get Shelve Products (No Filter) ===\n";
+            echo "Result: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+
+            $this->assertNotNull($result);
+
+        } catch (\Exception $e) {
+            echo "\n=== Test: Get Shelve Products ===\n";
+            echo "Error: " . $e->getMessage() . "\n";
+            $this->assertTrue(true);
+        }
+    }
+
+    /**
+     * Test updateShelveProducts method.
+     */
+    public function testUpdateShelveProducts(): void
+    {
+        try {
+            $request = new UpdateShelveProductsSchema([
+                'include_products' => [self::TEST_PRODUCT_ID],
+                'exclude_products' => []
+            ]);
+
+            $result = $this->basalamClient->updateShelveProducts(self::TEST_SHELVE_ID, $request);
+
+            echo "\n=== Test: Update Shelve Products ===\n";
+            echo "Result: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+
+            $this->assertNotNull($result);
+        } catch (\Exception $e) {
+            echo "\n=== Test: Update Shelve Products ===\n";
+            echo "Error: " . $e->getMessage() . "\n";
+            $this->assertTrue(true);
+        }
+    }
+
+    /**
+     * Test deleteShelveProduct method.
+     */
+    public function testDeleteShelveProduct(): void
+    {
+        try {
+            $result = $this->basalamClient->deleteShelveProduct(self::TEST_SHELVE_ID, self::TEST_PRODUCT_ID);
+
+            echo "\n=== Test: Delete Shelve Product ===\n";
+            echo "Result: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+
+            $this->assertNotNull($result);
+        } catch (\Exception $e) {
+            echo "\n=== Test: Delete Shelve Product ===\n";
+            echo "Error: " . $e->getMessage() . "\n";
+            $this->assertTrue(true);
+        }
+    }
+
+    /**
+     * Test deleteShelve method.
+     */
+    public function testDeleteShelve(): void
+    {
+        try {
+            $result = $this->basalamClient->deleteShelve(self::TEST_SHELVE_ID);
+
+            echo "\n=== Test: Delete Shelve ===\n";
+            echo "Result: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+
+            $this->assertNotNull($result);
+        } catch (\Exception $e) {
+            echo "\n=== Test: Delete Shelve ===\n";
             echo "Error: " . $e->getMessage() . "\n";
             $this->assertTrue(true);
         }

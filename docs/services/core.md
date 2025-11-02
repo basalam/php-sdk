@@ -53,6 +53,12 @@ information, handle bank account operations, and manage categories and attribute
 | [`getCategoryAttributes()`](#get-category-attributes)                                            | Get category attributes                        | `categoryId`, `productId`, `vendorId`, `excludeMultiSelects`            |
 | [`getCategories()`](#get-categories)                                                             | Get all categories                             | `None`                                                                  |
 | [`getCategory()`](#get-category)                                                                 | Get specific category                          | `categoryId`                                                            |
+| [`createShelve()`](#create-shelve)                                                               | Create a new shelve                            | `request: ShelveSchema`                                                 |
+| [`updateShelve()`](#update-shelve)                                                               | Update shelve                                  | `shelveId`, `request: ShelveSchema`                                     |
+| [`deleteShelve()`](#delete-shelve)                                                               | Delete shelve                                  | `shelveId`                                                              |
+| [`getShelveProducts()`](#get-shelve-products)                                                    | Get shelve products list                       | `shelveId`, `title`                                                     |
+| [`updateShelveProducts()`](#update-shelve-products)                                              | Update shelve products                         | `shelveId`, `request: UpdateShelveProductsSchema`                       |
+| [`deleteShelveProduct()`](#delete-shelve-product)                                                | Delete product from shelve                     | `shelveId`, `productId`                                                 |
 
 ## Examples
 
@@ -859,11 +865,120 @@ function getCategoriesExample()
 function getCategoryExample()
 {
     global $client;
-    
+
     $category = $client->getCategory(
         categoryId: 1066
     );
 
     return $category;
+}
+```
+
+### Create Shelve
+
+```php
+use Basalam\Core\Models\ShelveSchema;
+
+function createShelveExample()
+{
+    global $client;
+
+    $shelve = $client->createShelve(
+        request: new ShelveSchema([
+            'title' => "Summer Collection",
+            'description' => "Best products for summer season",
+            'vendor_id' => 456
+        ])
+    );
+
+    return $shelve;
+}
+```
+
+### Update Shelve
+
+```php
+use Basalam\Core\Models\ShelveSchema;
+
+function updateShelveExample()
+{
+    global $client;
+
+    $updatedShelve = $client->updateShelve(
+        shelveId: 123,
+        request: new ShelveSchema([
+            'title' => "Updated Summer Collection",
+            'description' => "Updated description for summer collection"
+        ])
+    );
+
+    return $updatedShelve;
+}
+```
+
+### Delete Shelve
+
+```php
+function deleteShelveExample()
+{
+    global $client;
+
+    $result = $client->deleteShelve(
+        shelveId: 123
+    );
+
+    return $result;
+}
+```
+
+### Get Shelve Products
+
+```php
+function getShelveProductsExample()
+{
+    global $client;
+
+    $products = $client->getShelveProducts(
+        shelveId: 123,
+        title: "search term"  // Optional filter
+    );
+
+    return $products;
+}
+```
+
+### Update Shelve Products
+
+```php
+use Basalam\Core\Models\UpdateShelveProductsSchema;
+
+function updateShelveProductsExample()
+{
+    global $client;
+
+    $result = $client->updateShelveProducts(
+        shelveId: 123,
+        request: new UpdateShelveProductsSchema([
+            'product_ids' => [789, 790, 791]
+        ])
+    );
+
+    return $result;
+}
+```
+
+### Delete Shelve Product
+
+```php
+function deleteShelveProductExample()
+{
+    global $client;
+
+    $result = $client->deleteShelveProduct(
+        shelveId: 123,
+        productId: 789
+    );
+
+    return $result;
 }
 ```
