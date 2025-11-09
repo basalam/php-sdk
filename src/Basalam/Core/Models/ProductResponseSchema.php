@@ -37,7 +37,7 @@ class ProductResponseSchema implements \JsonSerializable
     public ?int $view_count;
     public ?bool $can_add_to_cart;
     public ?int $review_count;
-    public ?int $rating;
+    public ?float $rating;
     public ?NavigationResponseSchema $navigation;
     public ?array $variants;
     public ?int $variants_selected_index;

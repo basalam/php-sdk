@@ -4,7 +4,7 @@ namespace Basalam\Core\Models;
 
 class ProductRequestSchema implements \JsonSerializable
 {
-    public string $name;
+    public ?string $name;
     public ?int $photo;
     public ?array $photos;
     public ?int $video;
@@ -12,30 +12,30 @@ class ProductRequestSchema implements \JsonSerializable
     public ?string $description;
     public ?int $order;
     public ?int $category_id;
-    public int $status = ProductStatusInputEnum::PUBLISHED;
-    public int $preparation_days = 1;
-    public ?array $keywords = null;
-    public ?float $weight = null;
-    public ?int $package_weight = null;
-    public ?int $primary_price = null;
-    public ?int $stock = null;
-    public ?array $shipping_city_ids = null;
-    public ?array $shipping_method_ids = null;
-    public ?array $product_attribute = null;
-    public ?bool $virtual = null;
-    public ?array $variants = null;
+    public int $status;
+    public int $preparation_days;
+    public ?array $keywords;
+    public ?float $weight;
+    public ?int $package_weight;
+    public ?int $primary_price;
+    public ?int $stock;
+    public ?array $shipping_city_ids;
+    public ?array $shipping_method_ids;
+    public ?array $product_attribute;
+    public ?bool $virtual;
+    public ?array $variants;
     public ?ShippingDataRequestItem $shipping_data;
     public ?float $unit_quantity;
     public ?int $unit_type;
     public ?string $sku;
     public ?PackagingDimensionsRequestItem $packaging_dimensions;
-    public bool $is_wholesale = false;
+    public bool $is_wholesale;
 
     public function __construct(array $data)
     {
-        $this->name = $data['name'];
+        $this->name = $data['name'] ?? null;
         $this->category_id = $data['category_id'] ?? null;
-        $this->status = $data['status'] ?? null;
+        $this->status = $data['status'] ?? ProductStatusInputEnum::PUBLISHED;
         $this->package_weight = $data['package_weight'] ?? null;
         $this->primary_price = $data['primary_price'] ?? null;
 
@@ -52,21 +52,21 @@ class ProductRequestSchema implements \JsonSerializable
         $this->shipping_city_ids = $data['shipping_city_ids'] ?? null;
         $this->shipping_method_ids = $data['shipping_method_ids'] ?? null;
 
-        if (isset($data['product_attribute'])) {
-            $this->product_attribute = array_map(
+        $this->product_attribute = isset($data['product_attribute'])
+            ? array_map(
                 fn($attr) => new ProductAttributeRequestItem($attr),
                 $data['product_attribute']
-            );
-        }
+            )
+            : null;
 
         $this->virtual = $data['virtual'] ?? null;
 
-        if (isset($data['variants'])) {
-            $this->variants = array_map(
+        $this->variants = isset($data['variants'])
+            ? array_map(
                 fn($variant) => new VariantRequestItem($variant),
                 $data['variants']
-            );
-        }
+            )
+            : null;
 
         $this->shipping_data = isset($data['shipping_data'])
             ? new ShippingDataRequestItem($data['shipping_data'])
@@ -86,13 +86,13 @@ class ProductRequestSchema implements \JsonSerializable
     public function toArray(): array
     {
         $result = [
-            'name' => $this->name,
+            'status' => $this->status,
             'preparation_days' => $this->preparation_days,
             'is_wholesale' => $this->is_wholesale,
         ];
 
+        if ($this->name !== null) $result['name'] = $this->name;
         if ($this->category_id !== null) $result['category_id'] = $this->category_id;
-        if ($this->status !== null) $result['status'] = $this->status;
 
         if ($this->package_weight !== null) $result['package_weight'] = $this->package_weight;
         if ($this->primary_price !== null) $result['primary_price'] = $this->primary_price;

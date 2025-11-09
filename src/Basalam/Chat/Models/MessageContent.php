@@ -4,15 +4,15 @@ namespace Basalam\Chat\Models;
 
 class MessageContent implements \JsonSerializable
 {
-    private array $links;
-    private array $files;
+    private ?array $links;
+    private ?array $files;
     private ?string $text;
     private ?int $entityId;
     private ?LocationResource $location;
 
     public function __construct(
-        array             $links = [],
-        array             $files = [],
+        ?array            $links = null,
+        ?array            $files = null,
         ?string           $text = null,
         ?int              $entityId = null,
         ?LocationResource $location = null
@@ -27,15 +27,17 @@ class MessageContent implements \JsonSerializable
 
     public static function fromArray(array $data): self
     {
-        $links = [];
+        $links = null;
         if (isset($data['links'])) {
+            $links = [];
             foreach ($data['links'] as $link) {
                 $links[] = MessageLink::fromArray($link);
             }
         }
 
-        $files = [];
+        $files = null;
         if (isset($data['files'])) {
+            $files = [];
             foreach ($data['files'] as $file) {
                 $files[] = MessageFile::fromArray($file);
             }
@@ -57,11 +59,14 @@ class MessageContent implements \JsonSerializable
 
     public function toArray(): array
     {
-        $data = [
-            'links' => array_map(fn($link) => $link->toArray(), $this->links),
-            'files' => array_map(fn($file) => $file->toArray(), $this->files),
-        ];
+        $data = [];
 
+        if ($this->links !== null) {
+            $data['links'] = array_map(fn($link) => $link->toArray(), $this->links);
+        }
+        if ($this->files !== null) {
+            $data['files'] = array_map(fn($file) => $file->toArray(), $this->files);
+        }
         if ($this->text !== null) {
             $data['text'] = $this->text;
         }
@@ -81,12 +86,12 @@ class MessageContent implements \JsonSerializable
     }
 
     // Getters
-    public function getLinks(): array
+    public function getLinks(): ?array
     {
         return $this->links;
     }
 
-    public function getFiles(): array
+    public function getFiles(): ?array
     {
         return $this->files;
     }
