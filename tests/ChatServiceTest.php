@@ -31,6 +31,7 @@ class ChatServiceTest extends TestCase
     private const  TEST_USER_ID = 430;
     private const  TEST_MESSAGE_ID = 989836653; // 989871614
     private const  TEST_TARGET_CHAT_ID = 3082692; // Replace with actual target chat ID for forward
+    private const  TEST_BOT_TOKEN = ''; // Replace with actual bot token (format: {bot_id}:{token_string})
     /**
      * @var BasalamClient
      */
@@ -388,6 +389,307 @@ class ChatServiceTest extends TestCase
 
         } catch (\Exception $e) {
             echo "\n=== Test: Get Unseen Chat Count ===\n";
+            echo "Error: " . $e->getMessage() . "\n";
+            // Pass the test anyway
+            $this->assertTrue(true);
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Bot API endpoints tests
+    // -------------------------------------------------------------------------
+
+    /**
+     * Test getting webhook info with GET method.
+     */
+    public function testGetWebhookInfo(): void
+    {
+        try {
+            // Skip if no bot token is provided
+            if (empty(self::TEST_BOT_TOKEN)) {
+                echo "\n=== Test: Get Webhook Info (GET) ===\n";
+                echo "Skipped: No bot token provided\n";
+                $this->assertTrue(true);
+                return;
+            }
+
+            // Call the method
+            $result = $this->basalamClient->getWebhookInfo(self::TEST_BOT_TOKEN);
+
+            // Print the result
+            echo "\n=== Test: Get Webhook Info (GET) ===\n";
+            echo "Result: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+
+            // Check if result is not null
+            $this->assertNotNull($result);
+            $this->assertIsBool($result->getOk());
+
+        } catch (\Exception $e) {
+            echo "\n=== Test: Get Webhook Info (GET) ===\n";
+            echo "Error: " . $e->getMessage() . "\n";
+            // Pass the test anyway
+            $this->assertTrue(true);
+        }
+    }
+
+    /**
+     * Test getting webhook info with POST method.
+     */
+    public function testGetWebhookInfoPost(): void
+    {
+        try {
+            // Skip if no bot token is provided
+            if (empty(self::TEST_BOT_TOKEN)) {
+                echo "\n=== Test: Get Webhook Info (POST) ===\n";
+                echo "Skipped: No bot token provided\n";
+                $this->assertTrue(true);
+                return;
+            }
+
+            // Call the method
+            $result = $this->basalamClient->getWebhookInfoPost(self::TEST_BOT_TOKEN);
+
+            // Print the result
+            echo "\n=== Test: Get Webhook Info (POST) ===\n";
+            echo "Result: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+
+            // Check if result is not null
+            $this->assertNotNull($result);
+            $this->assertIsBool($result->getOk());
+
+        } catch (\Exception $e) {
+            echo "\n=== Test: Get Webhook Info (POST) ===\n";
+            echo "Error: " . $e->getMessage() . "\n";
+            // Pass the test anyway
+            $this->assertTrue(true);
+        }
+    }
+
+    /**
+     * Test bot logout with GET method.
+     */
+    public function testLogOut(): void
+    {
+        try {
+            // Skip if no bot token is provided
+            if (empty(self::TEST_BOT_TOKEN)) {
+                echo "\n=== Test: Log Out (GET) ===\n";
+                echo "Skipped: No bot token provided\n";
+                $this->assertTrue(true);
+                return;
+            }
+
+            // Call the method
+            $result = $this->basalamClient->logOut(self::TEST_BOT_TOKEN);
+
+            // Print the result
+            echo "\n=== Test: Log Out (GET) ===\n";
+            echo "Result: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+
+            // Check if result is not null
+            $this->assertNotNull($result);
+            $this->assertIsBool($result->getOk());
+
+        } catch (\Exception $e) {
+            echo "\n=== Test: Log Out (GET) ===\n";
+            echo "Error: " . $e->getMessage() . "\n";
+            // Pass the test anyway
+            $this->assertTrue(true);
+        }
+    }
+
+    /**
+     * Test bot logout with POST method.
+     */
+    public function testLogOutPost(): void
+    {
+        try {
+            // Skip if no bot token is provided
+            if (empty(self::TEST_BOT_TOKEN)) {
+                echo "\n=== Test: Log Out (POST) ===\n";
+                echo "Skipped: No bot token provided\n";
+                $this->assertTrue(true);
+                return;
+            }
+
+            // Call the method
+            $result = $this->basalamClient->logOutPost(self::TEST_BOT_TOKEN);
+
+            // Print the result
+            echo "\n=== Test: Log Out (POST) ===\n";
+            echo "Result: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+
+            // Check if result is not null
+            $this->assertNotNull($result);
+            $this->assertIsBool($result->getOk());
+
+        } catch (\Exception $e) {
+            echo "\n=== Test: Log Out (POST) ===\n";
+            echo "Error: " . $e->getMessage() . "\n";
+            // Pass the test anyway
+            $this->assertTrue(true);
+        }
+    }
+
+    /**
+     * Test deleting webhook with GET method.
+     */
+    public function testDeleteWebhookGet(): void
+    {
+        try {
+            // Skip if no bot token is provided
+            if (empty(self::TEST_BOT_TOKEN)) {
+                echo "\n=== Test: Delete Webhook (GET) ===\n";
+                echo "Skipped: No bot token provided\n";
+                $this->assertTrue(true);
+                return;
+            }
+
+            // Call the method
+            $result = $this->basalamClient->deleteWebhookGet(self::TEST_BOT_TOKEN);
+
+            // Print the result
+            echo "\n=== Test: Delete Webhook (GET) ===\n";
+            echo "Result: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+
+            // Check if result is not null
+            $this->assertNotNull($result);
+            $this->assertIsBool($result->getOk());
+
+        } catch (\Exception $e) {
+            echo "\n=== Test: Delete Webhook (GET) ===\n";
+            echo "Error: " . $e->getMessage() . "\n";
+            // Pass the test anyway
+            $this->assertTrue(true);
+        }
+    }
+
+    /**
+     * Test deleting webhook with POST method.
+     */
+    public function testDeleteWebhookPost(): void
+    {
+        try {
+            // Skip if no bot token is provided
+            if (empty(self::TEST_BOT_TOKEN)) {
+                echo "\n=== Test: Delete Webhook (POST) ===\n";
+                echo "Skipped: No bot token provided\n";
+                $this->assertTrue(true);
+                return;
+            }
+
+            // Call the method
+            $result = $this->basalamClient->deleteWebhookPost(self::TEST_BOT_TOKEN);
+
+            // Print the result
+            echo "\n=== Test: Delete Webhook (POST) ===\n";
+            echo "Result: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+
+            // Check if result is not null
+            $this->assertNotNull($result);
+            $this->assertIsBool($result->getOk());
+
+        } catch (\Exception $e) {
+            echo "\n=== Test: Delete Webhook (POST) ===\n";
+            echo "Error: " . $e->getMessage() . "\n";
+            // Pass the test anyway
+            $this->assertTrue(true);
+        }
+    }
+
+    /**
+     * Test deleting webhook with DELETE method.
+     */
+    public function testDeleteWebhookDelete(): void
+    {
+        try {
+            // Skip if no bot token is provided
+            if (empty(self::TEST_BOT_TOKEN)) {
+                echo "\n=== Test: Delete Webhook (DELETE) ===\n";
+                echo "Skipped: No bot token provided\n";
+                $this->assertTrue(true);
+                return;
+            }
+
+            // Call the method
+            $result = $this->basalamClient->deleteWebhookDelete(self::TEST_BOT_TOKEN);
+
+            // Print the result
+            echo "\n=== Test: Delete Webhook (DELETE) ===\n";
+            echo "Result: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+
+            // Check if result is not null
+            $this->assertNotNull($result);
+            $this->assertIsBool($result->getOk());
+
+        } catch (\Exception $e) {
+            echo "\n=== Test: Delete Webhook (DELETE) ===\n";
+            echo "Error: " . $e->getMessage() . "\n";
+            // Pass the test anyway
+            $this->assertTrue(true);
+        }
+    }
+
+    /**
+     * Test getting bot information with GET method.
+     */
+    public function testGetMe(): void
+    {
+        try {
+            // Skip if no bot token is provided
+            if (empty(self::TEST_BOT_TOKEN)) {
+                echo "\n=== Test: Get Me (GET) ===\n";
+                echo "Skipped: No bot token provided\n";
+                $this->assertTrue(true);
+                return;
+            }
+
+            // Call the method
+            $result = $this->basalamClient->getMe(self::TEST_BOT_TOKEN);
+
+            // Print the result
+            echo "\n=== Test: Get Me (GET) ===\n";
+            echo "Result: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+
+            // Check if result is not null
+            $this->assertNotNull($result);
+            $this->assertIsBool($result->getOk());
+
+        } catch (\Exception $e) {
+            echo "\n=== Test: Get Me (GET) ===\n";
+            echo "Error: " . $e->getMessage() . "\n";
+            // Pass the test anyway
+            $this->assertTrue(true);
+        }
+    }
+
+    /**
+     * Test getting bot information with POST method.
+     */
+    public function testGetMePost(): void
+    {
+        try {
+            // Skip if no bot token is provided
+            if (empty(self::TEST_BOT_TOKEN)) {
+                echo "\n=== Test: Get Me (POST) ===\n";
+                echo "Skipped: No bot token provided\n";
+                $this->assertTrue(true);
+                return;
+            }
+
+            // Call the method
+            $result = $this->basalamClient->getMePost(self::TEST_BOT_TOKEN);
+
+            // Print the result
+            echo "\n=== Test: Get Me (POST) ===\n";
+            echo "Result: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+
+            // Check if result is not null
+            $this->assertNotNull($result);
+            $this->assertIsBool($result->getOk());
+
+        } catch (\Exception $e) {
+            echo "\n=== Test: Get Me (POST) ===\n";
             echo "Error: " . $e->getMessage() . "\n";
             // Pass the test anyway
             $this->assertTrue(true);

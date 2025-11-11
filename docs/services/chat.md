@@ -7,6 +7,7 @@ different message types, manage chat participants, and track chat history and up
 ## Table of Contents
 
 - [Chat Methods](#chat-methods)
+- [Bot API Methods](#bot-api-methods)
 - [Examples](#examples)
 
 ## Chat Methods
@@ -22,6 +23,28 @@ different message types, manage chat participants, and track chat history and up
 | [`deleteChats()`](#delete-chats)             | Delete chats                  | `request: DeleteChatRequest`                             |
 | [`forwardMessage()`](#forward-message)       | Forward messages to chats     | `request: ForwardMessageRequest`, `userAgent`, etc.      |
 | [`getUnseenChatCount()`](#get-unseen-count)  | Get unseen chat count         | `None`                                                   |
+
+## Bot API Methods
+
+Bot API methods allow you to interact with bot-related functionality. All bot methods require a bot token in the format: `{bot_id}:{token_string}` (e.g., "123456789:ABCdefGHIjklMNOpqrsTUVwxyz").
+
+| Method                                                 | Description                          | HTTP Method | Parameters        |
+|--------------------------------------------------------|--------------------------------------|-------------|-------------------|
+| [`getWebhookInfo()`](#get-webhook-info)                | Get webhook information              | GET         | `token: string`   |
+| [`getWebhookInfoPost()`](#get-webhook-info-post)       | Get webhook information              | POST        | `token: string`   |
+| [`logOut()`](#log-out)                                 | Log out bot and invalidate token     | GET         | `token: string`   |
+| [`logOutPost()`](#log-out-post)                        | Log out bot and invalidate token     | POST        | `token: string`   |
+| [`deleteWebhookGet()`](#delete-webhook-get)            | Delete webhook URL                   | GET         | `token: string`   |
+| [`deleteWebhookPost()`](#delete-webhook-post)          | Delete webhook URL                   | POST        | `token: string`   |
+| [`deleteWebhookDelete()`](#delete-webhook-delete)      | Delete webhook URL                   | DELETE      | `token: string`   |
+| [`getMe()`](#get-me)                                   | Get bot information                  | GET         | `token: string`   |
+| [`getMePost()`](#get-me-post)                          | Get bot information                  | POST        | `token: string`   |
+
+All bot methods return `BotApiResponse` with the following properties:
+- `ok` (bool) - Indicates if the request was successful
+- `result` (mixed) - Detailed information about the bot or operation (if available)
+- `description` (?string) - Description of the response or error
+- `errorCode` (?int) - Error code if the request failed
 
 ## Examples
 
@@ -211,6 +234,191 @@ function getUnseenChatCountExample()
 
     $unseenCount = $client->getUnseenChatCount();
     return $unseenCount;
+}
+```
+
+### Get Webhook Info
+
+Retrieve the current webhook information for a bot using GET method:
+
+```php
+function getWebhookInfoExample()
+{
+    global $client;
+
+    $botToken = "123456789:ABCdefGHIjklMNOpqrsTUVwxyz";
+    $webhookInfo = $client->getWebhookInfo(token: $botToken);
+
+    if ($webhookInfo->getOk()) {
+        echo "Webhook URL: " . $webhookInfo->getResult()['url'] ?? 'Not set';
+    }
+
+    return $webhookInfo;
+}
+```
+
+Or use POST method:
+
+```php
+function getWebhookInfoPostExample()
+{
+    global $client;
+
+    $botToken = "123456789:ABCdefGHIjklMNOpqrsTUVwxyz";
+    $webhookInfo = $client->getWebhookInfoPost(token: $botToken);
+
+    return $webhookInfo;
+}
+```
+
+### Log Out
+
+Log out the bot and invalidate its token using GET method:
+
+```php
+function logOutExample()
+{
+    global $client;
+
+    $botToken = "123456789:ABCdefGHIjklMNOpqrsTUVwxyz";
+    $result = $client->logOut(token: $botToken);
+
+    if ($result->getOk()) {
+        echo "Bot logged out successfully";
+    } else {
+        echo "Error: " . $result->getDescription();
+    }
+
+    return $result;
+}
+```
+
+Or use POST method:
+
+```php
+function logOutPostExample()
+{
+    global $client;
+
+    $botToken = "123456789:ABCdefGHIjklMNOpqrsTUVwxyz";
+    $result = $client->logOutPost(token: $botToken);
+
+    return $result;
+}
+```
+
+### Delete Webhook
+
+Delete the webhook URL for a bot using GET method:
+
+```php
+function deleteWebhookGetExample()
+{
+    global $client;
+
+    $botToken = "123456789:ABCdefGHIjklMNOpqrsTUVwxyz";
+    $result = $client->deleteWebhookGet(token: $botToken);
+
+    if ($result->getOk()) {
+        echo "Webhook deleted successfully";
+    }
+
+    return $result;
+}
+```
+
+Or use POST method:
+
+```php
+function deleteWebhookPostExample()
+{
+    global $client;
+
+    $botToken = "123456789:ABCdefGHIjklMNOpqrsTUVwxyz";
+    $result = $client->deleteWebhookPost(token: $botToken);
+
+    return $result;
+}
+```
+
+Or use DELETE method (recommended):
+
+```php
+function deleteWebhookDeleteExample()
+{
+    global $client;
+
+    $botToken = "123456789:ABCdefGHIjklMNOpqrsTUVwxyz";
+    $result = $client->deleteWebhookDelete(token: $botToken);
+
+    return $result;
+}
+```
+
+### Get Me
+
+Get information about the bot using GET method:
+
+```php
+function getMeExample()
+{
+    global $client;
+
+    $botToken = "123456789:ABCdefGHIjklMNOpqrsTUVwxyz";
+    $botInfo = $client->getMe(token: $botToken);
+
+    if ($botInfo->getOk()) {
+        $bot = $botInfo->getResult();
+        echo "Bot ID: " . $bot['id'];
+        echo "Bot Name: " . $bot['first_name'];
+        echo "Bot Username: @" . $bot['username'];
+    }
+
+    return $botInfo;
+}
+```
+
+Or use POST method:
+
+```php
+function getMePostExample()
+{
+    global $client;
+
+    $botToken = "123456789:ABCdefGHIjklMNOpqrsTUVwxyz";
+    $botInfo = $client->getMePost(token: $botToken);
+
+    return $botInfo;
+}
+```
+
+### Working with BotApiResponse
+
+All bot methods return a `BotApiResponse` object. Here's how to work with the response:
+
+```php
+function handleBotResponseExample()
+{
+    global $client;
+
+    $botToken = "123456789:ABCdefGHIjklMNOpqrsTUVwxyz";
+    $response = $client->getMe(token: $botToken);
+
+    // Check if request was successful
+    if ($response->getOk()) {
+        // Access the result data
+        $botData = $response->getResult();
+        echo "Success! Bot ID: " . $botData['id'];
+    } else {
+        // Handle error
+        echo "Error Code: " . $response->getErrorCode();
+        echo "Error Description: " . $response->getDescription();
+    }
+
+    // You can also convert to array
+    $responseArray = $response->toArray();
+
+    return $response;
 }
 ```
 

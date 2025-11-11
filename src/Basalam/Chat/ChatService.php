@@ -4,6 +4,7 @@ namespace Basalam\Chat;
 
 use Basalam\Auth\BaseAuth;
 use Basalam\Chat\Models\BooleanResponse;
+use Basalam\Chat\Models\BotApiResponse;
 use Basalam\Chat\Models\ChatListResponse;
 use Basalam\Chat\Models\CreateChatRequest;
 use Basalam\Chat\Models\CreateChatResponse;
@@ -208,5 +209,131 @@ class ChatService extends BaseClient
         $endpoint = '/v1/chats/unseen-count';
         $response = $this->get($endpoint);
         return UnseenChatCountResponse::fromArray($response);
+    }
+
+    /**
+     * Get webhook info (GET method)
+     * Retrieves the current webhook information for the bot.
+     *
+     * @param string $token Bot token (format: {bot_id}:{token_string})
+     * @return BotApiResponse
+     */
+    public function getWebhookInfo(string $token): BotApiResponse
+    {
+        $endpoint = "/v1/bots/{$token}/getWebhookInfo";
+        $response = $this->get($endpoint);
+        return BotApiResponse::fromArray($response);
+    }
+
+    /**
+     * Get webhook info (POST method)
+     * Retrieves the current webhook information for the bot.
+     *
+     * @param string $token Bot token (format: {bot_id}:{token_string})
+     * @return BotApiResponse
+     */
+    public function getWebhookInfoPost(string $token): BotApiResponse
+    {
+        $endpoint = "/v1/bots/{$token}/getWebhookInfo";
+        $response = $this->post($endpoint);
+        return BotApiResponse::fromArray($response);
+    }
+
+    /**
+     * Log out (GET method)
+     * Logs out the bot and invalidates its token.
+     *
+     * @param string $token Bot token (format: {bot_id}:{token_string})
+     * @return BotApiResponse
+     */
+    public function logOut(string $token): BotApiResponse
+    {
+        $endpoint = "/v1/bots/{$token}/logOut";
+        $response = $this->get($endpoint);
+        return BotApiResponse::fromArray($response);
+    }
+
+    /**
+     * Log out (POST method)
+     * Logs out the bot and invalidates its token.
+     *
+     * @param string $token Bot token (format: {bot_id}:{token_string})
+     * @return BotApiResponse
+     */
+    public function logOutPost(string $token): BotApiResponse
+    {
+        $endpoint = "/v1/bots/{$token}/logOut";
+        $response = $this->post($endpoint);
+        return BotApiResponse::fromArray($response);
+    }
+
+    /**
+     * Delete webhook (GET method)
+     * Deletes the webhook URL for the bot.
+     *
+     * @param string $token Bot token (format: {bot_id}:{token_string})
+     * @return BotApiResponse
+     */
+    public function deleteWebhookGet(string $token): BotApiResponse
+    {
+        $endpoint = "/v1/bots/{$token}/deleteWebhook";
+        $response = $this->get($endpoint);
+        return BotApiResponse::fromArray($response);
+    }
+
+    /**
+     * Delete webhook (POST method)
+     * Deletes the webhook URL for the bot.
+     *
+     * @param string $token Bot token (format: {bot_id}:{token_string})
+     * @return BotApiResponse
+     */
+    public function deleteWebhookPost(string $token): BotApiResponse
+    {
+        $endpoint = "/v1/bots/{$token}/deleteWebhook";
+        $response = $this->post($endpoint);
+        return BotApiResponse::fromArray($response);
+    }
+
+    /**
+     * Delete webhook (DELETE method)
+     * Deletes the webhook URL for the bot.
+     *
+     * @param string $token Bot token (format: {bot_id}:{token_string})
+     * @return BotApiResponse
+     */
+    public function deleteWebhookDelete(string $token): BotApiResponse
+    {
+        $endpoint = "/v1/bots/{$token}/deleteWebhook";
+        $response = $this->delete($endpoint);
+        return BotApiResponse::fromArray($response);
+    }
+
+    /**
+     * Get bot information (GET method)
+     * Returns information about the bot.
+     *
+     * @param string $token Bot token (format: {bot_id}:{token_string})
+     * @return BotApiResponse
+     */
+    public function getMe(string $token): BotApiResponse
+    {
+        $endpoint = "/v1/bots/{$token}/getMe";
+        $response = $this->get($endpoint);
+        return BotApiResponse::fromArray($response);
+    }
+
+    /**
+     * Get bot information (POST method)
+     * Returns information about the bot.
+     *
+     * @param string $token Bot token (format: {bot_id}:{token_string})
+     * @return BotApiResponse
+     */
+    public function getMePost(string $token): BotApiResponse
+    {
+        $endpoint = "/v1/bots/{$token}/getMe";
+        $response = $this->post($endpoint);
+        return BotApiResponse::fromArray($response);
     }
 }

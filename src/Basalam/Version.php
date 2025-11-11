@@ -12,7 +12,7 @@ class Version
     /**
      * SDK version
      */
-    const VERSION = '1.1.3';
+    const VERSION = '1.1.4';
 
     /**
      * SDK name
