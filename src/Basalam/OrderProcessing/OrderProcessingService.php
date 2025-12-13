@@ -15,6 +15,8 @@ use Basalam\OrderProcessing\Models\OrdersResponse;
 use Basalam\OrderProcessing\Models\OrderStatsResponse;
 use Basalam\OrderProcessing\Models\ParcelResponse;
 use Basalam\OrderProcessing\Models\ParcelsResponse;
+use Basalam\OrderProcessing\Models\PostedOrderRequest;
+use Basalam\OrderProcessing\Models\ResultResponse;
 
 /**
  * Client for the Basalam Order Processing Service API.
@@ -163,6 +165,33 @@ class OrderProcessingService extends BaseClient
         $endpoint = "/v1/vendor-parcels/$parcelId";
         $response = $this->get($endpoint);
         return ParcelResponse::fromArray($response);
+    }
+
+    /**
+     * Confirm that a parcel has been posted.
+     *
+     * @param int $parcelId The parcel ID to update
+     * @param PostedOrderRequest $request Payload that contains shipping method and optional tracking code
+     * @return ResultResponse Result of the operation
+     */
+    public function setOrderParcelPosted(int $parcelId, PostedOrderRequest $request): ResultResponse
+    {
+        $endpoint = "/v1/vendor-parcels/$parcelId/set-posted";
+        $response = $this->post($endpoint, $request->toArray());
+        return ResultResponse::fromArray($response);
+    }
+
+    /**
+     * Confirm that a parcel has entered the preparation phase.
+     *
+     * @param int $parcelId The parcel ID to update
+     * @return ResultResponse Result of the operation
+     */
+    public function setOrderParcelPreparation(int $parcelId): ResultResponse
+    {
+        $endpoint = "/v1/vendor-parcels/$parcelId/set-preparation";
+        $response = $this->post($endpoint);
+        return ResultResponse::fromArray($response);
     }
 
     /**

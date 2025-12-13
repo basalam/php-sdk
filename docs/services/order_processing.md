@@ -11,15 +11,17 @@ parcels and shipping, generate order statistics, and monitor order status and up
 
 ## Order Processing Methods
 
-| Method                                            | Description          | Parameters                                                                           |
-|---------------------------------------------------|----------------------|--------------------------------------------------------------------------------------|
-| [`getCustomerOrders()`](#get-orders)              | Get orders           | `filters` (OrderFilter)                                                              |
-| [`getCustomerOrder()`](#get-order)                | Get specific order   | `orderId`                                                                            |
-| [`getCustomerOrderItems()`](#get-order-items)     | Get order items      | `filters` (ItemFilter)                                                               |
-| [`getCustomerOrderItem()`](#get-order-item)       | Get specific item    | `itemId`                                                                             |
-| [`getVendorOrdersParcels()`](#get-orders-parcels) | Get orders parcels   | `filters` (OrderParcelFilter)                                                        |
-| [`getOrderParcel()`](#get-order-parcel)           | Get specific parcel  | `parcelId`                                                                           |
-| [`getOrdersStats()`](#get-order-stats)            | Get order statistics | `resourceCount`, `vendorId`, `productId`, `customerId`, `couponCode`, `cacheControl` |
+| Method                                                   | Description          | Parameters                                                                                      |
+|----------------------------------------------------------|----------------------|-------------------------------------------------------------------------------------------------|
+| [`getCustomerOrders()`](#get-orders)                     | Get orders           | `filters?` (OrderFilter)                                                                        |
+| [`getCustomerOrder()`](#get-order)                       | Get specific order   | `orderId`                                                                                       |
+| [`getCustomerOrderItems()`](#get-order-items)            | Get order items      | `filters?` (ItemFilter)                                                                         |
+| [`getCustomerOrderItem()`](#get-order-item)              | Get specific item    | `itemId`                                                                                        |
+| [`getVendorOrdersParcels()`](#get-orders-parcels)        | Get orders parcels   | `filters?` (OrderParcelFilter)                                                                  |
+| [`getOrderParcel()`](#get-order-parcel)                  | Get specific parcel  | `parcelId`                                                                                      |
+| [`setOrderParcelPosted()`](#set-parcel-posted)           | Confirm parcel posted| `parcelId`, `request` (PostedOrderRequest)                                                      |
+| [`setOrderParcelPreparation()`](#set-parcel-preparation) | Confirm parcel preparation | `parcelId`                                                                                |
+| [`getOrdersStats()`](#get-order-stats)                   | Get order statistics | `resourceCount`, `vendorId?`, `productId?`, `customerId?`, `couponCode?`, `cacheControl?`       |
 
 ## Examples
 
@@ -166,20 +168,55 @@ function getOrderParcelExample()
 }
 ```
 
+### Set Parcel Posted
+
+```php
+use Basalam\OrderProcessing\Models\PostedOrderRequest;
+use Basalam\OrderProcessing\Models\ShippingMethodCode;
+
+function setParcelPostedExample()
+{
+    global $client;
+
+    $response = $client->setOrderParcelPosted(
+        parcelId: 789,
+        request: new PostedOrderRequest(
+            shippingMethod: ShippingMethodCode::EXPRESS,
+            trackingCode: 'TRACK123456'
+        )
+    );
+
+    return $response;
+}
+```
+
+### Set Parcel Preparation
+
+```php
+function setParcelPreparationExample()
+{
+    global $client;
+
+    $response = $client->setOrderParcelPreparation(parcelId: 789);
+
+    return $response;
+}
+```
+
 ### Get Order Stats
 
 ```php
 function getOrdersStatsExample()
 {
     global $client;
-    
+
     $stats = $client->getOrdersStats(
         resourceCount: ResourceStats::NUMBER_OF_ORDERS_PER_VENDOR,
-        vendorId: 456,
-        productId: 123,
-        customerId: 789,
-        couponCode: "SAVE10",
-        cacheControl: "no-cache"
+        vendorId: 456,        // Optional
+        productId: 123,       // Optional
+        customerId: 789,      // Optional
+        couponCode: "SAVE10", // Optional
+        cacheControl: "no-cache" // Optional
     );
     
     return $stats;

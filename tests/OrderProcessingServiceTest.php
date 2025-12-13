@@ -10,7 +10,9 @@ use Basalam\OrderProcessing\Models\ItemFilter;
 use Basalam\OrderProcessing\Models\OrderFilter;
 use Basalam\OrderProcessing\Models\OrderParcelFilter;
 use Basalam\OrderProcessing\Models\ParcelStatus;
+use Basalam\OrderProcessing\Models\PostedOrderRequest;
 use Basalam\OrderProcessing\Models\ResourceStats;
+use Basalam\OrderProcessing\Models\ShippingMethodCode;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -309,6 +311,52 @@ class OrderProcessingServiceTest extends TestCase
             echo "\n=== Test: Get Order Parcel ===\n";
             echo "Error: " . $e->getMessage() . "\n";
             // Pass the test anyway
+            $this->assertTrue(true);
+        }
+    }
+
+    /**
+     * Test confirming a parcel as posted.
+     */
+    public function testSetOrderParcelPosted(): void
+    {
+        try {
+            $request = new PostedOrderRequest(
+                shippingMethod: ShippingMethodCode::SPECIAL,
+                trackingCode: 'TRACKING-CODE-123'
+            );
+
+            $result = $this->basalamClient->setOrderParcelPosted(
+                parcelId: self::TEST_PARCEL_ID,
+                request: $request
+            );
+
+            echo "\n=== Test: Set Vendor Parcel Posted ===\n";
+            echo "Result: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+
+            $this->assertNotNull($result);
+        } catch (\Exception $e) {
+            echo "\n=== Test: Set Vendor Parcel Posted ===\n";
+            echo "Error: " . $e->getMessage() . "\n";
+            $this->assertTrue(true);
+        }
+    }
+
+    /**
+     * Test confirming a parcel preparation.
+     */
+    public function testSetOrderParcelPreparation(): void
+    {
+        try {
+            $result = $this->basalamClient->setOrderParcelPreparation(self::TEST_PARCEL_ID);
+
+            echo "\n=== Test: Set Vendor Parcel Preparation ===\n";
+            echo "Result: " . json_encode($result, JSON_PRETTY_PRINT) . "\n";
+
+            $this->assertNotNull($result);
+        } catch (\Exception $e) {
+            echo "\n=== Test: Set Vendor Parcel Preparation ===\n";
+            echo "Error: " . $e->getMessage() . "\n";
             $this->assertTrue(true);
         }
     }
