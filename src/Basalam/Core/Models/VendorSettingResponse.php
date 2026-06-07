@@ -4,39 +4,53 @@ namespace Basalam\Core\Models;
 
 class VendorSettingResponse implements \JsonSerializable
 {
-    public int $id;
-    public int $vendor_id;
-    public string $setting_key;
-    public string $setting_value;
-    public ?string $created_at;
-    public ?string $updated_at;
+    public string $name;
+    public ?array $extra_data;
+    public bool $is_active;
+    public int $order;
 
     public static function fromArray(array $data): self
     {
         $model = new self();
-        $model->id = $data['id'];
-        $model->vendor_id = $data['vendor_id'];
-        $model->setting_key = $data['setting_key'];
-        $model->setting_value = $data['setting_value'];
-        $model->created_at = $data['created_at'] ?? null;
-        $model->updated_at = $data['updated_at'] ?? null;
+        $model->name = $data['name'];
+        $model->extra_data = $data['extra_data'] ?? null;
+        $model->is_active = $data['is_active'];
+        $model->order = $data['order'];
         return $model;
     }
 
     public function toArray(): array
     {
         return [
-            'id' => $this->id,
-            'vendor_id' => $this->vendor_id,
-            'setting_key' => $this->setting_key,
-            'setting_value' => $this->setting_value,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'name' => $this->name,
+            'extra_data' => $this->extra_data,
+            'is_active' => $this->is_active,
+            'order' => $this->order,
         ];
     }
 
     public function jsonSerialize(): array
     {
         return $this->toArray();
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getExtraData(): ?array
+    {
+        return $this->extra_data;
+    }
+
+    public function getIsActive(): bool
+    {
+        return $this->is_active;
+    }
+
+    public function getOrder(): int
+    {
+        return $this->order;
     }
 }

@@ -9,7 +9,7 @@ class BaseMessageResource implements \JsonSerializable
 {
     private int $id;
     private int $chatId;
-    private string $seenAt;
+    private ?string $seenAt;
     private string $createdAt;
     private string $updatedAt;
     private string $messageType;
@@ -19,7 +19,7 @@ class BaseMessageResource implements \JsonSerializable
     public function __construct(
         int            $id,
         int            $chatId,
-        string         $seenAt,
+        ?string        $seenAt,
         string         $createdAt,
         string         $updatedAt,
         string         $messageType,
@@ -42,7 +42,7 @@ class BaseMessageResource implements \JsonSerializable
         return new self(
             $data['id'],
             $data['chat_id'],
-            $data['seen_at'],
+            $data['seen_at'] ?? null,
             $data['created_at'],
             $data['updated_at'],
             $data['message_type'],
@@ -81,7 +81,7 @@ class BaseMessageResource implements \JsonSerializable
         return $this->chatId;
     }
 
-    public function getSeenAt(): string
+    public function getSeenAt(): ?string
     {
         return $this->seenAt;
     }

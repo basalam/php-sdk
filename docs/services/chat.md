@@ -14,8 +14,8 @@ different message types, manage chat participants, and track chat history and up
 
 | Method                                       | Description                   | Parameters                                               |
 |----------------------------------------------|-------------------------------|----------------------------------------------------------|
-| [`createMessage()`](#create-message)         | Create a message              | `request: MessageRequest`, `userAgent`, `xClientInfo`    |
-| [`createChat()`](#create-chat)               | Create a chat                 | `request: CreateChatRequest`, `xCreationTags`, etc.      |
+| [`createMessage()`](#create-message)         | Create a message              | `request: MessageRequest`, `userAgent`, `xClientInfo`, `xRealIp`, `xForwardedFor` |
+| [`createChat()`](#create-chat)               | Create a chat                 | `request: CreateChatRequest`, `xCreationTags`, `xUserSession`, `xClientInfo`, `xRealIp` |
 | [`getMessages()`](#get-messages)             | Get chat messages             | `request: GetMessagesRequest`                            |
 | [`getChats()`](#get-chats)                   | Get chats list                | `request: GetChatsRequest`                               |
 | [`editMessage()`](#edit-message)             | Edit a message                | `request: EditMessageRequest`, `xClientInfo`             |

@@ -8,7 +8,23 @@
  * annotations for IDE autocompletion.,
  */
 
-require_once __DIR__ . '/../vendor/autoload.php';
+// Prefer Composer's autoloader; fall back to a minimal PSR-4 autoloader so the
+// generator also works in environments where dependencies are not installed.
+$autoload = __DIR__ . '/../vendor/autoload.php';
+if (file_exists($autoload)) {
+    require_once $autoload;
+} else {
+    spl_autoload_register(function ($class) {
+        if (strpos($class, 'Basalam\\') !== 0) {
+            return;
+        }
+        $rel = str_replace('\\', '/', substr($class, strlen('Basalam\\')));
+        $file = __DIR__ . '/../src/Basalam/' . $rel . '.php';
+        if (is_file($file)) {
+            require $file;
+        }
+    });
+}
 
 // These are built-in PHP classes, no need for use statements
 
@@ -22,6 +38,9 @@ $services = [
     'upload' => ['class' => 'Basalam\Upload\UploadService', 'description' => 'Upload service for file uploads'],
     'chat' => ['class' => 'Basalam\Chat\ChatService', 'description' => 'Chat service for messaging'],
     'webhook' => ['class' => 'Basalam\Webhook\WebhookService', 'description' => 'Webhook service for webhook management'],
+    'shipping' => ['class' => 'Basalam\Shipping\ShippingService', 'description' => 'Shipping service for profiles, zones, carriers and rates'],
+    'story' => ['class' => 'Basalam\Story\StoryService', 'description' => 'Story service for stories, reels and feeds'],
+    'apps' => ['class' => 'Basalam\Apps\AppsService', 'description' => 'Apps service for appstore payments, plans and subscriptions'],
 ];
 
 /**

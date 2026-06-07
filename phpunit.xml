@@ -41,6 +41,15 @@
         <testsuite name="Webhook Service">
             <file>tests/WebhookServiceTest.php</file>
         </testsuite>
+        <testsuite name="Shipping Service">
+            <file>tests/ShippingServiceTest.php</file>
+        </testsuite>
+        <testsuite name="Story Service">
+            <file>tests/StoryServiceTest.php</file>
+        </testsuite>
+        <testsuite name="Apps Service">
+            <file>tests/AppsServiceTest.php</file>
+        </testsuite>
         <testsuite name="Auth">
             <file>tests/AuthTest.php</file>
         </testsuite>

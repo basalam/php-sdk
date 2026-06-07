@@ -22,6 +22,7 @@ parcels and shipping, generate order statistics, and monitor order status and up
 | [`setOrderParcelPosted()`](#set-parcel-posted)           | Confirm parcel posted| `parcelId`, `request` (PostedOrderRequest)                                                      |
 | [`setOrderParcelPreparation()`](#set-parcel-preparation) | Confirm parcel preparation | `parcelId`                                                                                |
 | [`getOrdersStats()`](#get-order-stats)                   | Get order statistics | `resourceCount`, `vendorId?`, `productId?`, `customerId?`, `couponCode?`, `cacheControl?`       |
+| [`getCustomerOrderParcelHints()`](#get-customer-order-parcel-hints) | Get parcel hints for an order | `orderId`                                                                            |
 
 ## Examples
 
@@ -220,6 +221,20 @@ function getOrdersStatsExample()
     );
     
     return $stats;
+}
+```
+
+### Get Customer Order Parcel Hints
+
+```php
+function getCustomerOrderParcelHintsExample()
+{
+    global $client;
+
+    // Returns the OrderHintsResponse payload (auxiliary parcel info) as an array
+    $hints = $client->getCustomerOrderParcelHints(orderId: 123456);
+
+    return $hints;
 }
 ```
 

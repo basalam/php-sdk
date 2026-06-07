@@ -16,6 +16,7 @@ class ChannelMetadata implements \JsonSerializable
     private ?int $membersCount;
     private bool $canLeave;
     private bool $verified;
+    private ?bool $tempGroup;
 
     public function __construct(
         string  $title,
@@ -26,7 +27,8 @@ class ChannelMetadata implements \JsonSerializable
         ?string $description = null,
         ?string $avatar = null,
         ?string $link = null,
-        ?int    $membersCount = null
+        ?int    $membersCount = null,
+        ?bool   $tempGroup = null
     )
     {
         $this->title = $title;
@@ -38,6 +40,7 @@ class ChannelMetadata implements \JsonSerializable
         $this->avatar = $avatar;
         $this->link = $link;
         $this->membersCount = $membersCount;
+        $this->tempGroup = $tempGroup;
     }
 
     public static function fromArray(array $data): self
@@ -51,7 +54,8 @@ class ChannelMetadata implements \JsonSerializable
             $data['description'] ?? null,
             $data['avatar'] ?? null,
             $data['link'] ?? null,
-            $data['members_count'] ?? null
+            $data['members_count'] ?? null,
+            $data['temp_group'] ?? null
         );
     }
 
@@ -76,6 +80,9 @@ class ChannelMetadata implements \JsonSerializable
         }
         if ($this->membersCount !== null) {
             $result['members_count'] = $this->membersCount;
+        }
+        if ($this->tempGroup !== null) {
+            $result['temp_group'] = $this->tempGroup;
         }
 
         return $result;
@@ -130,5 +137,10 @@ class ChannelMetadata implements \JsonSerializable
     public function isVerified(): bool
     {
         return $this->verified;
+    }
+
+    public function isTempGroup(): ?bool
+    {
+        return $this->tempGroup;
     }
 }

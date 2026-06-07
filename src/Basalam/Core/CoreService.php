@@ -25,6 +25,7 @@ use Basalam\Core\Models\GetVendorProductsSchema;
 use Basalam\Core\Models\PrivateUserResponse;
 use Basalam\Core\Models\PrivateVendorResponse;
 use Basalam\Core\Models\ProductListResponse;
+use Basalam\Core\Models\ProductPriceHistoryResponse;
 use Basalam\Core\Models\ProductRequestSchema;
 use Basalam\Core\Models\ProductResponseSchema;
 use Basalam\Core\Models\ProductShelfResponse;
@@ -109,6 +110,8 @@ class CoreService extends BaseClient
     /**
      * Get default shipping methods
      *
+     * @deprecated The /v1/shipping-methods endpoints were removed from the API.
+     *             Use the new ShippingService ($client->shipping) instead.
      * @return array Array of ShippingMethodResponse
      */
     public function getDefaultShippingMethods(): array
@@ -121,6 +124,8 @@ class CoreService extends BaseClient
     /**
      * Get shipping methods
      *
+     * @deprecated The /v1/shipping-methods endpoints were removed from the API.
+     *             Use the new ShippingService ($client->shipping) instead.
      * @param array|null $ids
      * @param array|null $vendorIds
      * @param int $page
@@ -161,6 +166,8 @@ class CoreService extends BaseClient
     /**
      * Get working shipping methods
      *
+     * @deprecated The /v1/shipping-methods endpoints were removed from the API.
+     *             Use the new ShippingService ($client->shipping) instead.
      * @param int $vendorId
      * @return array Array of ShippingMethodResponse
      */
@@ -174,6 +181,8 @@ class CoreService extends BaseClient
     /**
      * Update shipping methods
      *
+     * @deprecated The /v1/shipping-methods endpoints were removed from the API.
+     *             Use the new ShippingService ($client->shipping) instead.
      * @param int $vendorId
      * @param UpdateShippingMethodSchema $request
      * @return array Array of ShippingMethodResponse
@@ -568,6 +577,56 @@ class CoreService extends BaseClient
         $endpoint = "/v1/products/$productId/shelves";
         $response = $this->get($endpoint);
         return array_map(fn($item) => ProductShelfResponse::fromArray($item), $response);
+    }
+
+    /**
+     * Read product price history.
+     *
+     * @param int $productId The product ID
+     * @param string|null $startTime Optional ISO 8601 start time filter
+     * @param string|null $endTime Optional ISO 8601 end time filter
+     * @return ProductPriceHistoryResponse
+     */
+    public function getProductPriceHistory(
+        int     $productId,
+        ?string $startTime = null,
+        ?string $endTime = null
+    ): ProductPriceHistoryResponse
+    {
+        $endpoint = "/v1/products/$productId/price-history";
+        $params = [];
+        if ($startTime !== null) {
+            $params['start_time'] = $startTime;
+        }
+        if ($endTime !== null) {
+            $params['end_time'] = $endTime;
+        }
+        $response = $this->get($endpoint, $params);
+        return ProductPriceHistoryResponse::fromArray($response);
+    }
+
+    /**
+     * Create a product reminder (stock/price availability notification).
+     *
+     * @param int $productId The product ID
+     * @return array The OkResponse payload
+     */
+    public function createProductReminder(int $productId): array
+    {
+        $endpoint = "/v1/products/$productId/reminders";
+        return $this->post($endpoint);
+    }
+
+    /**
+     * Delete a product reminder.
+     *
+     * @param int $productId The product ID
+     * @return array The OkResponse payload
+     */
+    public function deleteProductReminder(int $productId): array
+    {
+        $endpoint = "/v1/products/$productId/reminders";
+        return $this->delete($endpoint);
     }
 
     /**

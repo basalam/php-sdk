@@ -168,6 +168,18 @@ class OrderProcessingService extends BaseClient
     }
 
     /**
+     * Get parcel hints (auxiliary information) for a customer order.
+     *
+     * @param int $orderId The customer order ID
+     * @return array The OrderHintsResponse payload
+     */
+    public function getCustomerOrderParcelHints(int $orderId): array
+    {
+        $endpoint = "/v1/customer-orders/$orderId/parcel-hints";
+        return $this->get($endpoint);
+    }
+
+    /**
      * Confirm that a parcel has been posted.
      *
      * @param int $parcelId The parcel ID to update

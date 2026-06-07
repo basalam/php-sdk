@@ -19,12 +19,12 @@ class FileResponse implements \JsonSerializable
     private int $width;
     private int $height;
     private int $size;
-    private int $duration;
     private array $urls;
     private string $createdAt;
     private int $creatorUserId;
 
     // Optional fields
+    private ?int $duration;
     private ?string $mimeType;
     private ?string $url;
 
@@ -39,10 +39,10 @@ class FileResponse implements \JsonSerializable
         int     $width,
         int     $height,
         int     $size,
-        int     $duration,
         array   $urls,
         string  $createdAt,
         int     $creatorUserId,
+        ?int    $duration = null,
         ?string $mimeType = null,
         ?string $url = null
     )
@@ -57,10 +57,10 @@ class FileResponse implements \JsonSerializable
         $this->width = $width;
         $this->height = $height;
         $this->size = $size;
-        $this->duration = $duration;
         $this->urls = $urls;
         $this->createdAt = $createdAt;
         $this->creatorUserId = $creatorUserId;
+        $this->duration = $duration;
         $this->mimeType = $mimeType;
         $this->url = $url;
     }
@@ -85,10 +85,10 @@ class FileResponse implements \JsonSerializable
             $data['width'],
             $data['height'],
             $data['size'],
-            $data['duration'],
             $data['urls'],
             $data['created_at'],
             $data['creator_user_id'],
+            $data['duration'] ?? null,
             $data['mime_type'] ?? null,
             $data['url'] ?? null
         );
@@ -180,7 +180,7 @@ class FileResponse implements \JsonSerializable
         return $this->size;
     }
 
-    public function getDuration(): int
+    public function getDuration(): ?int
     {
         return $this->duration;
     }
