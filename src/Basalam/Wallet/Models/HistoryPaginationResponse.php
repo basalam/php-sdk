@@ -44,7 +44,7 @@ class HistoryPaginationResponse implements \JsonSerializable
             $data['per_page'],
             $data['current_page'],
             $data['last_page'],
-            $data['from'] ?? null,
+            $data['from_'] ?? $data['from'] ?? null,
             $data['to'] ?? null
         );
     }
@@ -96,7 +96,9 @@ class HistoryPaginationResponse implements \JsonSerializable
         ];
 
         if ($this->from !== null) {
-            $result['from'] = $this->from;
+            // The API field is named "from_" (trailing underscore) because "from"
+            // is a reserved word in the source service; fromArray accepts both.
+            $result['from_'] = $this->from;
         }
         if ($this->to !== null) {
             $result['to'] = $this->to;

@@ -14,6 +14,7 @@ class GroupMetadata implements \JsonSerializable
     private int $creatorId;
     private int $id;
     private int $chatId;
+    private ?bool $verified;
 
     public function __construct(
         string  $title,
@@ -22,7 +23,8 @@ class GroupMetadata implements \JsonSerializable
         int     $id,
         int     $chatId,
         ?string $description = null,
-        ?string $avatar = null
+        ?string $avatar = null,
+        ?bool   $verified = null
     )
     {
         $this->title = $title;
@@ -32,6 +34,7 @@ class GroupMetadata implements \JsonSerializable
         $this->chatId = $chatId;
         $this->description = $description;
         $this->avatar = $avatar;
+        $this->verified = $verified;
     }
 
     public static function fromArray(array $data): self
@@ -43,7 +46,8 @@ class GroupMetadata implements \JsonSerializable
             $data['id'],
             $data['chat_id'],
             $data['description'] ?? null,
-            $data['avatar'] ?? null
+            $data['avatar'] ?? null,
+            $data['verified'] ?? null
         );
     }
 
@@ -62,6 +66,9 @@ class GroupMetadata implements \JsonSerializable
         }
         if ($this->avatar !== null) {
             $result['avatar'] = $this->avatar;
+        }
+        if ($this->verified !== null) {
+            $result['verified'] = $this->verified;
         }
 
         return $result;
@@ -106,5 +113,10 @@ class GroupMetadata implements \JsonSerializable
     public function getChatId(): int
     {
         return $this->chatId;
+    }
+
+    public function isVerified(): ?bool
+    {
+        return $this->verified;
     }
 }

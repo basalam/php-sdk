@@ -9,13 +9,17 @@ class MessageContent implements \JsonSerializable
     private ?string $text;
     private ?int $entityId;
     private ?LocationResource $location;
+    private ?array $metadata;
+    private ?array $replyMarkup;
 
     public function __construct(
         ?array            $links = null,
         ?array            $files = null,
         ?string           $text = null,
         ?int              $entityId = null,
-        ?LocationResource $location = null
+        ?LocationResource $location = null,
+        ?array            $metadata = null,
+        ?array            $replyMarkup = null
     )
     {
         $this->links = $links;
@@ -23,6 +27,8 @@ class MessageContent implements \JsonSerializable
         $this->text = $text;
         $this->entityId = $entityId;
         $this->location = $location;
+        $this->metadata = $metadata;
+        $this->replyMarkup = $replyMarkup;
     }
 
     public static function fromArray(array $data): self
@@ -53,7 +59,9 @@ class MessageContent implements \JsonSerializable
             $files,
             $data['text'] ?? null,
             $data['entity_id'] ?? null,
-            $location
+            $location,
+            $data['metadata'] ?? null,
+            $data['reply_markup'] ?? null
         );
     }
 
@@ -75,6 +83,12 @@ class MessageContent implements \JsonSerializable
         }
         if ($this->location !== null) {
             $data['location'] = $this->location->toArray();
+        }
+        if ($this->metadata !== null) {
+            $data['metadata'] = $this->metadata;
+        }
+        if ($this->replyMarkup !== null) {
+            $data['reply_markup'] = $this->replyMarkup;
         }
 
         return $data;
@@ -109,5 +123,15 @@ class MessageContent implements \JsonSerializable
     public function getLocation(): ?LocationResource
     {
         return $this->location;
+    }
+
+    public function getMetadata(): ?array
+    {
+        return $this->metadata;
+    }
+
+    public function getReplyMarkup(): ?array
+    {
+        return $this->replyMarkup;
     }
 }

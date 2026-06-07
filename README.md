@@ -34,6 +34,9 @@ a server-to-server integration or a user-facing application, this SDK provides t
     - [Search Service](#search-service)
     - [Upload Service](#upload-service)
     - [Webhook Service](#webhook-service)
+    - [Shipping Service](#shipping-service)
+    - [Story Service](#story-service)
+    - [Apps Service](#apps-service)
 - [License](#license)
 
 ## Installation
@@ -175,10 +178,14 @@ The SDK provides access to all Basalam services through a unified client interfa
 
 **📖 [Full Core Service Documentation](docs/services/core.md)**
 
-Manage vendors, products, shipping methods, user information, and more with the Core Service. This service provides
+Manage vendors, products, user information, and more with the Core Service. This service provides
 comprehensive functionality for handling core business entities and operations: create and manage vendors, handle
-product creation and updates (with file upload support), manage shipping methods, update user verification and
-information, handle bank account operations, and manage categories and attributes.
+product creation and updates (with file upload support), product price-history and reminders, update user verification
+and information, handle bank account operations, and manage categories and attributes.
+
+> **Deprecation:** the shipping-methods helpers on this service (`getShippingMethods()`, `getDefaultShippingMethods()`,
+> `getWorkingShippingMethods()`, `updateShippingMethods()`) are deprecated — the underlying endpoints were removed from
+> the API. Use the new [Shipping Service](#shipping-service) (`$client->shipping`) instead.
 
 **Key Features:**
 
@@ -567,6 +574,85 @@ $webhook = $client->createWebhook(
 
 // Get webhook events
 $events = $client->getWebhookEvents();
+```
+
+### Shipping Service
+
+**📖 [Full Shipping Service Documentation](docs/services/shipping.md)**
+
+Manage the new logistics stack with the Shipping Service: shipping profiles, zones, carriers, carrier-rates, own-rates,
+profile-products, and free-shipping rules.
+
+> **Note:** This replaces the old `shipping-methods` endpoints that lived on the Core Service. Those Core methods
+> (`getShippingMethods()`, `getDefaultShippingMethods()`, `getWorkingShippingMethods()`, `updateShippingMethods()`) are
+> now **deprecated** — use `$client->shipping` instead.
+
+**Key Features:**
+
+- Create, read, update and delete shipping profiles and zones
+- Manage carriers, carrier-rates and vendor own-rates
+- Configure free-shipping rules per profile product
+- Query delivery estimates and locations
+
+```php
+// List a vendor's shipping profiles
+$profiles = $client->shipping->readVendorProfiles(page: 1, perPage: 20, vendorId: 123);
+
+// Create a profile
+use Basalam\Shipping\Models\CreateProfileRequest;
+$profile = $client->shipping->createProfile(new CreateProfileRequest('My Profile', 123));
+
+// Read available carriers
+$carriers = $client->shipping->readCarriers();
+```
+
+### Story Service
+
+**📖 [Full Story Service Documentation](docs/services/story.md)**
+
+Create and explore stories, reels, and feeds with the Story Service.
+
+**Key Features:**
+
+- Create stories and reels
+- List your own / a user's reels and stories
+- Story discovery and hashtag feeds
+- Like reels
+
+```php
+// Get your stories
+$stories = $client->story->myStories(count: 10);
+
+// Story discovery feed
+$discovery = $client->story->discovery();
+
+// Hashtag feed
+$feed = $client->story->hashtagFeed(hashtag: 'basalam');
+```
+
+### Apps Service
+
+**📖 [Full Apps Service Documentation](docs/services/apps.md)**
+
+Handle Appstore payments and subscriptions with the Apps Service: payment methods, transactions, verification,
+pre-transactions, plans, and plan subscriptions.
+
+**Key Features:**
+
+- List payment methods and transactions
+- Inquiry and verify transactions
+- Create pre-transactions
+- List plans and plan subscriptions
+
+```php
+// List available plans
+$plans = $client->apps->listPlans();
+
+// List transactions
+$transactions = $client->apps->listTransactions(page: 1, perPage: 20);
+
+// Verify a transaction
+$result = $client->apps->verifyTransaction(hashId: "abc123");
 ```
 
 ## License

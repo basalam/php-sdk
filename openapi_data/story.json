@@ -1,0 +1,1268 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "Basalam OpenAPI Gateway",
+  "version": "1.0.0",
+  "description": "Filtered OpenAPI endpoints from core service"
+ },
+ "paths": {
+  "/v1/users/me/stories": {
+   "get": {
+    "tags": [
+     "Story"
+    ],
+    "summary": "My Stories V3",
+    "operationId": "my_stories_v3_api_v3_0_my_stories_get",
+    "parameters": [
+     {
+      "name": "count",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 30,
+       "title": "Count"
+      }
+     },
+     {
+      "name": "active_only",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "title": "Active Only"
+      }
+     },
+     {
+      "name": "last_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "title": "Last Id"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     },
+     {
+      "name": "auth",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Auth"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/story_bec670_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/stories": {
+   "post": {
+    "tags": [
+     "Story"
+    ],
+    "summary": "Create Story",
+    "operationId": "create_story_api_v3_0_stories_add_post",
+    "parameters": [
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     },
+     {
+      "name": "auth",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Auth"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/story_bec670_CreateStoryBody"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/story_bec670_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/stories/discovery": {
+   "get": {
+    "tags": [
+     "Story"
+    ],
+    "summary": "Discovery",
+    "operationId": "discovery_api_v3_0_stories_discovery_get",
+    "parameters": [
+     {
+      "name": "device_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Device Id"
+      }
+     },
+     {
+      "name": "city_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "City Id"
+      }
+     },
+     {
+      "name": "category_ids",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "array",
+         "items": {
+          "type": "integer"
+         }
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Category Ids"
+      }
+     },
+     {
+      "name": "next_idx",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 0,
+       "title": "Next Idx"
+      }
+     },
+     {
+      "name": "count",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 20,
+       "title": "Count"
+      }
+     },
+     {
+      "name": "regenerate",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": false,
+       "title": "Regenerate"
+      }
+     },
+     {
+      "name": "skip_impression",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": false,
+       "title": "Skip Impression"
+      }
+     },
+     {
+      "name": "refresh",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": false,
+       "title": "Refresh"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     },
+     {
+      "name": "auth",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Auth"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/story_bec670_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/reels": {
+   "post": {
+    "tags": [
+     "Story"
+    ],
+    "summary": "Create Reel",
+    "operationId": "create_reel_api_v3_0_reels__post",
+    "parameters": [
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     },
+     {
+      "name": "auth",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Auth"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/story_bec670_CreateReelBody"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/story_bec670_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/users/me/reels": {
+   "get": {
+    "tags": [
+     "Story"
+    ],
+    "summary": "My Reels",
+    "operationId": "my_reels_api_v3_0_reels_my_reels_get",
+    "parameters": [
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 15,
+       "title": "Limit"
+      }
+     },
+     {
+      "name": "last_idx",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "title": "Last Idx"
+      }
+     },
+     {
+      "name": "is_confirmed",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": true,
+       "title": "Is Confirmed"
+      }
+     },
+     {
+      "name": "status_filter",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "$ref": "#/components/schemas/story_bec670_ReelStatus"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     },
+     {
+      "name": "auth",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Auth"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/story_bec670_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/users/{user_id}/reels": {
+   "get": {
+    "tags": [
+     "Story"
+    ],
+    "summary": "Get User Reels",
+    "operationId": "get_user_reels_api_v3_0_reels_user__user_id__get",
+    "parameters": [
+     {
+      "name": "user_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "User Id"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 15,
+       "title": "Limit"
+      }
+     },
+     {
+      "name": "last_idx",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "title": "Last Idx"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     },
+     {
+      "name": "auth",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Auth"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/story_bec670_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/reels/{reel_id}": {
+   "delete": {
+    "tags": [
+     "Story"
+    ],
+    "summary": "Delete Reel",
+    "description": "Soft deletes a reel by its ID.",
+    "operationId": "delete_reel_api_v3_0_reels__reel_id__delete",
+    "parameters": [
+     {
+      "name": "reel_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Reel Id"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     },
+     {
+      "name": "auth",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Auth"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/story_bec670_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "put": {
+    "tags": [
+     "Story"
+    ],
+    "summary": "Update Reel",
+    "description": "Update a reel's products and hashtags.\nIf the reel was confirmed, it will be unconfirmed and sent back to admin for review.",
+    "operationId": "update_reel_api_v3_0_reels__reel_id__put",
+    "parameters": [
+     {
+      "name": "reel_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Reel Id"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     },
+     {
+      "name": "auth",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Auth"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/story_bec670_UpdateReelBody"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/story_bec670_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/reels/{reel_id}/likes": {
+   "post": {
+    "tags": [
+     "Story"
+    ],
+    "summary": "Like Reel",
+    "operationId": "like_reel_api_v3_0_reels__reel_id__like_post",
+    "parameters": [
+     {
+      "name": "reel_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Reel Id"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     },
+     {
+      "name": "auth",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Auth"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/story_bec670_LikeReelBody"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/story_bec670_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/feeds/hashtags": {
+   "get": {
+    "tags": [
+     "Story"
+    ],
+    "summary": "Hashtag Feed",
+    "operationId": "hashtag_feed_api_v3_0_hashtag_get",
+    "parameters": [
+     {
+      "name": "hashtag",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Hashtag"
+      }
+     },
+     {
+      "name": "count",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 30,
+       "title": "Count"
+      }
+     },
+     {
+      "name": "last_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 0,
+       "title": "Last Id"
+      }
+     },
+     {
+      "name": "authorization",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Authorization"
+      }
+     },
+     {
+      "name": "auth",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Auth"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/story_bec670_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "story_bec670_LikeReelBody": {
+    "properties": {
+     "like": {
+      "type": "boolean",
+      "title": "Like",
+      "default": true
+     }
+    },
+    "type": "object",
+    "title": "LikeReelBody"
+   },
+   "story_bec670_HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/story_bec670_ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "story_bec670_CreateStoryBody": {
+    "properties": {
+     "photo_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Photo Id"
+     },
+     "video_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Video Id"
+     },
+     "hashtags": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Hashtags",
+      "default": []
+     },
+     "products": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "integer"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Products",
+      "default": []
+     },
+     "link": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/story_bec670_MetadataLinkVersion3"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "type": "object",
+    "title": "CreateStoryBody"
+   },
+   "story_bec670_ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   },
+   "story_bec670_CreateReelBody": {
+    "properties": {
+     "type": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/story_bec670_ReelType"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "video_id": {
+      "type": "integer",
+      "title": "Video Id",
+      "description": "شناسه ویدیو"
+     },
+     "product_ids": {
+      "items": {
+       "type": "integer"
+      },
+      "type": "array",
+      "title": "Product Ids",
+      "description": "باید حداقل یک آیتم داشته باشد"
+     },
+     "hashtags": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Hashtags",
+      "description": "لیست هشتگ‌ها (اختیاری)"
+     },
+     "metadata": {
+      "$ref": "#/components/schemas/story_bec670_ReelMetadata",
+      "description": "اطلاعات متادیتا (نوع JSON)"
+     }
+    },
+    "type": "object",
+    "required": [
+     "video_id"
+    ],
+    "title": "CreateReelBody"
+   },
+   "story_bec670_UpdateReelBody": {
+    "properties": {
+     "product_ids": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "integer"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Product Ids",
+      "description": "لیست شناسه محصولات (نال = تغییر نده، آرایه خالی = پاک کردن)"
+     },
+     "hashtags": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Hashtags",
+      "description": "لیست هشتگ‌ها (نال = تغییر نده، آرایه خالی = پاک کردن)"
+     }
+    },
+    "type": "object",
+    "title": "UpdateReelBody"
+   },
+   "story_bec670_MetadataLink": {
+    "properties": {
+     "link": {
+      "type": "string",
+      "maxLength": 2048,
+      "minLength": 1,
+      "title": "Link",
+      "description": "URL link"
+     },
+     "title": {
+      "type": "string",
+      "maxLength": 256,
+      "minLength": 1,
+      "title": "Title",
+      "description": "Link title"
+     }
+    },
+    "type": "object",
+    "required": [
+     "link",
+     "title"
+    ],
+    "title": "MetadataLink"
+   },
+   "story_bec670_ReelStatus": {
+    "type": "string",
+    "enum": [
+     "confirmed",
+     "deleted",
+     "filtered",
+     "checking",
+     "all"
+    ],
+    "title": "ReelStatus"
+   },
+   "story_bec670_ReelType": {
+    "type": "string",
+    "enum": [
+     "review",
+     "tutorial",
+     "business",
+     "other"
+    ],
+    "title": "ReelType"
+   },
+   "story_bec670_MetadataLinkVersion3": {
+    "properties": {
+     "link": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Link"
+     },
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     }
+    },
+    "type": "object",
+    "title": "MetadataLinkVersion3"
+   },
+   "story_bec670_ReelMetadata": {
+    "properties": {
+     "link": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/story_bec670_MetadataLink"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "links": {
+      "anyOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/story_bec670_MetadataLink"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Links"
+     },
+     "instagram_reel_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 256,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Instagram Reel Id"
+     }
+    },
+    "type": "object",
+    "title": "ReelMetadata"
+   }
+  }
+ },
+ "servers": [
+  {
+   "url": "https://openapi.basalam.com",
+   "description": "Production Gateway"
+  }
+ ]
+}

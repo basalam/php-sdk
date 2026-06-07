@@ -20,6 +20,7 @@ class CreateVendorSchema implements \JsonSerializable
     public string $identifier;
     public ?string $referrer_user;
     public ?int $referral_journey_enum;
+    public ?array $geoLocation;
 
     public function __construct(array $data)
     {
@@ -41,6 +42,7 @@ class CreateVendorSchema implements \JsonSerializable
             : null;
         $this->referrer_user = $data['referrer_user'] ?? null;
         $this->referral_journey_enum = $data['referral_journey_enum'] ?? null;
+        $this->geoLocation = $data['geo_location'] ?? null;
     }
 
     public function toArray(): array
@@ -64,6 +66,7 @@ class CreateVendorSchema implements \JsonSerializable
         if ($this->legal_data !== null) $result['legal_data'] = $this->legal_data->toArray();
         if ($this->referrer_user !== null) $result['referrer_user'] = $this->referrer_user;
         if ($this->referral_journey_enum !== null) $result['referral_journey_enum'] = $this->referral_journey_enum;
+        if ($this->geoLocation !== null) $result['geo_location'] = $this->geoLocation;
 
         return $result;
     }
@@ -71,5 +74,10 @@ class CreateVendorSchema implements \JsonSerializable
     public function jsonSerialize(): array
     {
         return $this->toArray();
+    }
+
+    public function getGeoLocation(): ?array
+    {
+        return $this->geoLocation;
     }
 }

@@ -1,0 +1,4408 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "Basalam OpenAPI Gateway",
+  "version": "1.0.0",
+  "description": "Filtered OpenAPI endpoints from core service"
+ },
+ "paths": {
+  "/v1/shipping/profiles": {
+   "get": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Read Vendor Profiles",
+    "description": "### توضیحات:\nدریافت لیست پروفایل‌های غرفه با قابلیت صفحه‌بندی.\n\n### پارامترهای کوئری (Query Parameters):\n- `page` (int): شماره صفحه - اختیاری (پیش‌فرض: 1)\n- `per_page` (int): تعداد در هر صفحه - اختیاری (پیش‌فرض: 10)\n- `vendor_id` (int): فیلتر بر اساس شناسه غرفه - اختیاری (فقط برای ادمین)\n\n### اطلاعات پاسخ:\n\n- `total` (int): تعداد کل پروفایل‌ها\n- `page` (int): شماره صفحه فعلی\n- `per_page` (int): تعداد در هر صفحه\n- `result_count` (int): تعداد نتایج در صفحه فعلی\n- `data` (array): لیست پروفایل‌ها\n  - `id` (int): شناسه پروفایل\n  - `title` (string): نام پروفایل\n  - `vendor_id` (int): شناسه غرفه\n  - `status` (object): وضعیت پروفایل\n\n### جزئیات:\n- صفحه‌بندی از نوع Offset-based است\n- به صورت پیش‌فرض فقط پروفایل‌های غرفه فعلی نمایش داده می‌شوند\n- ادمین‌ها می‌توانند با استفاده از `vendor_id` پروفایل‌های غرفه‌های دیگر را ببینند\n\n### مثال:\n\n**درخواست:**\n```\nGET /api/v1/profiles?page=1&per_page=10\n```\n\n**پاسخ:**\n```json\n{\n  \"total\": 25,\n  \"page\": 1,\n  \"per_page\": 10,\n  \"result_count\": 10,\n  \"data\": [\n    {\n      \"id\": 456,\n      \"title\": \"ارسال عادی\",\n      \"vendor_id\": 123,\n      \"status\": {\n        \"id\": 1,\n        \"title\": \"فعال\"\n      }\n    },\n    {\n      \"id\": 457,\n      \"title\": \"ارسال سریع\",\n      \"vendor_id\": 123,\n      \"status\": {\n        \"id\": 1,\n        \"title\": \"فعال\"\n      }\n    }\n  ]\n}\n```",
+    "operationId": "read_vendor_profiles_v1_profiles_get",
+    "parameters": [
+     {
+      "name": "page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer",
+         "maximum": 2147483647,
+         "minimum": 1
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": 1,
+       "title": "Page"
+      }
+     },
+     {
+      "name": "per_page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer",
+         "maximum": 100,
+         "minimum": 1
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": 10,
+       "title": "Per Page"
+      }
+     },
+     {
+      "name": "vendor_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer",
+         "maximum": 2147483647,
+         "minimum": 0
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Vendor Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_ProfileListPaginationResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Create Profile",
+    "description": "### توضیحات:\nایجاد یک پروفایل ارسال جدید برای غرفه.\n\n### فیلدهای درخواست (Body):\n\n- `title` (string): نام پروفایل - **اجباری** (حداکثر ۲۵۵ کاراکتر)\n\n### منطق عملکرد:\n- پروفایل‌ها برای تعریف روش‌های مختلف ارسال استفاده می‌شوند\n- هر غرفه می‌تواند چندین پروفایل داشته باشد\n- پروفایل می‌تواند شامل چندین زون باشد\n- پس از ایجاد، می‌توانید زون‌ها و نرخ‌های ارسال را به آن اضافه کنید\n\n### مثال:\n\n**درخواست:**\n```\nPOST /api/v1/profiles\n```\n\n**بدن درخواست:**\n```json\n{\n  \"title\": \"ارسال عادی\"\n}\n```\n\n**پاسخ موفق (201):**\n```json\n{\n  \"id\": 456,\n  \"title\": \"ارسال عادی\",\n  \"vendor_id\": 123,\n  \"status\": {\n    \"id\": 1,\n    \"title\": \"فعال\"\n  },\n  \"created_at\": \"2024-01-15T10:30:00+00:00\"\n}\n```\n\n### کدهای خطا:\n- `400`: عنوان نامعتبر است",
+    "operationId": "create_profile_v1_profiles_post",
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/shipping_31211b_CreateProfileRequest"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_api__v1__response_models__logistics__profile_response__ProfileResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/profiles/{profile_id}": {
+   "patch": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Update Profile",
+    "description": "### توضیحات:\nبروزرسانی اطلاعات یک پروفایل موجود.\n\n### پارامترهای مسیر (Path Parameters):\n- `profile_id` (int): شناسه پروفایل - **اجباری**\n\n### فیلدهای درخواست (Body):\n\n- `title` (string): نام جدید پروفایل - اختیاری (حداکثر ۲۵۵ کاراکتر)\n\n### منطق عملکرد:\n- فقط فیلدهایی که ارسال شده‌اند بروزرسانی می‌شوند\n- سایر فیلدها بدون تغییر باقی می‌مانند\n- پروفایل باید متعلق به غرفه فعلی باشد\n\n### مثال:\n\n**درخواست:**\n```\nPATCH /api/v1/profiles/456\n```\n\n**بدن درخواست:**\n```json\n{\n  \"title\": \"ارسال سریع\"\n}\n```\n\n**پاسخ موفق (200):**\n```json\n{\n  \"id\": 456,\n  \"title\": \"ارسال سریع\",\n  \"vendor_id\": 123,\n  \"status\": {\n    \"id\": 1,\n    \"title\": \"فعال\"\n  }\n}\n```\n\n### کدهای خطا:\n- `404`: پروفایل یافت نشد\n- `400`: عنوان نامعتبر است",
+    "operationId": "update_profile_v1_profiles__profile_id__patch",
+    "parameters": [
+     {
+      "name": "profile_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Profile Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/shipping_31211b_UpdateProfileRequest"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_api__v1__response_models__logistics__profile_response__ProfileResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "get": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Get Profile",
+    "description": "### توضیحات:\nدریافت جزئیات یک پروفایل با شناسه.\n\n### پارامترهای مسیر (Path Parameters):\n- `profile_id` (int): شناسه پروفایل - **اجباری**\n\n### اطلاعات پاسخ:\n\n- `id` (int): شناسه پروفایل\n- `title` (string): نام پروفایل\n- `vendor_id` (int): شناسه غرفه\n- `status` (object): وضعیت پروفایل\n  - `id` (int): شناسه وضعیت\n  - `title` (string): عنوان وضعیت\n- `product_count` (int): تعداد محصولات در پروفایل\n- `created_at` (string): تاریخ ایجاد\n- `updated_at` (string): تاریخ بروزرسانی\n\n### مثال:\n\n**درخواست:**\n```\nGET /api/v1/profiles/456\n```\n\n**پاسخ:**\n```json\n{\n  \"id\": 456,\n  \"title\": \"ارسال عادی\",\n  \"vendor_id\": 123,\n  \"status\": {\n    \"id\": 1,\n    \"title\": \"فعال\"\n  },\n  \"product_count\": 120,\n  \"created_at\": \"2024-01-15T10:30:00+00:00\",\n  \"updated_at\": \"2024-01-20T14:45:00+00:00\"\n}\n```\n\n### کدهای خطا:\n- `404`: پروفایل یافت نشد",
+    "operationId": "get_profile_v1_profiles__profile_id__get",
+    "parameters": [
+     {
+      "name": "profile_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Profile Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_api__v1__response_models__logistics__profile_response__ProfileResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Delete Profile",
+    "description": "### توضیحات:\nحذف یک پروفایل و تمام اطلاعات مرتبط با آن.\n\n### پارامترهای مسیر (Path Parameters):\n- `profile_id` (int): شناسه پروفایل - **اجباری**\n\n### منطق عملکرد:\n- پروفایل باید متعلق به غرفه فعلی باشد\n- حذف پروفایل، زون‌ها و نرخ‌های مرتبط را نیز حذف می‌کند\n- این عملیات **غیرقابل بازگشت** است\n- محصولات از پروفایل حذف می‌شوند اما خود محصولات حذف نمی‌شوند\n\n### مثال:\n\n**درخواست:**\n```\nDELETE /api/v1/profiles/456\n```\n\n**پاسخ موفق (200):**\n```json\n{\n  \"message\": \"عملیات با موفقیت انجام شد\"\n}\n```\n\n### کدهای خطا:\n- `404`: پروفایل یافت نشد",
+    "operationId": "delete_profile_v1_profiles__profile_id__delete",
+    "parameters": [
+     {
+      "name": "profile_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Profile Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_OkResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/profiles/{profile_id}/zones": {
+   "get": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Read Profile Zones",
+    "description": "### توضیحات:\nدریافت لیست زون‌های یک پروفایل با قابلیت صفحه‌بندی.\n\n### پارامترهای مسیر (Path Parameters):\n- `profile_id` (int): شناسه پروفایل - **اجباری**\n\n### پارامترهای کوئری (Query Parameters):\n- `page` (int): شماره صفحه - اختیاری (پیش‌فرض: 1)\n- `per_page` (int): تعداد در هر صفحه - اختیاری (پیش‌فرض: 10)\n\n### اطلاعات پاسخ:\n\n- `total` (int): تعداد کل زون‌ها\n- `page` (int): شماره صفحه فعلی\n- `per_page` (int): تعداد در هر صفحه\n- `data` (array): لیست زون‌ها\n  - `id` (int): شناسه زون\n  - `title` (string): عنوان زون\n  - `status` (object): وضعیت زون\n  - `locations` (array): لیست مناطق زون\n  - `hint` (string|null): توضیحات و راهنما\n  - `exclude_hint` (string|null): توضیحات محدودیت‌ها\n  - `created_at` (string): تاریخ ایجاد\n\n### جزئیات:\n- صفحه‌بندی از نوع Offset-based است\n- شامل اطلاعات مناطق و hints هر زون\n\n### مثال:\n\n**درخواست:**\n```\nGET /api/v1/profiles/456/zones?page=1&per_page=10\n```\n\n**پاسخ:**\n```json\n{\n  \"total\": 5,\n  \"page\": 1,\n  \"per_page\": 10,\n  \"data\": [\n    {\n      \"id\": 789,\n      \"title\": \"زون تهران\",\n      \"status\": {\n        \"id\": 1,\n        \"title\": \"فعال\"\n      },\n      \"locations\": [\n        {\n          \"id\": 1,\n          \"title\": \"تهران\"\n        },\n        {\n          \"id\": 2,\n          \"title\": \"ری\"\n        }\n      ],\n      \"hint\": \"۲ نرخ ارسال موجود\",\n      \"exclude_hint\": null,\n      \"created_at\": \"2024-01-15T10:30:00+00:00\"\n    }\n  ]\n}\n```",
+    "operationId": "read_profile_zones_v1_profiles__profile_id__zones_get",
+    "parameters": [
+     {
+      "name": "profile_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Profile Id"
+      }
+     },
+     {
+      "name": "page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer",
+         "maximum": 2147483647,
+         "minimum": 1
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": 1,
+       "title": "Page"
+      }
+     },
+     {
+      "name": "per_page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer",
+         "maximum": 100,
+         "minimum": 1
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": 10,
+       "title": "Per Page"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_OffsetPaginationResponse_ZoneListResponse_"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Create Profile Zone",
+    "description": "### توضیحات:\nایجاد یک زون جدید در پروفایل.\n\n### پارامترهای مسیر (Path Parameters):\n- `profile_id` (int): شناسه پروفایل - **اجباری**\n\n### فیلدهای درخواست (Body):\n\n- `location_ids` (array[int]): لیست شناسه مناطق - **اجباری**\n\n### منطق عملکرد:\n- زون‌ها برای تعریف مناطق جغرافیایی استفاده می‌شوند\n- هر پروفایل می‌تواند چندین زون داشته باشد\n- هر زون می‌تواند چندین روش ارسال (carrier یا own rate) داشته باشد\n- عنوان زون به صورت خودکار بر اساس مناطق تولید می‌شود\n- مناطق نباید با زون‌های دیگر پروفایل تداخل داشته باشند\n\n### مثال:\n\n**درخواست:**\n```\nPOST /api/v1/profiles/456/zones\n```\n\n**بدن درخواست:**\n```json\n{\n  \"location_ids\": [1, 2, 3, 4, 5]\n}\n```\n\n**پاسخ موفق (201):**\n```json\n{\n  \"id\": 789,\n  \"title\": \"زون تهران\",\n  \"status\": {\n    \"id\": 1,\n    \"title\": \"فعال\"\n  },\n  \"locations\": [\n    {\n      \"id\": 1,\n      \"title\": \"تهران\"\n    },\n    {\n      \"id\": 2,\n      \"title\": \"ری\"\n    }\n  ],\n  \"created_at\": \"2024-01-15T10:30:00+00:00\"\n}\n```\n\n### کدهای خطا:\n- `404`: پروفایل یافت نشد\n- `400`: مناطق نامعتبر یا تداخل با زون‌های دیگر",
+    "operationId": "create_profile_zone_v1_profiles__profile_id__zones_post",
+    "parameters": [
+     {
+      "name": "profile_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Profile Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/shipping_31211b_CreateProfileZoneRequest"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_ZoneResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/profiles/{profile_id}/zones/unrecovered-locations": {
+   "get": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Read Profile Uncovered Locations",
+    "description": "### توضیحات:\nدریافت لیست مناطقی که در هیچ زونی از پروفایل پوشش داده نشده‌اند.\n\n### پارامترهای مسیر (Path Parameters):\n- `profile_id` (int): شناسه پروفایل - **اجباری**\n\n### اطلاعات پاسخ:\n\n- `total` (int): تعداد مناطق پوشش داده نشده\n- `data` (array): لیست مناطق\n  - `id` (int): شناسه منطقه\n  - `title` (string): عنوان منطقه\n  - `parent_id` (int|null): شناسه والد\n  - `location_type` (string): نوع منطقه (province/city)\n\n### کاربرد:\n- شناسایی مناطق جغرافیایی که سرویس‌دهی ندارند\n- کمک به کامل‌سازی پوشش جغرافیایی\n- یافتن gap ها در پوشش ارسال\n\n### مثال:\n\n**درخواست:**\n```\nGET /api/v1/profiles/456/uncovered-locations\n```\n\n**پاسخ:**\n```json\n{\n  \"total\": 15,\n  \"data\": [\n    {\n      \"id\": 100,\n      \"title\": \"تبریز\",\n      \"parent_id\": 9,\n      \"location_type\": \"city\"\n    },\n    {\n      \"id\": 101,\n      \"title\": \"شیراز\",\n      \"parent_id\": 12,\n      \"location_type\": \"city\"\n    }\n  ]\n}\n```",
+    "operationId": "read_profile_uncovered_locations_v1_profiles__profile_id__uncovered_locations_get",
+    "parameters": [
+     {
+      "name": "profile_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Profile Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_BulkResponse_NestedLocationResponse_"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/profiles/{profile_id}/products": {
+   "get": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Get Profile Products",
+    "description": "### توضیحات:\nدریافت لیست محصولات یک پروفایل با قابلیت‌های فیلتر و جستجوی پیشرفته.\n\n### پارامترهای مسیر (Path Parameters):\n- `profile_id` (int): شناسه پروفایل - **اجباری**\n\n### پارامترهای کوئری (Query Parameters):\n- `q` (string): جستجو در عنوان محصول - اختیاری\n- `never_free_zone_ids` (array[int]): فیلتر بر اساس زون‌های never_free - اختیاری\n- `conditional_zone_ids` (array[int]): فیلتر بر اساس زون‌های conditional - اختیاری\n- `sort` (string): مرتب‌سازی - اختیاری (پیش‌فرض: \"id:desc\")\n  - `id:desc` یا `id:asc`: مرتب‌سازی بر اساس شناسه\n  - `created_at:desc` یا `created_at:asc`: مرتب‌سازی بر اساس تاریخ ایجاد\n  - `never_free:desc`: محصولات با never_free_zone_ids اول\n  - `never_free:asc`: محصولات بدون never_free_zone_ids اول\n- `per_page` (int): تعداد در هر صفحه - اختیاری (پیش‌فرض: 10)\n- `cursor` (string): کرسر برای صفحه‌بندی - اختیاری\n\n### اطلاعات پاسخ:\n\n- `data` (array): لیست محصولات\n  - `id` (int): شناسه محصول پروفایل\n  - `product` (object): اطلاعات محصول\n    - `id` (int): شناسه محصول\n    - `title` (string): عنوان محصول\n  - `profile_id` (int): شناسه پروفایل\n  - `never_free_zone_ids` (array[int]): لیست زون‌های never_free\n  - `created_at` (string): تاریخ اضافه شدن\n- `meta` (object): اطلاعات صفحه‌بندی\n  - `current_page` (int): صفحه فعلی\n  - `per_page` (int): تعداد در هر صفحه\n  - `total` (int): تعداد کل محصولات\n- `links` (object): لینک‌های صفحات بعدی و قبلی\n  - `next` (string|null): کرسر صفحه بعد\n  - `prev` (string|null): کرسر صفحه قبل\n\n### جزئیات:\n- صفحه‌بندی از نوع Cursor-based برای عملکرد بهتر\n- جستجوی متن در عنوان محصول\n- فیلتر پیشرفته بر اساس تنظیمات ارسال رایگان\n\n### مثال‌ها:\n\n**۱. جستجوی محصولات:**\n```\nGET /api/v1/profiles/456/products?q=لپ‌تاپ&per_page=20\n```\n\n**۲. فیلتر بر اساس زون‌های never_free:**\n```\nGET /api/v1/profiles/456/products?never_free_zone_ids=1,2,3\n```\n\n**۳. مرتب‌سازی بر اساس never_free:**\n```\nGET /api/v1/profiles/456/products?sort=never_free:desc,id:desc\n```\n\n**پاسخ:**\n```json\n{\n  \"data\": [\n    {\n      \"id\": 123,\n      \"product\": {\n        \"id\": 123,\n        \"title\": \"لپ‌تاپ ASUS\"\n      },\n      \"profile_id\": 456,\n      \"never_free_zone_ids\": [1, 2],\n      \"created_at\": \"2024-01-15T10:30:00+00:00\"\n    }\n  ],\n  \"meta\": {\n    \"current_page\": 1,\n    \"per_page\": 10,\n    \"total\": 125\n  },\n  \"links\": {\n    \"next\": \"eyJpZCI6MTMwfQ\",\n    \"prev\": null\n  }\n}\n```",
+    "operationId": "get_profile_products_v1_profiles__profile_id__products_get",
+    "parameters": [
+     {
+      "name": "profile_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Profile Id"
+      }
+     },
+     {
+      "name": "product.title[like]",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Product.Title[Like]"
+      }
+     },
+     {
+      "name": "never_free_zone_ids",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "array",
+         "items": {
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": 0
+         }
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Filter products that have never_free shipping setting to specific zones",
+       "title": "Never Free Zone Ids"
+      },
+      "description": "Filter products that have never_free shipping setting to specific zones"
+     },
+     {
+      "name": "conditional_zone_ids",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "array",
+         "items": {
+          "type": "integer",
+          "maximum": 2147483647,
+          "minimum": 0
+         }
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Filter products that have conditional shipping setting to specific zones (use vendor default settings)",
+       "title": "Conditional Zone Ids"
+      },
+      "description": "Filter products that have conditional shipping setting to specific zones (use vendor default settings)"
+     },
+     {
+      "name": "sort",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Sort options: id:desc, id:asc, created_at:desc, created_at:asc, never_free:desc (products with never_free_zone_ids first), never_free:asc (empty never_free_zone_ids first). Example: never_free:desc,id:desc",
+       "default": "id:desc",
+       "title": "Sort"
+      },
+      "description": "Sort options: id:desc, id:asc, created_at:desc, created_at:asc, never_free:desc (products with never_free_zone_ids first), never_free:asc (empty never_free_zone_ids first). Example: never_free:desc,id:desc"
+     },
+     {
+      "name": "per_page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer",
+         "maximum": 100,
+         "minimum": 1
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": 10,
+       "title": "Per Page"
+      }
+     },
+     {
+      "name": "cursor",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "title": "Cursor"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_ProfileProductsResponseCursorPagination"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Create Profile Products",
+    "description": "### توضیحات:\nاضافه کردن محصولات به یک پروفایل.\n\n### پارامترهای مسیر (Path Parameters):\n- `profile_id` (int): شناسه پروفایل - **اجباری**\n\n### فیلدهای درخواست (Body):\n\n- `product_ids` (array[int]): لیست شناسه محصولات - اختیاری\n- `all_products` (boolean): آیا همه محصولات اضافه شوند؟ - اختیاری (پیش‌فرض: false)\n\n### منطق عملکرد:\n- اگر `all_products = true` باشد، همه محصولات غرفه به پروفایل اضافه می‌شوند\n- اگر `product_ids` ارسال شود، فقط آن محصولات اضافه می‌شوند\n- اگر `all_products = true` و `product_ids` خالی باشد، همه محصولات اضافه می‌شوند\n- محصولاتی که قبلاً در پروفایل هستند نادیده گرفته می‌شوند\n- محصولات باید متعلق به غرفه فعلی باشند\n\n### مثال‌ها:\n\n**۱. اضافه کردن محصولات خاص:**\n```json\n{\n  \"product_ids\": [123, 456, 789],\n  \"all_products\": false\n}\n```\n\n**۲. اضافه کردن همه محصولات:**\n```json\n{\n  \"product_ids\": [],\n  \"all_products\": true\n}\n```\n\n**پاسخ موفق (200):**\n```json\n{\n  \"added_count\": 3,\n  \"skipped_count\": 2,\n  \"total_products\": 125\n}\n```\n\n### کدهای خطا:\n- `404`: پروفایل یافت نشد",
+    "operationId": "create_profile_products_v1_profiles__profile_id__products_post",
+    "parameters": [
+     {
+      "name": "profile_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Profile Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/shipping_31211b_CreateProfileProductsRequest"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_CreateProfileProductResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/zones/{zone_id}": {
+   "get": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Get Zone",
+    "description": "### توضیحات:\nدریافت جزئیات یک زون (Zone) با استفاده از شناسه.\n\n### پارامترهای مسیر (Path Parameters):\n- `zone_id` (int): شناسه زون - **اجباری**\n\n### اطلاعات پاسخ:\n\n- `id` (int): شناسه زون\n- `title` (string): عنوان زون (تولید شده به صورت خودکار بر اساس مناطق)\n- `status` (object): وضعیت زون\n  - `id` (int): شناسه وضعیت\n  - `title` (string): عنوان وضعیت (فعال/غیرفعال)\n- `locations` (array): لیست مناطق جغرافیایی زون\n  - `id` (int): شناسه منطقه\n  - `title` (string): عنوان منطقه\n- `created_at` (string): تاریخ ایجاد\n\n### جزئیات:\n- عنوان زون به صورت خودکار بر اساس مناطق انتخاب شده تولید می‌شود\n- زون‌ها برای تعریف مناطق جغرافیایی مختلف استفاده می‌شوند\n- هر زون می‌تواند شامل چندین نرخ ارسال (carrier یا own rate) باشد\n\n### مثال:\n\n**درخواست:**\n```\nGET /api/v1/zones/789\n```\n\n**پاسخ:**\n```json\n{\n  \"id\": 789,\n  \"title\": \"زون تهران - ری\",\n  \"status\": {\n    \"id\": 1,\n    \"title\": \"فعال\"\n  },\n  \"locations\": [\n    {\n      \"id\": 1,\n      \"title\": \"تهران\"\n    },\n    {\n      \"id\": 2,\n      \"title\": \"ری\"\n    }\n  ],\n  \"created_at\": \"2024-01-15T10:30:00+00:00\"\n}\n```\n\n### کدهای خطا:\n- `404`: زون با شناسه داده شده یافت نشد",
+    "operationId": "get_zone_v1_zones__zone_id__get",
+    "parameters": [
+     {
+      "name": "zone_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Zone Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_ZoneResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "patch": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Update Zone",
+    "description": "### توضیحات:\nبروزرسانی مناطق جغرافیایی یک زون.\n\n### پارامترهای مسیر (Path Parameters):\n- `zone_id` (int): شناسه زون - **اجباری**\n\n### فیلدهای درخواست (Body):\n\n- `location_ids` (array[int]): لیست جدید شناسه مناطق - اختیاری\n\n### قوانین اعتبارسنجی:\n\n1. **معتبر بودن مناطق:**\n   - تمام شناسه‌های مناطق باید در سیستم موجود باشند\n\n2. **عدم تداخل با زون‌های دیگر:**\n   - مناطق نباید با زون‌های دیگر در همان پروفایل تداخل داشته باشند\n   - هر منطقه فقط می‌تواند به یک زون تعلق داشته باشد\n\n3. **تولید خودکار عنوان:**\n   - عنوان زون به صورت خودکار بر اساس مناطق جدید بروزرسانی می‌شود\n\n### جزئیات منطق عملکرد:\n- فقط فیلدهایی که ارسال شده‌اند بروزرسانی می‌شوند\n- با تغییر مناطق، تمام نرخ‌های ارسال مرتبط باقی می‌مانند\n- کش مربوط به پروفایل، زون و نرخ‌ها پاکسازی می‌شود\n\n### مثال:\n\n**درخواست:**\n```\nPATCH /api/v1/zones/789\n```\n\n**بدن درخواست:**\n```json\n{\n  \"location_ids\": [1, 2, 3, 10, 11]\n}\n```\n\n**پاسخ موفق (200):**\n```json\n{\n  \"id\": 789,\n  \"title\": \"زون تهران - ری - شمیرانات - پردیس - بومهن\",\n  \"status\": {\n    \"id\": 1,\n    \"title\": \"فعال\"\n  },\n  \"locations\": [\n    {\n      \"id\": 1,\n      \"title\": \"تهران\"\n    },\n    {\n      \"id\": 2,\n      \"title\": \"ری\"\n    },\n    {\n      \"id\": 3,\n      \"title\": \"شمیرانات\"\n    },\n    {\n      \"id\": 10,\n      \"title\": \"پردیس\"\n    },\n    {\n      \"id\": 11,\n      \"title\": \"بومهن\"\n    }\n  ],\n  \"created_at\": \"2024-01-15T10:30:00+00:00\"\n}\n```\n\n### کدهای خطا:\n- `404`: زون با شناسه داده شده یافت نشد\n- `400`: خطای اعتبارسنجی (مناطق نامعتبر یا تداخل با زون‌های دیگر)",
+    "operationId": "update_zone_v1_zones__zone_id__patch",
+    "parameters": [
+     {
+      "name": "zone_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Zone Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/shipping_31211b_UpdateProfileZoneRequest"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_ZoneResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Delete Zone",
+    "description": "### توضیحات:\nحذف یک زون و تمام نرخ‌های مرتبط با آن.\n\n### پارامترهای مسیر (Path Parameters):\n- `zone_id` (int): شناسه زون - **اجباری**\n\n### منطق عملکرد:\n- زون به صورت نرم (Soft Delete) حذف می‌شود\n- تمام نرخ‌های carrier و own rate مرتبط با زون نیز حذف می‌شوند\n- این عملیات **غیرقابل بازگشت** است\n- کش مربوط به پروفایل و نرخ‌ها پاکسازی می‌شود\n\n### مثال:\n\n**درخواست:**\n```\nDELETE /api/v1/zones/789\n```\n\n**پاسخ موفق (200):**\n```json\n{\n  \"message\": \"عملیات با موفقیت انجام شد\"\n}\n```\n\n### کدهای خطا:\n- `404`: زون با شناسه داده شده یافت نشد",
+    "operationId": "delete_zone_v1_zones__zone_id__delete",
+    "parameters": [
+     {
+      "name": "zone_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Zone Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_OkResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/zones/{zone_id}/carrier-rates": {
+   "post": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Create Zone Carrier Rate",
+    "description": "### توضیحات:\nایجاد یک نرخ carrier (افزونه‌ای) جدید برای یک زون.\n\n### پارامترهای مسیر (Path Parameters):\n- `zone_id` (int): شناسه زون - **اجباری**\n\n### فیلدهای درخواست (Body):\n\n- `vendor_carrier_id` (int): شناسه carrier غرفه - **اجباری**\n- `auto` (boolean): محاسبه خودکار نرخ - اختیاری (پیش‌فرض: false)\n- `base_cost` (int|null): هزینه پایه (به تومان) - اختیاری\n- `additional_cost` (int|null): هزینه اضافی (به تومان) - اختیاری\n- `is_freight_collect` (boolean): پرداخت در مقصد - اختیاری (پیش‌فرض: false)\n\n### قوانین اعتبارسنجی:\n\n1. **حالت auto = false (دستی):**\n   - `base_cost` و `additional_cost` اجباری هستند\n\n2. **حالت auto = true (خودکار):**\n   - `base_cost` و `additional_cost` نباید ارسال شوند\n   - `is_freight_collect` به صورت خودکار false تنظیم می‌شود\n\n### جزئیات منطق عملکرد:\n- با فعال‌سازی حالت self-service (auto=true)، نرخ‌ها به صورت خودکار از carrier محاسبه می‌شوند\n- vendor_carrier باید متعلق به غرفه فعلی باشد\n\n### مثال‌ها:\n\n**۱. ایجاد نرخ carrier دستی:**\n```json\n{\n  \"vendor_carrier_id\": 501,\n  \"auto\": false,\n  \"base_cost\": 50000,\n  \"additional_cost\": 10000,\n  \"is_freight_collect\": false\n}\n```\n\n**۲. ایجاد نرخ carrier خودکار:**\n```json\n{\n  \"vendor_carrier_id\": 501,\n  \"auto\": true\n}\n```\n\n**پاسخ موفق (201):**\n```json\n{\n  \"id\": 1001,\n  \"status\": {\n    \"id\": 1,\n    \"title\": \"فعال\"\n  },\n  \"vendor_carrier\": {\n    \"id\": 501,\n    \"carrier_id\": 5,\n    \"title\": \"پست جمهوری اسلامی ایران\",\n    \"status\": {\n      \"id\": 1,\n      \"title\": \"فعال\"\n    },\n    \"type\": \"post\",\n    \"config\": {\n      \"method\": 4040\n    },\n    \"created_at\": \"2024-01-15T10:30:00+00:00\",\n    \"updated_at\": \"2024-01-15T10:30:00+00:00\"\n  },\n  \"config\": {\n    \"method\": 4040,\n    \"description\": \"هزینه پایه: ۵۰۰۰۰ تومان + هزینه اضافی: ۱۰۰۰۰ تومان\"\n  },\n  \"hint\": \"این نرخ برای ارسال با پست پیشتاز استفاده می‌شود\",\n  \"created_at\": \"2024-01-15T10:30:00+00:00\",\n  \"updated_at\": \"2024-01-15T10:30:00+00:00\"\n}\n```\n\n### کدهای خطا:\n- `404`: زون یا vendor_carrier یافت نشد\n- `400`: خطای اعتبارسنجی",
+    "operationId": "create_zone_carrier_rate_v1_zones__zone_id__carrier_rates_post",
+    "parameters": [
+     {
+      "name": "zone_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Zone Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/shipping_31211b_CreateCarrierRateRequest"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "put": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Set Zone Carrier Rates",
+    "description": "### توضیحات:\nتنظیم دسته‌ای carrierها برای یک زون. تمام نرخ‌های carrier قبلی حذف و نرخ‌های جدید جایگزین می‌شوند.\n\n### پارامترهای مسیر (Path Parameters):\n- `zone_id` (int): شناسه زون - **اجباری**\n\n### فیلدهای درخواست (Body):\n\n- `vendor_carrier_ids` (array[int]): لیست شناسه carrierها - **اجباری**\n\n### منطق عملکرد:\n- عملیات Replace (جایگزینی کامل): تمام نرخ‌های قبلی حذف می‌شوند\n- نرخ‌های جدید با تنظیمات پیش‌فرض ایجاد می‌شوند:\n  - `auto = true`: محاسبه خودکار نرخ\n  - `is_freight_collect = false`: عدم پرداخت در مقصد\n- تمام vendor_carrierها باید متعلق به غرفه فعلی باشند\n- شناسه `0` مجاز نیست\n\n### مثال:\n\n**درخواست:**\n```\nPUT /api/v1/zones/789/carrier-rates\n```\n\n**بدن درخواست:**\n```json\n{\n  \"vendor_carrier_ids\": [501, 502, 503]\n}\n```\n\n**پاسخ موفق (200):**\n```json\n{\n  \"created_count\": 3,\n  \"carrier_rates\": [\n    {\n      \"id\": 1001,\n      \"vendor_carrier_id\": 501\n    },\n    {\n      \"id\": 1002,\n      \"vendor_carrier_id\": 502\n    },\n    {\n      \"id\": 1003,\n      \"vendor_carrier_id\": 503\n    }\n  ]\n}\n```\n\n### کدهای خطا:\n- `404`: زون یا یکی از carrierها یافت نشد\n- `400`: خطای اعتبارسنجی",
+    "operationId": "set_zone_carrier_rates_v1_zones__zone_id__carrier_rates_put",
+    "parameters": [
+     {
+      "name": "zone_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Zone Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/shipping_31211b_CreateCarrierRatesRequest"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "get": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Read Zone Carriers",
+    "description": "### توضیحات:\nدریافت لیست نرخ‌های carrier (افزونه‌ای) یک زون با قابلیت صفحه‌بندی.\n\n### پارامترهای مسیر (Path Parameters):\n- `zone_id` (int): شناسه زون - **اجباری**\n\n### پارامترهای کوئری (Query Parameters):\n- `page` (int): شماره صفحه - اختیاری (پیش‌فرض: 1)\n- `per_page` (int): تعداد در هر صفحه - اختیاری (پیش‌فرض: 10)\n\n### اطلاعات پاسخ:\n\n- `total` (int): تعداد کل آیتم‌ها\n- `page` (int): شماره صفحه فعلی\n- `per_page` (int): تعداد آیتم در هر صفحه\n- `data` (array): لیست نرخ‌های carrier\n  - `id` (int): شناسه نرخ\n  - `title` (string): عنوان carrier\n  - `carrier_id` (int): شناسه carrier اصلی\n  - `vendor_carrier_id` (int): شناسه vendor_carrier\n  - `status` (object): وضعیت نرخ\n  - `config` (object): پیکربندی نرخ\n  - `hint` (string): توضیحات و راهنما\n  - `created_at` (string): تاریخ ایجاد\n  - `updated_at` (string): تاریخ بروزرسانی\n\n### جزئیات:\n- صفحه‌بندی از نوع Offset-based است\n- شامل اطلاعات کامل carrier و پیکربندی نرخ‌ها\n\n### مثال:\n\n**درخواست:**\n```\nGET /api/v1/zones/789/carrier-rates?page=1&per_page=10\n```\n\n**پاسخ:**\n```json\n{\n  \"total\": 3,\n  \"page\": 1,\n  \"per_page\": 10,\n  \"data\": [\n    {\n      \"id\": 1001,\n      \"title\": \"پست جمهوری اسلامی ایران\",\n      \"carrier_id\": 5,\n      \"vendor_carrier_id\": 501,\n      \"status\": {\n        \"id\": 1,\n        \"title\": \"فعال\"\n      },\n      \"config\": {\n        \"method\": 4040,\n        \"description\": \"هزینه پایه: ۵۰۰۰۰ تومان + هزینه اضافی: ۱۰۰۰۰ تومان\"\n      },\n      \"hint\": \"این نرخ برای ارسال با پست پیشتاز استفاده می‌شود\",\n      \"created_at\": \"2024-01-15T10:30:00+00:00\",\n      \"updated_at\": \"2024-01-20T14:45:00+00:00\"\n    }\n  ]\n}\n```",
+    "operationId": "read_zone_carriers_v1_zones__zone_id__carrier_rates_get",
+    "parameters": [
+     {
+      "name": "zone_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Zone Id"
+      }
+     },
+     {
+      "name": "page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer",
+         "maximum": 2147483647,
+         "minimum": 1
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": 1,
+       "title": "Page"
+      }
+     },
+     {
+      "name": "per_page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer",
+         "maximum": 100,
+         "minimum": 1
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": 10,
+       "title": "Per Page"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_OffsetPaginationResponse_ZoneCarrierResponse_"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/zones/{zone_id}/own-rates": {
+   "post": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Create Zone Own Rates",
+    "description": "### توضیحات:\nایجاد یک نرخ ارسال دستی (Own Rate) جدید برای یک زون.\n\n### پارامترهای مسیر (Path Parameters):\n- `zone_id` (int): شناسه زون - **اجباری**\n\n### فیلدهای درخواست (Body):\n\n- `delivery_estimate_id` (int): شناسه الگوی زمان تحویل - **اجباری**\n- `cost` (int|null): هزینه ارسال (به تومان) - اجباری\n- `is_freight_collect` (boolean): پرداخت در مقصد - اختیاری (پیش‌فرض: false)\n- `freight_estimated_cost` (int|null): هزینه برآوردی پرداخت در مقصد - اختیاری\n- `min_basket_weight` (int|null): حداقل وزن سبد - اختیاری\n- `max_basket_weight` (int|null): حداکثر وزن سبد - اختیاری\n- `weight_unit` (int|null): واحد وزن - اختیاری\n  - `1`: kilogram\n  - `2`: gram\n- `min_basket_price` (int|null): حداقل قیمت سبد (به تومان) - اختیاری\n- `max_basket_price` (int|null): حداکثر قیمت سبد (به تومان) - اختیاری\n\n### قوانین اعتبارسنجی:\n\n1. **محدودیت وزن:**\n   - اگر `min_basket_weight` یا `max_basket_weight` ارسال شود، `weight_unit` اجباری است\n   - `min_basket_weight` باید کمتر از `max_basket_weight` باشد\n\n2. **محدودیت قیمت:**\n   - `min_basket_price` باید کمتر از `max_basket_price` باشد\n\n3. **پرداخت در مقصد:**\n   - اگر `is_freight_collect = true` باشد، `freight_estimated_cost` باید ارسال شود\n\n4. **تداخل نرخ‌ها:**\n   - نرخ نباید با نرخ‌های دیگر در همان زون تداخل داشته باشد\n\n### جزئیات منطق عملکرد:\n- نوع نرخ (type) به صورت خودکار بر اساس فیلدها تعیین می‌شود:\n  - اگر `min_basket_price` یا `max_basket_price` ارسال شود: `base_on_basket_price`\n  - اگر `min_basket_weight` یا `max_basket_weight` ارسال شود: `base_on_basket_weight`\n  - در غیر این صورت: `flat`\n\n### مثال‌ها:\n\n**۱. ایجاد own rate ساده:**\n```json\n{\n  \"delivery_estimate_id\": 10,\n  \"cost\": 30000\n}\n```\n\n**۲. ایجاد own rate با محدودیت وزن:**\n```json\n{\n  \"delivery_estimate_id\": 10,\n  \"cost\": 30000,\n  \"min_basket_weight\": 100,\n  \"max_basket_weight\": 5000,\n  \"weight_unit\": 2\n}\n```\n\n**۳. ایجاد own rate با محدودیت قیمت و پرداخت در مقصد:**\n```json\n{\n  \"delivery_estimate_id\": 10,\n  \"cost\": 30000,\n  \"min_basket_price\": 100000,\n  \"max_basket_price\": 10000000,\n  \"is_freight_collect\": true,\n  \"freight_estimated_cost\": 35000\n}\n```\n\n**پاسخ موفق (201):**\n```json\n{\n  \"id\": 2001,\n  \"title\": \"۲ تا ۳ روز کاری - ۳۰۰۰۰ تومان\",\n  \"cost\": 30000,\n  \"is_freight_collect\": false,\n  \"freight_estimated_cost\": null,\n  \"min_basket_weight\": 100,\n  \"max_basket_weight\": 5000,\n  \"weight_unit\": {\n    \"id\": 2,\n    \"title\": \"gram\"\n  },\n  \"min_basket_price\": null,\n  \"max_basket_price\": null,\n  \"status\": {\n    \"id\": 1,\n    \"title\": \"فعال\"\n  },\n  \"hint\": \"این نرخ برای سبدهای با وزن ۱۰۰ تا ۵۰۰۰ گرم اعمال می‌شود\",\n  \"delivery_estimate\": {\n    \"id\": 10,\n    \"title\": \"2 تا 3 روز کاری\",\n    \"min_estimate\": 2,\n    \"max_estimate\": 3\n  },\n  \"created_at\": \"2024-01-15T10:30:00+00:00\",\n  \"updated_at\": \"2024-01-15T10:30:00+00:00\"\n}\n```\n\n### کدهای خطا:\n- `404`: زون یا الگوی زمان تحویل یافت نشد\n- `400`: خطای اعتبارسنجی",
+    "operationId": "create_zone_own_rates_v1_zones__zone_id__own_rates_post",
+    "parameters": [
+     {
+      "name": "zone_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Zone Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/shipping_31211b_CreateZoneOwnRatesRequest"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "get": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Read Zone Own Rates",
+    "description": "### توضیحات:\nدریافت لیست نرخ‌های ارسال دستی (Own Rates) یک زون با قابلیت صفحه‌بندی.\n\n### پارامترهای مسیر (Path Parameters):\n- `zone_id` (int): شناسه زون - **اجباری**\n\n### پارامترهای کوئری (Query Parameters):\n- `page` (int): شماره صفحه - اختیاری (پیش‌فرض: 1)\n- `per_page` (int): تعداد در هر صفحه - اختیاری (پیش‌فرض: 100)\n\n### اطلاعات پاسخ:\n\n- `total` (int): تعداد کل آیتم‌ها\n- `page` (int): شماره صفحه فعلی\n- `per_page` (int): تعداد آیتم در هر صفحه\n- `data` (array): لیست نرخ‌های ارسال دستی\n  - `id` (int): شناسه نرخ\n  - `title` (string): عنوان نرخ\n  - `cost` (int|null): هزینه ارسال\n  - `is_freight_collect` (boolean): پرداخت در مقصد\n  - `freight_estimated_cost` (int|null): هزینه برآوردی پرداخت در مقصد\n  - `min_basket_weight` (int|null): حداقل وزن سبد\n  - `max_basket_weight` (int|null): حداکثر وزن سبد\n  - `weight_unit` (object|null): واحد وزن\n  - `min_basket_price` (int|null): حداقل قیمت سبد\n  - `max_basket_price` (int|null): حداکثر قیمت سبد\n  - `status` (object): وضعیت نرخ\n  - `hint` (string): توضیحات و راهنما\n  - `delivery_estimate` (object): زمان تحویل\n  - `created_at` (string): تاریخ ایجاد\n  - `updated_at` (string): تاریخ بروزرسانی\n\n### جزئیات:\n- صفحه‌بندی از نوع Offset-based است\n- پیش‌فرض per_page = 100 (چون معمولاً تعداد own rates کم است)\n\n### مثال:\n\n**درخواست:**\n```\nGET /api/v1/zones/789/own-rates?page=1&per_page=100\n```\n\n**پاسخ:**\n```json\n{\n  \"total\": 2,\n  \"page\": 1,\n  \"per_page\": 100,\n  \"data\": [\n    {\n      \"id\": 2001,\n      \"title\": \"۲ تا ۳ روز کاری - ۳۰۰۰۰ تومان\",\n      \"cost\": 30000,\n      \"is_freight_collect\": false,\n      \"freight_estimated_cost\": null,\n      \"min_basket_weight\": 100,\n      \"max_basket_weight\": 5000,\n      \"weight_unit\": {\n        \"id\": 2,\n        \"title\": \"gram\"\n      },\n      \"min_basket_price\": null,\n      \"max_basket_price\": null,\n      \"status\": {\n        \"id\": 1,\n        \"title\": \"فعال\"\n      },\n      \"hint\": \"این نرخ برای سبدهای با وزن ۱۰۰ تا ۵۰۰۰ گرم اعمال می‌شود\",\n      \"delivery_estimate\": {\n        \"id\": 10,\n        \"title\": \"2 تا 3 روز کاری\",\n        \"min_estimate\": 2,\n        \"max_estimate\": 3\n      },\n      \"created_at\": \"2024-01-15T10:30:00+00:00\",\n      \"updated_at\": \"2024-01-20T14:45:00+00:00\"\n    },\n    {\n      \"id\": 2002,\n      \"title\": \"پیک اکسپرس - ۵۰۰۰۰ تومان\",\n      \"cost\": 50000,\n      \"is_freight_collect\": false,\n      \"freight_estimated_cost\": null,\n      \"min_basket_weight\": null,\n      \"max_basket_weight\": null,\n      \"weight_unit\": null,\n      \"min_basket_price\": null,\n      \"max_basket_price\": null,\n      \"status\": {\n        \"id\": 1,\n        \"title\": \"فعال\"\n      },\n      \"hint\": \"ارسال فوری با پیک\",\n      \"delivery_estimate\": {\n        \"id\": 11,\n        \"title\": \"امروز\",\n        \"min_estimate\": 0,\n        \"max_estimate\": 0\n      },\n      \"created_at\": \"2024-01-15T10:30:00+00:00\",\n      \"updated_at\": \"2024-01-20T14:45:00+00:00\"\n    }\n  ]\n}\n```",
+    "operationId": "read_zone_own_rates_v1_zones__zone_id__own_rates_get",
+    "parameters": [
+     {
+      "name": "zone_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Zone Id"
+      }
+     },
+     {
+      "name": "page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer",
+         "maximum": 2147483647,
+         "minimum": 1
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": 1,
+       "title": "Page"
+      }
+     },
+     {
+      "name": "per_page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer",
+         "maximum": 100,
+         "minimum": 1
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": 100,
+       "title": "Per Page"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_OffsetPaginationResponse_ZonesOwnRatesResponse_"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/own-rates/delivery-estimates": {
+   "get": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Get Delivery Estimates",
+    "description": "### توضیحات:\nدریافت لیست الگوهای زمان تحویل (Delivery Estimates) برای استفاده در نرخ‌های ارسال دستی.\n\n### پارامترهای کوئری (Query Parameters):\n- `vendor_id` (int): فیلتر بر اساس شناسه غرفه - اختیاری\n\n### اطلاعات پاسخ:\nپاسخ شامل لیست تمام الگوهای زمان تحویل موجود است:\n\n- `data` (array): لیست الگوهای زمان تحویل\n  - `id` (int): شناسه الگو\n  - `title` (string): عنوان الگو (مثال: \"امروز\"، \"فردا\"، \"2 تا 3 روز کاری\")\n  - `min_estimate` (int): حداقل زمان تحویل\n  - `max_estimate` (int): حداکثر زمان تحویل\n  - `min_estimate_unit` (object): واحد حداقل زمان\n    - `id` (int): شناسه واحد\n    - `title` (string): عنوان واحد (minute/hour/day)\n  - `max_estimate_unit` (object): واحد حداکثر زمان\n    - `id` (int): شناسه واحد\n    - `title` (string): عنوان واحد (minute/hour/day)\n  - `vendor_id` (int|null): شناسه غربه (null یعنی عمومی)\n\n### جزئیات:\n- الگوها بر اساس زمان تحویل مرتب شده‌اند (از سریع‌ترین به کندترین)\n- این الگوها برای تعریف زمان تحویل در نرخ‌های ارسال دستی استفاده می‌شوند\n- هر غرفه می‌تواند الگوهای اختصاصی خود را داشته باشد\n\n### مثال:\n\n**درخواست:**\n```\nGET /api/v1/own-rates/delivery-estimates\n```\n\n**پاسخ:**\n```json\n{\n  \"data\": [\n    {\n      \"id\": 1,\n      \"title\": \"امروز\",\n      \"min_estimate\": 0,\n      \"max_estimate\": 0,\n      \"min_estimate_unit\": {\n        \"id\": 1,\n        \"title\": \"day\"\n      },\n      \"max_estimate_unit\": {\n        \"id\": 1,\n        \"title\": \"day\"\n      },\n      \"vendor_id\": null\n    },\n    {\n      \"id\": 2,\n      \"title\": \"فردا\",\n      \"min_estimate\": 1,\n      \"max_estimate\": 1,\n      \"min_estimate_unit\": {\n        \"id\": 1,\n        \"title\": \"day\"\n      },\n      \"max_estimate_unit\": {\n        \"id\": 1,\n        \"title\": \"day\"\n      },\n      \"vendor_id\": null\n    },\n    {\n      \"id\": 10,\n      \"title\": \"2 تا 3 روز کاری\",\n      \"min_estimate\": 2,\n      \"max_estimate\": 3,\n      \"min_estimate_unit\": {\n        \"id\": 1,\n        \"title\": \"day\"\n      },\n      \"max_estimate_unit\": {\n        \"id\": 1,\n        \"title\": \"day\"\n      },\n      \"vendor_id\": null\n    },\n    {\n      \"id\": 15,\n      \"title\": \"5 تا 7 روز کاری\",\n      \"min_estimate\": 5,\n      \"max_estimate\": 7,\n      \"min_estimate_unit\": {\n        \"id\": 1,\n        \"title\": \"day\"\n      },\n      \"max_estimate_unit\": {\n        \"id\": 1,\n        \"title\": \"day\"\n      },\n      \"vendor_id\": null\n    }\n  ]\n}\n```",
+    "operationId": "get_delivery_estimates_v1_own_rates_delivery_estimates_get",
+    "parameters": [
+     {
+      "name": "vendor_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer",
+         "maximum": 2147483647,
+         "minimum": 0
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Vendor Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_DeliveryEstimatesListResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/own-rates/{own_rate_id}": {
+   "get": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Get Own Rate",
+    "description": "### توضیحات:\nدریافت جزئیات یک نرخ ارسال دستی (Own Rate) با استفاده از شناسه.\n\n### پارامترهای مسیر (Path Parameters):\n- `own_rate_id` (int): شناسه نرخ ارسال دستی - **اجباری**\n\n### اطلاعات پاسخ:\n\n- `id` (int): شناسه نرخ\n- `title` (string): عنوان نرخ (تولید شده به صورت خودکار)\n- `cost` (int|null): هزینه ارسال (به تومان)\n- `is_freight_collect` (boolean): آیا پرداخت در مقصد فعال است؟\n- `freight_estimated_cost` (int|null): هزینه برآوردی پرداخت در مقصد\n- `min_basket_weight` (int|null): حداقل وزن سبد (بر اساس weight_unit)\n- `max_basket_weight` (int|null): حداکثر وزن سبد (بر اساس weight_unit)\n- `weight_unit` (object|null): واحد وزن\n  - `id` (int): شناسه واحد\n  - `title` (string): عنوان واحد (gram/kilogram)\n- `min_basket_price` (int|null): حداقل قیمت سبد (به تومان)\n- `max_basket_price` (int|null): حداکثر قیمت سبد (به تومان)\n- `status` (object): وضعیت نرخ\n  - `id` (int): شناسه وضعیت\n  - `title` (string): عنوان وضعیت (فعال/غیرفعال)\n- `hint` (string): توضیحات و راهنمای نرخ\n- `delivery_estimate` (object): زمان تحویل\n  - `id` (int): شناسه الگو\n  - `title` (string): عنوان الگو\n  - `min_estimate` (int): حداقل زمان\n  - `max_estimate` (int): حداکثر زمان\n- `created_at` (string): تاریخ ایجاد\n- `updated_at` (string): تاریخ بروزرسانی\n\n### مثال:\n\n**درخواست:**\n```\nGET /api/v1/own-rates/2001\n```\n\n**پاسخ:**\n```json\n{\n  \"id\": 2001,\n  \"title\": \"۲ تا ۳ روز کاری - ۳۰۰۰۰ تومان\",\n  \"cost\": 30000,\n  \"is_freight_collect\": false,\n  \"freight_estimated_cost\": null,\n  \"min_basket_weight\": 100,\n  \"max_basket_weight\": 5000,\n  \"weight_unit\": {\n    \"id\": 2,\n    \"title\": \"gram\"\n  },\n  \"min_basket_price\": null,\n  \"max_basket_price\": null,\n  \"status\": {\n    \"id\": 1,\n    \"title\": \"فعال\"\n  },\n  \"hint\": \"این نرخ برای سبدهای با وزن ۱۰۰ تا ۵۰۰۰ گرم اعمال می‌شود\",\n  \"delivery_estimate\": {\n    \"id\": 10,\n    \"title\": \"2 تا 3 روز کاری\",\n    \"min_estimate\": 2,\n    \"max_estimate\": 3\n  },\n  \"created_at\": \"2024-01-15T10:30:00+00:00\",\n  \"updated_at\": \"2024-01-20T14:45:00+00:00\"\n}\n```\n\n### کدهای خطا:\n- `404`: نرخ ارسال دستی با شناسه داده شده یافت نشد",
+    "operationId": "get_own_rate_v1_own_rates__own_rate_id__get",
+    "parameters": [
+     {
+      "name": "own_rate_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Own Rate Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_ZonesOwnRatesResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "put": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Update Own Rates",
+    "description": "### توضیحات:\nبروزرسانی تنظیمات و هزینه‌های یک نرخ ارسال دستی (Own Rate).\n\n### پارامترهای مسیر (Path Parameters):\n- `own_rate_id` (int): شناسه نرخ ارسال دستی - **اجباری**\n\n### فیلدهای درخواست (Body):\n\n- `delivery_estimate_id` (int): شناسه الگوی زمان تحویل - اختیاری\n- `cost` (int|null): هزینه ارسال (به تومان) - اختیاری\n- `is_freight_collect` (boolean): پرداخت در مقصد - اختیاری (پیش‌فرض: false)\n- `freight_estimated_cost` (int|null): هزینه برآوردی پرداخت در مقصد - اختیاری\n- `min_basket_weight` (int|null): حداقل وزن سبد - اختیاری\n- `max_basket_weight` (int|null): حداکثر وزن سبد - اختیاری\n- `weight_unit` (int|null): واحد وزن - اختیاری\n  - `1`: kilogram\n  - `2`: gram\n- `min_basket_price` (int|null): حداقل قیمت سبد (به تومان) - اختیاری\n- `max_basket_price` (int|null): حداکثر قیمت سبد (به تومان) - اختیاری\n- `status` (int): وضعیت نرخ - اختیاری\n  - `1`: فعال\n  - `0`: غیرفعال\n\n### قوانین اعتبارسنجی:\n\n1. **محدودیت وزن:**\n   - اگر `min_basket_weight` یا `max_basket_weight` ارسال شود، `weight_unit` اجباری است\n   - `min_basket_weight` باید کمتر از `max_basket_weight` باشد\n\n2. **محدودیت قیمت:**\n   - `min_basket_price` باید کمتر از `max_basket_price` باشد\n\n3. **پرداخت در مقصد:**\n   - اگر `is_freight_collect = true` باشد، `freight_estimated_cost` باید ارسال شود\n\n4. **تداخل نرخ‌ها:**\n   - نرخ نباید با نرخ‌های دیگر در همان زون تداخل داشته باشد\n\n### جزئیات منطق عملکرد:\n- فقط فیلدهایی که ارسال شده‌اند بروزرسانی می‌شوند\n- نوع نرخ (type) به صورت خودکار بر اساس فیلدها تعیین می‌شود:\n  - اگر `min_basket_price` یا `max_basket_price` ارسال شود: `base_on_basket_price`\n  - اگر `min_basket_weight` یا `max_basket_weight` ارسال شود: `base_on_basket_weight`\n  - در غیر این صورت: `flat`\n\n### مثال‌ها:\n\n**۱. تغییر هزینه:**\n```json\n{\n  \"cost\": 35000\n}\n```\n\n**۲. تغییر محدودیت وزن:**\n```json\n{\n  \"min_basket_weight\": 200,\n  \"max_basket_weight\": 10000,\n  \"weight_unit\": 2\n}\n```\n\n**۳. تغییر زمان تحویل:**\n```json\n{\n  \"delivery_estimate_id\": 15\n}\n```\n\n**۴. فعال‌سازی پرداخت در مقصد:**\n```json\n{\n  \"is_freight_collect\": true,\n  \"freight_estimated_cost\": 35000\n}\n```\n\n**۵. تغییر محدودیت قیمت:**\n```json\n{\n  \"min_basket_price\": 100000,\n  \"max_basket_price\": 10000000\n}\n```\n\n**۶. غیرفعال کردن نرخ:**\n```json\n{\n  \"status\": 0\n}\n```\n\n### پاسخ:\n\n**پاسخ موفق (200):**\n```json\n{\n  \"id\": 2001,\n  \"title\": \"۲ تا ۳ روز کاری - ۳۵۰۰۰ تومان\",\n  \"cost\": 35000,\n  \"is_freight_collect\": false,\n  \"freight_estimated_cost\": null,\n  \"min_basket_weight\": 200,\n  \"max_basket_weight\": 10000,\n  \"weight_unit\": {\n    \"id\": 2,\n    \"title\": \"gram\"\n  },\n  \"min_basket_price\": null,\n  \"max_basket_price\": null,\n  \"status\": {\n    \"id\": 1,\n    \"title\": \"فعال\"\n  },\n  \"hint\": \"این نرخ برای سبدهای با وزن ۲۰۰ تا ۱۰۰۰۰ گرم اعمال می‌شود\",\n  \"delivery_estimate\": {\n    \"id\": 10,\n    \"title\": \"2 تا 3 روز کاری\",\n    \"min_estimate\": 2,\n    \"max_estimate\": 3\n  },\n  \"created_at\": \"2024-01-15T10:30:00+00:00\",\n  \"updated_at\": \"2024-01-20T15:30:00+00:00\"\n}\n```\n\n### کدهای خطا:\n- `404`: نرخ ارسال دستی با شناسه داده شده یافت نشد\n- `400`: خطای اعتبارسنجی (پارامترهای نامعتبر)",
+    "operationId": "update_own_rates_v1_own_rates__own_rate_id__put",
+    "parameters": [
+     {
+      "name": "own_rate_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Own Rate Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/shipping_31211b_UpdateOwnRatesRequest"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Delete Own Rate",
+    "description": "### توضیحات:\nحذف دائمی یک نرخ ارسال دستی (Own Rate) از زون.\n\n### پارامترهای مسیر (Path Parameters):\n- `own_rate_id` (int): شناسه نرخ ارسال دستی - **اجباری**\n\n### منطق عملکرد:\n- نرخ ارسال دستی به صورت دائمی (Hard Delete) از دیتابیس حذف می‌شود\n- این عملیات **غیرقابل بازگشت** است\n- پس از حذف، زون دیگر این گزینه ارسال را نخواهد داشت\n- کش مربوط به زون پاکسازی می‌شود\n\n### مثال:\n\n**درخواست:**\n```\nDELETE /api/v1/own-rates/2001\n```\n\n**پاسخ موفق (200):**\n```json\n{\n  \"message\": \"عملیات با موفقیت انجام شد\"\n}\n```\n\n### کدهای خطا:\n- `404`: نرخ ارسال دستی با شناسه داده شده یافت نشد",
+    "operationId": "delete_own_rate_v1_own_rates__own_rate_id__delete",
+    "parameters": [
+     {
+      "name": "own_rate_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Own Rate Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_OkResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/carriers": {
+   "get": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Read Carriers",
+    "operationId": "read_carriers_v1_carriers_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_BulkResponse_CarrierResponse_"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/vendor-carriers": {
+   "get": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Read Vendor Carriers",
+    "operationId": "read_vendor_carriers_v1_vendor_carriers_get",
+    "parameters": [
+     {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer",
+         "maximum": 2147483647,
+         "minimum": 0
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "1: فعال  \n2: غیرفعال  \n",
+       "enum": [
+        1,
+        2
+       ],
+       "title": "Status"
+      },
+      "description": "1: فعال  \n2: غیرفعال  \n"
+     },
+     {
+      "name": "vendor_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer",
+         "maximum": 2147483647,
+         "minimum": 0
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Vendor Id"
+      }
+     },
+     {
+      "name": "prefer",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": "return=full",
+       "title": "Prefer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_BulkResponse_VendorCarrierResponse_"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/carrier-rates/{carrier_rate_id}": {
+   "get": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Get Carrier Rate",
+    "description": "### توضیحات:\nدریافت جزئیات یک نرخ carrier (افزونه‌ای) با استفاده از شناسه.\n\n### پارامترهای مسیر (Path Parameters):\n- `carrier_rate_id` (int): شناسه نرخ carrier - **اجباری**\n\n### اطلاعات پاسخ:\nپاسخ شامل اطلاعات کامل نرخ carrier به همراه جزئیات vendor_carrier و carrier اصلی است:\n\n- `id` (int): شناسه نرخ carrier\n- `status` (object): وضعیت نرخ\n  - `id` (int): شناسه وضعیت\n  - `title` (string): عنوان وضعیت (فعال/غیرفعال)\n- `vendor_carrier` (object): اطلاعات vendor_carrier\n  - `id` (int): شناسه vendor_carrier\n  - `carrier_id` (int): شناسه carrier اصلی\n  - `title` (string): عنوان carrier\n  - `status` (object): وضعیت vendor_carrier\n  - `type` (string): نوع carrier\n  - `api_url` (string|null): آدرس API carrier\n  - `logo_url` (string|null): آدرس لوگوی carrier\n  - `config` (object): تنظیمات و پیکربندی carrier\n  - `created_at` (string): تاریخ ایجاد\n  - `updated_at` (string): تاریخ بروزرسانی\n- `config` (object): پیکربندی نرخ carrier شامل هزینه‌ها و تنظیمات\n- `hint` (string): توضیحات و راهنمای نرخ\n- `created_at` (string): تاریخ ایجاد نرخ\n- `updated_at` (string): تاریخ آخرین بروزرسانی\n\n### مثال:\n\n**درخواست:**\n```\nGET /api/v1/carrier-rates/1001\n```\n\n**پاسخ:**\n```json\n{\n  \"id\": 1001,\n  \"status\": {\n    \"id\": 1,\n    \"title\": \"فعال\"\n  },\n  \"vendor_carrier\": {\n    \"id\": 501,\n    \"carrier_id\": 5,\n    \"title\": \"پست جمهوری اسلامی ایران\",\n    \"status\": {\n      \"id\": 1,\n      \"title\": \"فعال\"\n    },\n    \"type\": \"post\",\n    \"api_url\": \"https://post.ir/api\",\n    \"logo_url\": \"https://cdn.example.com/logos/post.png\",\n    \"config\": {\n      \"method\": 4040,\n      \"description\": \"محاسبه خودکار نرخ بر اساس آدرس\"\n    },\n    \"created_at\": \"2024-01-15T10:30:00+00:00\",\n    \"updated_at\": \"2024-01-20T14:45:00+00:00\"\n  },\n  \"config\": {\n    \"method\": 4040,\n    \"description\": \"هزینه پایه: ۵۰۰۰۰ تومان + هزینه اضافی: ۱۰۰۰۰ تومان\"\n  },\n  \"hint\": \"این نرخ برای ارسال با پست پیشتاز به شهرهای زون تهران استفاده می‌شود\",\n  \"created_at\": \"2024-01-15T10:30:00+00:00\",\n  \"updated_at\": \"2024-01-20T14:45:00+00:00\"\n}\n```\n\n### کدهای خطا:\n- `404`: نرخ carrier با شناسه داده شده یافت نشد",
+    "operationId": "get_carrier_rate_v1_carrier_rates__carrier_rate_id__get",
+    "parameters": [
+     {
+      "name": "carrier_rate_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Carrier Rate Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_ZoneCarriersResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "patch": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Update Carrier Rate",
+    "description": "### توضیحات:\nبروزرسانی تنظیمات و هزینه‌های یک نرخ carrier.\n\n### پارامترهای مسیر (Path Parameters):\n- `carrier_rate_id` (int): شناسه نرخ carrier - **اجباری**\n\n### فیلدهای درخواست (Body):\n\n- `auto` (boolean): محاسبه خودکار نرخ - اختیاری (پیش‌فرض: false)\n- `base_cost` (int|null): هزینه پایه (به تومان) - اختیاری\n- `additional_cost` (int|null): هزینه اضافی (به تومان) - اختیاری\n- `is_freight_collect` (boolean): پرداخت در مقصد - اختیاری (پیش‌فرض: false)\n\n### قوانین اعتبارسنجی:\n\n1. **حالت auto = false (دستی):**\n   - `base_cost` و `additional_cost` هر دو **باید** ارسال شوند (یا هر دو ارسال نشوند)\n   - اگر `is_freight_collect = false` باشد، هزینه‌ها نمی‌توانند null باشند\n\n2. **حالت auto = true (خودکار):**\n   - `base_cost` و `additional_cost` نمی‌توانند ارسال شوند\n   - `is_freight_collect` به صورت خودکار false تنظیم می‌شود\n\n3. **محدودیت‌های همزمان:**\n   - `base_cost` و `additional_cost` باید با هم ارسال شوند یا با هم null باشند\n\n### جزئیات منطق عملکرد:\n- فقط فیلدهایی که ارسال شده‌اند بروزرسانی می‌شوند\n- با فعال‌سازی حالت self-service (auto=true)، نرخ‌ها به صورت خودکار از carrier محاسبه می‌شوند\n- در حالت auto، تنظیمات دستی هزینه حذف می‌شوند\n\n### مثال‌ها:\n\n**۱. بروزرسانی هزینه‌ها (حالت دستی):**\n```json\n{\n  \"auto\": false,\n  \"base_cost\": 60000,\n  \"additional_cost\": 15000,\n  \"is_freight_collect\": false\n}\n```\n\n**۲. فعال‌سازی محاسبه خودکار:**\n```json\n{\n  \"auto\": true\n}\n```\n\n**۳. فعال‌سازی پرداخت در مقصد:**\n```json\n{\n  \"is_freight_collect\": true,\n  \"auto\": false,\n  \"base_cost\": 60000,\n  \"additional_cost\": 15000\n}\n```\n\n**۴. فقط تغییر هزینه پایه و اضافی:**\n```json\n{\n  \"base_cost\": 70000,\n  \"additional_cost\": 20000\n}\n```\n\n### پاسخ:\n\n**پاسخ موفق (200):**\n```json\n{\n  \"id\": 1001,\n  \"status\": {\n    \"id\": 1,\n    \"title\": \"فعال\"\n  },\n  \"vendor_carrier\": {\n    \"id\": 501,\n    \"carrier_id\": 5,\n    \"title\": \"پست جمهوری اسلامی ایران\",\n    \"status\": {\n      \"id\": 1,\n      \"title\": \"فعال\"\n    },\n    \"type\": \"post\",\n    \"config\": {\n      \"method\": 4040\n    },\n    \"created_at\": \"2024-01-15T10:30:00+00:00\",\n    \"updated_at\": \"2024-01-20T14:45:00+00:00\"\n  },\n  \"config\": {\n    \"method\": 4040,\n    \"description\": \"هزینه پایه: ۷۰۰۰۰ تومان + هزینه اضافی: ۲۰۰۰۰ تومان\"\n  },\n  \"hint\": \"این نرخ برای ارسال با پست پیشتاز به شهرهای زون تهران استفاده می‌شود\",\n  \"created_at\": \"2024-01-15T10:30:00+00:00\",\n  \"updated_at\": \"2024-01-20T15:30:00+00:00\"\n}\n```\n\n### کدهای خطا:\n- `404`: نرخ carrier با شناسه داده شده یافت نشد\n- `400`: خطای اعتبارسنجی (هزینه‌ها نامعتبر هستند)",
+    "operationId": "update_carrier_rate_v1_carrier_rates__carrier_rate_id__patch",
+    "parameters": [
+     {
+      "name": "carrier_rate_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Carrier Rate Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/shipping_31211b_UpdateCarrierRateRequest"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_ZoneCarriersResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Delete Carrier Rate",
+    "description": "### توضیحات:\nحذف دائمی یک نرخ carrier از زون.\n\n### پارامترهای مسیر (Path Parameters):\n- `carrier_rate_id` (int): شناسه نرخ carrier - **اجباری**\n\n### منطق عملکرد:\n- نرخ carrier به صورت دائمی (Hard Delete) از دیتابیس حذف می‌شود\n- این عملیات **غیرقابل بازگشت** است\n- پس از حذف، زون دیگر این گزینه ارسال را نخواهد داشت\n- کش مربوط به زون پاکسازی می‌شود\n\n### مثال:\n\n**درخواست:**\n```\nDELETE /api/v1/carrier-rates/1001\n```\n\n**پاسخ موفق (200):**\n```json\n{\n  \"message\": \"عملیات با موفقیت انجام شد\"\n}\n```\n\n### کدهای خطا:\n- `404`: نرخ carrier با شناسه داده شده یافت نشد",
+    "operationId": "delete_carrier_rate_v1_carrier_rates__carrier_rate_id__delete",
+    "parameters": [
+     {
+      "name": "carrier_rate_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Carrier Rate Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_OkResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/profile-products": {
+   "get": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Read Profile Products",
+    "operationId": "read_profile_products_v1_profile_products_get",
+    "parameters": [
+     {
+      "name": "profile_id[eq]",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer",
+         "maximum": 2147483647,
+         "minimum": 0
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Profile Id[Eq]"
+      }
+     },
+     {
+      "name": "profile_id[ne]",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer",
+         "maximum": 2147483647,
+         "minimum": 0
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Profile Id[Ne]"
+      }
+     },
+     {
+      "name": "product.title[like]",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Product.Title[Like]"
+      }
+     },
+     {
+      "name": "sort",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": "id:desc",
+       "title": "Sort"
+      }
+     },
+     {
+      "name": "per_page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer",
+         "maximum": 100,
+         "minimum": 1
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": 10,
+       "title": "Per Page"
+      }
+     },
+     {
+      "name": "vendor_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Vendor Id"
+      }
+     },
+     {
+      "name": "cursor",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "title": "Cursor"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_ProductsResponseCursorPagination"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/profile-products/{product_id}": {
+   "delete": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Delete Profile Product",
+    "operationId": "delete_profile_product_v1_profile_products__product_id__delete",
+    "parameters": [
+     {
+      "name": "product_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Product Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_OkResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/profile-products/{product_id}/free-shipping-rules": {
+   "get": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "دریافت تنظیمات ارسال رایگان محصول",
+    "description": "دریافت قوانین ارسال رایگان یک محصول پروفایل",
+    "operationId": "get_profile_product_free_shipping_rules_v1_profile_products__product_id__free_shipping_rules_get",
+    "parameters": [
+     {
+      "name": "product_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Product Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_GetProfileProductFreeShippingRulesResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/profile-products/free-shipping-rules": {
+   "patch": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "بروزرسانی دسته‌ای قوانین ارسال رایگان محصولات",
+    "description": "### توضیحات:\nبروزرسانی دسته‌ای قوانین ارسال رایگان برای چندین محصول همزمان.\n\n### فیلدهای درخواست (Body):\n\n- `product_ids` (array[int]): لیست شناسه محصولات - **اجباری** (حداکثر 100 محصول)\n- `default_rule` (string): قانون پیش‌فرض برای همه محصولات - اختیاری (پیش‌فرض: \"conditional\")\n  - `\"never_free\"`: محصولات در هیچ منطقه‌ای رایگان نیستند\n  - `\"conditional\"`: از تنظیمات پروفایل پیروی می‌کنند\n- `never_free_zone_ids` (array[int]): لیست زون‌هایی که محصولات در آنها هرگز رایگان نیستند - اختیاری\n\n### منطق عملکرد:\n\nاین API به شما اجازه می‌دهد قوانین ارسال رایگان را برای چندین محصول به صورت همزمان تنظیم کنید:\n\n**ویژگی‌ها:**\n- **Partial Success:** محصولات یافت نشده را گزارش می‌دهد\n- **Zone Validation:** بررسی معتبر بودن زون‌ها در پروفایل‌های مربوطه\n- **Vendor Validation:** تنظیمات فقط برای محصولات متعلق به فروشنده فعلی اعمال می‌شود\n- **محدودیت تعداد:** حداکثر 100 محصول می‌توانید در هر درخواست ارسال کنید\n\n**حالت‌های عملکرد:**\n1. اگر `default_rule = \"never_free\"` باشد، همه محصولات در همه مناطق غیررایگان می‌شوند\n2. اگر `default_rule = \"conditional\"` و `never_free_zone_ids` تنظیم شود، محصولات در آن مناطق خاص never_free می‌شوند\n3. اگر `default_rule = \"conditional\"` و `never_free_zone_ids` خالی باشد، تنظیمات قبلی پاک می‌شود\n\n### مثال‌ها:\n\n**۱. همه محصولات هرگز رایگان نیستند:**\n```json\n{\n  \"product_ids\": [123, 456, 789],\n  \"default_rule\": \"never_free\"\n}\n```\nاین تنظیم باعث می‌شود تمام محصولات مشخص شده در هیچ منطقه‌ای رایگان نشوند.\n\n**۲. تنظیم مناطق خاص never_free برای همه محصولات:**\n```json\n{\n  \"product_ids\": [123, 456, 789],\n  \"default_rule\": \"conditional\",\n  \"never_free_zone_ids\": [1, 5, 8]\n}\n```\nدر این حالت، محصولات در زون‌های 1، 5 و 8 هرگز رایگان نیستند، اما در سایر زون‌ها از تنظیمات پروفایل پیروی می‌کنند.\n\n**۳. حذف همه تنظیمات قبلی:**\n```json\n{\n  \"product_ids\": [123, 456, 789],\n  \"default_rule\": \"conditional\",\n  \"never_free_zone_ids\": []\n}\n```\nاین تنظیم باعث می‌شود محصولات از تنظیمات پیش‌فرض پروفایل پیروی کنند.\n\n### اطلاعات پاسخ:\n\n**پاسخ موفق (200):**\n```json\n{\n  \"updated_count\": 2,\n  \"updated_product_ids\": [123, 456],\n  \"not_found_product_ids\": [789],\n  \"default_rule\": \"never_free\",\n  \"never_free_zone_ids\": [1, 5, 8]\n}\n```\n\n**توضیحات فیلدهای پاسخ:**\n- `updated_count`: تعداد محصولاتی که با موفقیت بروزرسانی شدند\n- `updated_product_ids`: لیست شناسه محصولات بروزرسانی شده\n- `not_found_product_ids`: لیست شناسه محصولاتی که یافت نشدند\n- `default_rule`: قانون اعمال شده\n- `never_free_zone_ids`: لیست زون‌های never_free\n\n### کدهای خطا:\n- `400`: تعداد محصولات بیشتر از 100 است\n- `400`: زون‌ها نامعتبر هستند\n- `400`: هیچ product_id ارسال نشده است\n\n### نکات مهم:\n- این API برای bulk operations بسیار کارآمد است\n- اگر برخی محصولات یافت نشوند، عملیات برای محصولات باقی‌ ادامه می‌یابد\n- حداکثر 100 محصول در هر درخواست مجاز است\n- محصولات باید متعلق به غرفه فعلی باشند",
+    "operationId": "batch_update_profile_products_free_shipping_rules_v1_profile_products_batch_free_shipping_rules_patch",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/shipping_31211b_BatchUpdateProfileProductsFreeShippingRulesRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_BatchUpdateProfileProductsFreeShippingRulesResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/profile-products/{product_id}/shipping-info": {
+   "get": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Get Product Shipping Info",
+    "operationId": "get_product_shipping_info_v1_products__product_id__shipping_info_get",
+    "parameters": [
+     {
+      "name": "product_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0,
+       "title": "Product Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_PublicProductZonesResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/locations": {
+   "get": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Read Locations",
+    "operationId": "read_locations_v1_locations_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_BulkResponse_NestedLocationResponse_"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/shipping/profile-strategy": {
+   "get": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Read Profile Strategy",
+    "description": "### توضیحات:\nدریافت استراتژی پروفایل غرفه.\n\n### پارامترهای کوئری (Query Parameters):\n- `vendor_id` (int): شناسه غرفه - اختیاری (فقط برای ادمین)\n\n### اطلاعات پاسخ:\n\n- `vendor_id` (int): شناسه غرفه\n- `profiles_combine_type` (int): نحوه ترکیب پروفایل‌ها\n  - `1`: ارزان‌ترین\n  - `2`: گران‌ترین\n  - `3`: اولویت‌بندی شده\n- `free_shipping_for_all_basket` (boolean): ارسال رایگان برای کل سبد\n- `profiles` (array): لیست پروفایل‌ها با اولویت\n  - `id` (int): شناسه پروفایل\n  - `title` (string): عنوان پروفایل\n  - `priority` (int): اولویت پروفایل\n\n### جزئیات:\n- اگر vendor_id ارسال نشود، غرفه فعلی استفاده می‌شود\n- ادمین‌ها می‌توانند استراتژی غرفه‌های دیگر را ببینند\n- profiles_combine_type تعیین می‌کند وقتی چند پروفایل موجود است، کدام نرخ انتخاب شود\n\n### مثال:\n\n**درخواست:**\n```\nGET /api/v1/profile-strategy\n```\n\n**پاسخ:**\n```json\n{\n  \"vendor_id\": 123,\n  \"profiles_combine_type\": 1,\n  \"free_shipping_for_all_basket\": false,\n  \"profiles\": [\n    {\n      \"id\": 456,\n      \"title\": \"ارسال عادی\",\n      \"priority\": 1\n    },\n    {\n      \"id\": 457,\n      \"title\": \"ارسال سریع\",\n      \"priority\": 2\n    }\n  ]\n}\n```\n\n### توضیحات profiles_combine_type:\n- **۱ (ارزان‌ترین):** از بین تمام پروفایل‌ها، ارزان‌ترین نرخ ارسال انتخاب می‌شود\n- **۲ (گران‌ترین):** از بین تمام پروفایل‌ها، گران‌ترین نرخ ارسال انتخاب می‌شود\n- **۳ (اولویت‌بندی شده):** پروفایل‌ها بر اساس priority بررسی می‌شوند و اولین پروفایل که نرخ دارد انتخاب می‌شود",
+    "operationId": "read_profile_strategy_v1_profile_strategy_get",
+    "parameters": [
+     {
+      "name": "vendor_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer",
+         "maximum": 2147483647,
+         "minimum": 0
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Vendor Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_ProfileStrategyResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "put": {
+    "tags": [
+     "Shipping"
+    ],
+    "summary": "Create Profile Strategy",
+    "description": "### توضیحات:\nتنظیم استراتژی پروفایل غرفه.\n\n### فیلدهای درخواست (Body):\n\n- `profiles_combine_type` (int): نحوه ترکیب پروفایل‌ها - اختیاری\n  - `1`: ارزان‌ترین\n  - `2`: گران‌ترین\n  - `3`: اولویت‌بندی شده\n- `free_shipping_for_all_basket` (boolean): ارسال رایگان برای کل سبد - اختیاری\n- `vendor_id` (int): شناسه غرفه - اختیاری (فقط برای ادمین)\n\n### منطق عملکرد:\n- فقط فیلدهای ارسال شده بروزرسانی می‌شوند\n- استراتژی تعیین می‌کند کدام پروفایل برای محاسبه ارسال استفاده شود\n- `free_shipping_for_all_basket`: اگر true باشد، شرط ارسال رایگان روی کل سبد اعمال می‌شود (نه تک‌تک محصولات)\n\n### جزئیات:\n\n**profiles_combine_type (نحوه ترکیب پروفایل‌ها):**\n- **۱ (ارزان‌ترین):** از بین تمام پروفایل‌ها، ارزان‌ترین نرخ ارسال انتخاب می‌شود. این گزینه معمولاً برای مشتریان بهتر است چون هزینه کمتری می‌پردازند.\n\n- **۲ (گران‌ترین):** از بین تمام پروفایل‌ها، گران‌ترین نرخ ارسال انتخاب می‌شود. این گزینه ممکن است برای فروشنده‌ای سودآورتر باشد.\n\n- **۳ (اولویت‌بندی شده):** پروفایل‌ها بر اساس priority بررسی می‌شوند. اولین پروفایلی که برای مقصد نرخ ارسال داشته باشد، انتخاب می‌شود. این گزینه به شما کنترل دقیقی می‌دهد که کدام پروفایل در چه شرایطی استفاده شود.\n\n**free_shipping_for_all_basket (ارسال رایگان برای کل سبد):**\n- **false (پیش‌فرض):** شرط ارسال رایگان برای هر محصول به صورت جداگانه بررسی می‌شود. اگر تمام محصولات شرایط ارسال رایگان را داشته باشند، کل سبد رایگان می‌شود.\n\n- **true:** شرط ارسال رایگان روی مجموع سبد اعمال می‌شود. اگر حتی یک محصول شرایط ارسال رایگان را داشته باشد، کل سبد رایگان می‌شود.\n\n### مثال‌ها:\n\n**۱. انتخاب ارزان‌ترین نرخ:**\n```json\n{\n  \"profiles_combine_type\": 1,\n  \"vendor_id\": 123\n}\n```\n\n**۲. فعال‌سازی ارسال رایگان برای کل سبد:**\n```json\n{\n  \"free_shipping_for_all_basket\": true\n}\n```\n\n**۳. اولویت‌بندی پروفایل‌ها (با تنظیم اولویت در مرحله بعد):**\n```json\n{\n  \"profiles_combine_type\": 3,\n  \"free_shipping_for_all_basket\": false\n}\n```\n\n**۴. ترکیب هر دو تنظیم:**\n```json\n{\n  \"profiles_combine_type\": 1,\n  \"free_shipping_for_all_basket\": true,\n  \"vendor_id\": 123\n}\n```\n\n**پاسخ موفق (200):**\n```json\n{\n  \"vendor_id\": 123,\n  \"profiles_combine_type\": 1,\n  \"free_shipping_for_all_basket\": true,\n  \"updated_at\": \"2024-01-20T14:45:00+00:00\"\n}\n```\n\n### نکات مهم:\n- تنظیم first_priority_profile_id باید جداگانه انجام شود\n- اولویت پروفایل‌ها می‌تواند از طریق API جداگانه تنظیم شود\n- تغییر استراتژی می‌تواند روی هزینه ارسال برای مشتریان تأثیر بگذارد",
+    "operationId": "create_profile_strategy_v1_profile_strategy_put",
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/shipping_31211b_ProfileStrategyRequest"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_ProfileStrategyResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/shipping_31211b_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "shipping_31211b_UpdateCarrierRateRequest": {
+    "properties": {
+     "auto": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Auto",
+      "default": false
+     },
+     "base_cost": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Base Cost"
+     },
+     "additional_cost": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Additional Cost"
+     },
+     "is_freight_collect": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Is Freight Collect",
+      "default": false
+     },
+     "shipping_deadline": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Shipping Deadline"
+     },
+     "shipping_deadline_unit": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Shipping Deadline Unit"
+     }
+    },
+    "type": "object",
+    "title": "UpdateCarrierRateRequest"
+   },
+   "shipping_31211b_BulkResponse_NestedLocationResponse_": {
+    "properties": {
+     "data": {
+      "items": {
+       "$ref": "#/components/schemas/shipping_31211b_NestedLocationResponse"
+      },
+      "type": "array",
+      "title": "Data"
+     }
+    },
+    "type": "object",
+    "required": [
+     "data"
+    ],
+    "title": "BulkResponse[NestedLocationResponse]"
+   },
+   "shipping_31211b_ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   },
+   "shipping_31211b_PublicProductZonesResponse": {
+    "properties": {
+     "product_id": {
+      "type": "integer",
+      "title": "Product Id"
+     },
+     "vendor_id": {
+      "type": "integer",
+      "title": "Vendor Id"
+     },
+     "shipping_zones": {
+      "items": {
+       "$ref": "#/components/schemas/shipping_31211b_ShippingZone"
+      },
+      "type": "array",
+      "title": "Shipping Zones"
+     },
+     "free_shipping_zones": {
+      "items": {
+       "$ref": "#/components/schemas/shipping_31211b_ShippingZoneWithThreshold"
+      },
+      "type": "array",
+      "title": "Free Shipping Zones"
+     }
+    },
+    "type": "object",
+    "required": [
+     "product_id",
+     "vendor_id",
+     "shipping_zones",
+     "free_shipping_zones"
+    ],
+    "title": "PublicProductZonesResponse"
+   },
+   "shipping_31211b_ProductsResponseCursorPagination": {
+    "properties": {
+     "data": {
+      "items": {
+       "$ref": "#/components/schemas/shipping_31211b_ProductsResponse"
+      },
+      "type": "array",
+      "title": "Data"
+     },
+     "next_cursor": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Next Cursor"
+     },
+     "previous_cursor": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Previous Cursor"
+     }
+    },
+    "type": "object",
+    "required": [
+     "data",
+     "next_cursor",
+     "previous_cursor"
+    ],
+    "title": "ProductsResponseCursorPagination"
+   },
+   "shipping_31211b_ZoneListResponse": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "status": {
+      "type": "object",
+      "title": "Status"
+     },
+     "locations": {
+      "anyOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/shipping_31211b_ZonesLocation"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Locations"
+     },
+     "created_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Created At"
+     },
+     "hint": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/shipping_31211b_ZoneHint"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "exclude_hint": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/shipping_31211b_ZoneHint"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "status",
+     "locations",
+     "created_at",
+     "hint",
+     "exclude_hint"
+    ],
+    "title": "ZoneListResponse"
+   },
+   "shipping_31211b_HintVariantsEnum": {
+    "type": "string",
+    "enum": [
+     "info",
+     "warning",
+     "danger",
+     "normal",
+     "success"
+    ],
+    "title": "HintVariantsEnum"
+   },
+   "shipping_31211b_DeliveryEstimatesListResponse": {
+    "properties": {
+     "data": {
+      "items": {
+       "$ref": "#/components/schemas/shipping_31211b_DeliveryEstimatesResponse"
+      },
+      "type": "array",
+      "title": "Data"
+     }
+    },
+    "type": "object",
+    "required": [
+     "data"
+    ],
+    "title": "DeliveryEstimatesListResponse"
+   },
+   "shipping_31211b_UpdateProfileRequest": {
+    "properties": {
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     }
+    },
+    "type": "object",
+    "title": "UpdateProfileRequest"
+   },
+   "shipping_31211b_OffsetPaginationResponse_ZoneCarrierResponse_": {
+    "properties": {
+     "data": {
+      "items": {
+       "$ref": "#/components/schemas/shipping_31211b_ZoneCarrierResponse"
+      },
+      "type": "array",
+      "title": "Data"
+     },
+     "total_count": {
+      "type": "integer",
+      "title": "Total Count"
+     },
+     "total_page": {
+      "type": "integer",
+      "title": "Total Page"
+     },
+     "page": {
+      "type": "integer",
+      "title": "Page"
+     },
+     "result_count": {
+      "type": "integer",
+      "title": "Result Count"
+     },
+     "per_page": {
+      "type": "integer",
+      "title": "Per Page"
+     }
+    },
+    "type": "object",
+    "required": [
+     "data",
+     "total_count",
+     "total_page",
+     "page",
+     "result_count",
+     "per_page"
+    ],
+    "title": "OffsetPaginationResponse[ZoneCarrierResponse]"
+   },
+   "shipping_31211b_UpdateProfileZoneRequest": {
+    "properties": {
+     "location_ids": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "integer"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Location Ids"
+     }
+    },
+    "type": "object",
+    "title": "UpdateProfileZoneRequest"
+   },
+   "shipping_31211b_ProfileListPaginationResponse": {
+    "properties": {
+     "data": {
+      "items": {
+       "$ref": "#/components/schemas/shipping_31211b_api__v1__response_models__logistics__profile_response__ProfileResponse"
+      },
+      "type": "array",
+      "title": "Data"
+     },
+     "total_count": {
+      "type": "integer",
+      "title": "Total Count"
+     },
+     "total_page": {
+      "type": "integer",
+      "title": "Total Page"
+     },
+     "result_count": {
+      "type": "integer",
+      "title": "Result Count"
+     },
+     "page": {
+      "type": "integer",
+      "title": "Page"
+     },
+     "per_page": {
+      "type": "integer",
+      "title": "Per Page"
+     },
+     "is_immediate": {
+      "type": "boolean",
+      "title": "Is Immediate"
+     }
+    },
+    "type": "object",
+    "required": [
+     "data",
+     "total_count",
+     "total_page",
+     "result_count",
+     "page",
+     "per_page",
+     "is_immediate"
+    ],
+    "title": "ProfileListPaginationResponse"
+   },
+   "shipping_31211b_OffsetPaginationResponse_ZonesOwnRatesResponse_": {
+    "properties": {
+     "data": {
+      "items": {
+       "$ref": "#/components/schemas/shipping_31211b_ZonesOwnRatesResponse"
+      },
+      "type": "array",
+      "title": "Data"
+     },
+     "total_count": {
+      "type": "integer",
+      "title": "Total Count"
+     },
+     "total_page": {
+      "type": "integer",
+      "title": "Total Page"
+     },
+     "page": {
+      "type": "integer",
+      "title": "Page"
+     },
+     "result_count": {
+      "type": "integer",
+      "title": "Result Count"
+     },
+     "per_page": {
+      "type": "integer",
+      "title": "Per Page"
+     }
+    },
+    "type": "object",
+    "required": [
+     "data",
+     "total_count",
+     "total_page",
+     "page",
+     "result_count",
+     "per_page"
+    ],
+    "title": "OffsetPaginationResponse[ZonesOwnRatesResponse]"
+   },
+   "shipping_31211b_ZoneCarrierResponse": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "carrier_id": {
+      "type": "integer",
+      "title": "Carrier Id"
+     },
+     "vendor_carrier_id": {
+      "type": "integer",
+      "title": "Vendor Carrier Id"
+     },
+     "hint": {
+      "type": "string",
+      "title": "Hint"
+     },
+     "status": {
+      "type": "object",
+      "title": "Status"
+     },
+     "created_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Created At"
+     },
+     "updated_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Updated At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "carrier_id",
+     "vendor_carrier_id",
+     "hint",
+     "status",
+     "created_at",
+     "updated_at"
+    ],
+    "title": "ZoneCarrierResponse"
+   },
+   "shipping_31211b_CreateCarrierRateRequest": {
+    "properties": {
+     "auto": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Auto",
+      "default": false
+     },
+     "vendor_carrier_id": {
+      "type": "integer",
+      "maximum": 2147483647,
+      "minimum": 0,
+      "title": "Vendor Carrier Id"
+     },
+     "base_cost": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Base Cost"
+     },
+     "additional_cost": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Additional Cost"
+     },
+     "is_freight_collect": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Is Freight Collect",
+      "default": false
+     },
+     "shipping_deadline": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Shipping Deadline"
+     },
+     "shipping_deadline_unit": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Shipping Deadline Unit"
+     }
+    },
+    "type": "object",
+    "required": [
+     "vendor_carrier_id"
+    ],
+    "title": "CreateCarrierRateRequest"
+   },
+   "shipping_31211b_ZonesLocation": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title"
+    ],
+    "title": "ZonesLocation"
+   },
+   "shipping_31211b_ZoneOperationType": {
+    "type": "string",
+    "enum": [
+     "add",
+     "remove",
+     "set"
+    ],
+    "title": "ZoneOperationType"
+   },
+   "shipping_31211b_CreateZoneOwnRatesRequest": {
+    "properties": {
+     "delivery_estimate_id": {
+      "type": "integer",
+      "maximum": 2147483647,
+      "minimum": 0,
+      "title": "Delivery Estimate Id"
+     },
+     "cost": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Cost"
+     },
+     "shipping_deadline": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Shipping Deadline"
+     },
+     "shipping_deadline_unit": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Shipping Deadline Unit"
+     },
+     "is_freight_collect": {
+      "type": "boolean",
+      "title": "Is Freight Collect",
+      "default": false
+     },
+     "freight_estimated_cost": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Freight Estimated Cost"
+     },
+     "min_basket_weight": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Min Basket Weight"
+     },
+     "max_basket_weight": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Max Basket Weight"
+     },
+     "weight_unit": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Weight Unit"
+     },
+     "min_basket_price": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Min Basket Price"
+     },
+     "max_basket_price": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Max Basket Price"
+     }
+    },
+    "type": "object",
+    "required": [
+     "delivery_estimate_id",
+     "cost"
+    ],
+    "title": "CreateZoneOwnRatesRequest"
+   },
+   "shipping_31211b_ProductResponse": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "vendor_id": {
+      "type": "integer",
+      "title": "Vendor Id"
+     },
+     "status": {
+      "type": "object",
+      "title": "Status"
+     },
+     "image_url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Image Url"
+     },
+     "default_shipping_rule": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Default Shipping Rule"
+     },
+     "never_free_zone_ids": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "integer"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Never Free Zone Ids"
+     },
+     "force_free_zone_ids": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "integer"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Force Free Zone Ids"
+     },
+     "created_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Created At"
+     },
+     "updated_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Updated At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "vendor_id",
+     "status",
+     "image_url",
+     "default_shipping_rule",
+     "never_free_zone_ids",
+     "force_free_zone_ids",
+     "created_at",
+     "updated_at"
+    ],
+    "title": "ProductResponse"
+   },
+   "shipping_31211b_BatchUpdateProfileProductsFreeShippingRulesRequest": {
+    "properties": {
+     "product_ids": {
+      "items": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0
+      },
+      "type": "array",
+      "title": "Product Ids",
+      "description": "List of product IDs to update (max 300 products)"
+     },
+     "default_rule": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/shipping_31211b_FreeShippingRuleType"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "Default rule for all products - if not provided, no change will be made"
+     },
+     "never_free_zone_ids": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "integer",
+         "maximum": 2147483647,
+         "minimum": 0
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Never Free Zone Ids",
+      "description": "List of zone IDs where products are never free"
+     },
+     "zone_operation": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/shipping_31211b_ZoneOperationType"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "Zone operation type: add, remove, or set (complete replacement)",
+      "default": "set"
+     },
+     "vendor_id": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Vendor Id",
+      "description": "Vendor ID"
+     }
+    },
+    "type": "object",
+    "required": [
+     "product_ids"
+    ],
+    "title": "BatchUpdateProfileProductsFreeShippingRulesRequest",
+    "examples": [
+     {
+      "default_rule": "never_free",
+      "never_free_zone_ids": [
+       5,
+       6
+      ],
+      "product_ids": [
+       1634912,
+       1634913,
+       1634914
+      ],
+      "vendor_id": 123,
+      "zone_operation": "set"
+     },
+     {
+      "never_free_zone_ids": [
+       7,
+       8
+      ],
+      "product_ids": [
+       1634912,
+       1634913
+      ],
+      "vendor_id": 123,
+      "zone_operation": "add"
+     },
+     {
+      "never_free_zone_ids": [
+       5
+      ],
+      "product_ids": [
+       1634914
+      ],
+      "vendor_id": 123,
+      "zone_operation": "remove"
+     }
+    ]
+   },
+   "shipping_31211b_BulkResponse_VendorCarrierResponse_": {
+    "properties": {
+     "data": {
+      "items": {
+       "$ref": "#/components/schemas/shipping_31211b_VendorCarrierResponse"
+      },
+      "type": "array",
+      "title": "Data"
+     }
+    },
+    "type": "object",
+    "required": [
+     "data"
+    ],
+    "title": "BulkResponse[VendorCarrierResponse]"
+   },
+   "shipping_31211b_ZoneResponse": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "status": {
+      "type": "object",
+      "title": "Status"
+     },
+     "locations": {
+      "anyOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/shipping_31211b_ZonesLocation"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Locations"
+     },
+     "created_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "status",
+     "locations",
+     "created_at"
+    ],
+    "title": "ZoneResponse"
+   },
+   "shipping_31211b_ProductsResponse": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "vendor_id": {
+      "type": "integer",
+      "title": "Vendor Id"
+     },
+     "status": {
+      "type": "object",
+      "title": "Status"
+     },
+     "image_url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Image Url"
+     },
+     "profile": {
+      "$ref": "#/components/schemas/shipping_31211b_api__v1__response_models__logistics__product_response__ProfileResponse"
+     },
+     "created_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Created At"
+     },
+     "updated_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Updated At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "vendor_id",
+     "status",
+     "image_url",
+     "profile",
+     "created_at",
+     "updated_at"
+    ],
+    "title": "ProductsResponse"
+   },
+   "shipping_31211b_NestedLocationResponse": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "parent_id": {
+      "type": "integer",
+      "title": "Parent Id"
+     },
+     "concat_parents": {
+      "type": "string",
+      "title": "Concat Parents"
+     },
+     "children": {
+      "anyOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/shipping_31211b_NestedLocationResponse"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Children"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "parent_id",
+     "concat_parents",
+     "children"
+    ],
+    "title": "NestedLocationResponse"
+   },
+   "shipping_31211b_CarrierResponse": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "type": {
+      "type": "string",
+      "title": "Type"
+     },
+     "status": {
+      "type": "object",
+      "title": "Status"
+     },
+     "config": {
+      "type": "object",
+      "title": "Config"
+     },
+     "logo_url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Logo Url"
+     },
+     "created_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Created At"
+     },
+     "updated_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Updated At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "type",
+     "status",
+     "config",
+     "logo_url",
+     "created_at",
+     "updated_at"
+    ],
+    "title": "CarrierResponse"
+   },
+   "shipping_31211b_BatchUpdateProfileProductsFreeShippingRulesResponse": {
+    "properties": {
+     "updated_count": {
+      "type": "integer",
+      "title": "Updated Count"
+     },
+     "updated_product_ids": {
+      "items": {
+       "type": "integer"
+      },
+      "type": "array",
+      "title": "Updated Product Ids"
+     },
+     "not_found_product_ids": {
+      "items": {
+       "type": "integer"
+      },
+      "type": "array",
+      "title": "Not Found Product Ids"
+     },
+     "default_rule": {
+      "type": "string",
+      "title": "Default Rule"
+     },
+     "never_free_zone_ids": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "integer"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Never Free Zone Ids"
+     }
+    },
+    "type": "object",
+    "required": [
+     "updated_count",
+     "updated_product_ids",
+     "not_found_product_ids",
+     "default_rule"
+    ],
+    "title": "BatchUpdateProfileProductsFreeShippingRulesResponse"
+   },
+   "shipping_31211b_CreateProfileProductResponse": {
+    "properties": {
+     "assigned_count": {
+      "type": "integer",
+      "title": "Assigned Count"
+     }
+    },
+    "type": "object",
+    "required": [
+     "assigned_count"
+    ],
+    "title": "CreateProfileProductResponse"
+   },
+   "shipping_31211b_ProfileProductsResponseCursorPagination": {
+    "properties": {
+     "data": {
+      "items": {
+       "$ref": "#/components/schemas/shipping_31211b_ProductResponse"
+      },
+      "type": "array",
+      "title": "Data"
+     },
+     "total_count": {
+      "type": "integer",
+      "title": "Total Count"
+     },
+     "next_cursor": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Next Cursor"
+     },
+     "previous_cursor": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Previous Cursor"
+     }
+    },
+    "type": "object",
+    "required": [
+     "data",
+     "total_count",
+     "next_cursor",
+     "previous_cursor"
+    ],
+    "title": "ProfileProductsResponseCursorPagination"
+   },
+   "shipping_31211b_OffsetPaginationResponse_ZoneListResponse_": {
+    "properties": {
+     "data": {
+      "items": {
+       "$ref": "#/components/schemas/shipping_31211b_ZoneListResponse"
+      },
+      "type": "array",
+      "title": "Data"
+     },
+     "total_count": {
+      "type": "integer",
+      "title": "Total Count"
+     },
+     "total_page": {
+      "type": "integer",
+      "title": "Total Page"
+     },
+     "page": {
+      "type": "integer",
+      "title": "Page"
+     },
+     "result_count": {
+      "type": "integer",
+      "title": "Result Count"
+     },
+     "per_page": {
+      "type": "integer",
+      "title": "Per Page"
+     }
+    },
+    "type": "object",
+    "required": [
+     "data",
+     "total_count",
+     "total_page",
+     "page",
+     "result_count",
+     "per_page"
+    ],
+    "title": "OffsetPaginationResponse[ZoneListResponse]"
+   },
+   "shipping_31211b_CreateProfileProductsRequest": {
+    "properties": {
+     "product_ids": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "integer"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Product Ids"
+     },
+     "all_products": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "All Products",
+      "default": false
+     }
+    },
+    "type": "object",
+    "title": "CreateProfileProductsRequest"
+   },
+   "shipping_31211b_ProfileStrategyResponse": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "vendor_id": {
+      "type": "integer",
+      "title": "Vendor Id"
+     },
+     "profiles_combine_type": {
+      "anyOf": [
+       {
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Profiles Combine Type"
+     },
+     "free_shipping_for_all_basket": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Free Shipping For All Basket"
+     },
+     "created_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Created At"
+     },
+     "updated_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Updated At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "vendor_id",
+     "created_at",
+     "updated_at"
+    ],
+    "title": "ProfileStrategyResponse"
+   },
+   "shipping_31211b_VendorCarrierResponse": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "carrier_id": {
+      "type": "integer",
+      "title": "Carrier Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "status": {
+      "type": "object",
+      "title": "Status"
+     },
+     "type": {
+      "type": "string",
+      "title": "Type"
+     },
+     "api_url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Api Url"
+     },
+     "config": {
+      "anyOf": [
+       {
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Config"
+     },
+     "logo_url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Logo Url"
+     },
+     "created_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Created At"
+     },
+     "updated_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Updated At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "carrier_id",
+     "title",
+     "status",
+     "type",
+     "api_url",
+     "config",
+     "logo_url",
+     "created_at",
+     "updated_at"
+    ],
+    "title": "VendorCarrierResponse"
+   },
+   "shipping_31211b_UpdateOwnRatesRequest": {
+    "properties": {
+     "delivery_estimate_id": {
+      "type": "integer",
+      "maximum": 2147483647,
+      "minimum": 0,
+      "title": "Delivery Estimate Id"
+     },
+     "cost": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Cost"
+     },
+     "shipping_deadline": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Shipping Deadline"
+     },
+     "shipping_deadline_unit": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Shipping Deadline Unit"
+     },
+     "is_freight_collect": {
+      "type": "boolean",
+      "title": "Is Freight Collect",
+      "default": false
+     },
+     "freight_estimated_cost": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Freight Estimated Cost"
+     },
+     "min_basket_weight": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Min Basket Weight"
+     },
+     "max_basket_weight": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Max Basket Weight"
+     },
+     "weight_unit": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Weight Unit"
+     },
+     "min_basket_price": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Min Basket Price"
+     },
+     "max_basket_price": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Max Basket Price"
+     },
+     "status": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Status"
+     }
+    },
+    "type": "object",
+    "required": [
+     "delivery_estimate_id",
+     "cost"
+    ],
+    "title": "UpdateOwnRatesRequest"
+   },
+   "shipping_31211b_FreeShippingRuleType": {
+    "type": "string",
+    "enum": [
+     "conditional",
+     "never_free"
+    ],
+    "title": "FreeShippingRuleType"
+   },
+   "shipping_31211b_CreateProfileZoneRequest": {
+    "properties": {
+     "location_ids": {
+      "items": {
+       "type": "integer"
+      },
+      "type": "array",
+      "title": "Location Ids"
+     }
+    },
+    "type": "object",
+    "required": [
+     "location_ids"
+    ],
+    "title": "CreateProfileZoneRequest"
+   },
+   "shipping_31211b_ProfileStrategyRequest": {
+    "properties": {
+     "profiles_combine_type": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Profiles Combine Type"
+     },
+     "free_shipping_for_all_basket": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Free Shipping For All Basket"
+     },
+     "vendor_id": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Vendor Id"
+     }
+    },
+    "type": "object",
+    "title": "ProfileStrategyRequest"
+   },
+   "shipping_31211b_GetProfileProductFreeShippingRulesResponse": {
+    "properties": {
+     "profile_id": {
+      "type": "integer",
+      "title": "Profile Id"
+     },
+     "product_id": {
+      "type": "integer",
+      "title": "Product Id"
+     },
+     "default_rule": {
+      "type": "string",
+      "title": "Default Rule"
+     },
+     "never_free_zone_ids": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "integer"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Never Free Zone Ids"
+     }
+    },
+    "type": "object",
+    "required": [
+     "profile_id",
+     "product_id",
+     "default_rule"
+    ],
+    "title": "GetProfileProductFreeShippingRulesResponse"
+   },
+   "shipping_31211b_ZonesOwnRatesResponse": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "delivery_estimate": {
+      "$ref": "#/components/schemas/shipping_31211b_DeliveryEstimatesResponse"
+     },
+     "cost": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Cost"
+     },
+     "is_freight_collect": {
+      "type": "boolean",
+      "title": "Is Freight Collect"
+     },
+     "shipping_deadline": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Shipping Deadline"
+     },
+     "shipping_deadline_unit": {
+      "anyOf": [
+       {
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Shipping Deadline Unit"
+     },
+     "freight_estimated_cost": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Freight Estimated Cost"
+     },
+     "min_basket_weight": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Min Basket Weight"
+     },
+     "max_basket_weight": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Max Basket Weight"
+     },
+     "weight_unit": {
+      "anyOf": [
+       {
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Weight Unit"
+     },
+     "min_basket_price": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Min Basket Price"
+     },
+     "max_basket_price": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Max Basket Price"
+     },
+     "status": {
+      "type": "object",
+      "title": "Status"
+     },
+     "hint": {
+      "type": "string",
+      "title": "Hint"
+     },
+     "created_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Created At"
+     },
+     "updated_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Updated At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "delivery_estimate",
+     "cost",
+     "is_freight_collect",
+     "freight_estimated_cost",
+     "status",
+     "hint",
+     "created_at",
+     "updated_at"
+    ],
+    "title": "ZonesOwnRatesResponse"
+   },
+   "shipping_31211b_ShippingZoneWithThreshold": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "threshold": {
+      "type": "integer",
+      "title": "Threshold",
+      "default": 0
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title"
+    ],
+    "title": "ShippingZoneWithThreshold"
+   },
+   "shipping_31211b_BulkResponse_CarrierResponse_": {
+    "properties": {
+     "data": {
+      "items": {
+       "$ref": "#/components/schemas/shipping_31211b_CarrierResponse"
+      },
+      "type": "array",
+      "title": "Data"
+     }
+    },
+    "type": "object",
+    "required": [
+     "data"
+    ],
+    "title": "BulkResponse[CarrierResponse]"
+   },
+   "shipping_31211b_CreateProfileRequest": {
+    "properties": {
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "vendor_id": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2147483647,
+        "minimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Vendor Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "title"
+    ],
+    "title": "CreateProfileRequest"
+   },
+   "shipping_31211b_api__v1__response_models__logistics__product_response__ProfileResponse": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "status": {
+      "type": "object",
+      "title": "Status"
+     },
+     "is_default": {
+      "type": "boolean",
+      "title": "Is Default"
+     },
+     "created_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Created At"
+     },
+     "updated_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Updated At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "status",
+     "is_default",
+     "created_at",
+     "updated_at"
+    ],
+    "title": "ProfileResponse"
+   },
+   "shipping_31211b_DeliveryEstimatesResponse": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "estimate_hint": {
+      "type": "string",
+      "title": "Estimate Hint"
+     },
+     "estimate_type": {
+      "type": "string",
+      "title": "Estimate Type"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "estimate_hint",
+     "estimate_type"
+    ],
+    "title": "DeliveryEstimatesResponse"
+   },
+   "shipping_31211b_HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/shipping_31211b_ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "shipping_31211b_OkResponse": {
+    "properties": {
+     "message": {
+      "type": "string",
+      "title": "Message"
+     }
+    },
+    "type": "object",
+    "required": [
+     "message"
+    ],
+    "title": "OkResponse"
+   },
+   "shipping_31211b_ShippingZone": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title"
+    ],
+    "title": "ShippingZone"
+   },
+   "shipping_31211b_ZoneHint": {
+    "properties": {
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     },
+     "text": {
+      "type": "string",
+      "title": "Text"
+     },
+     "icon": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Icon"
+     },
+     "variant": {
+      "$ref": "#/components/schemas/shipping_31211b_HintVariantsEnum"
+     }
+    },
+    "type": "object",
+    "required": [
+     "text",
+     "variant"
+    ],
+    "title": "ZoneHint"
+   },
+   "shipping_31211b_ZoneCarriersResponse": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "status": {
+      "type": "object",
+      "title": "Status"
+     },
+     "vendor_carrier": {
+      "$ref": "#/components/schemas/shipping_31211b_VendorCarrierResponse"
+     },
+     "config": {
+      "anyOf": [
+       {
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Config"
+     },
+     "hint": {
+      "type": "string",
+      "title": "Hint"
+     },
+     "created_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Created At"
+     },
+     "updated_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Updated At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "status",
+     "vendor_carrier",
+     "config",
+     "hint",
+     "created_at",
+     "updated_at"
+    ],
+    "title": "ZoneCarriersResponse"
+   },
+   "shipping_31211b_CreateCarrierRatesRequest": {
+    "properties": {
+     "vendor_carrier_ids": {
+      "items": {
+       "type": "integer",
+       "maximum": 2147483647,
+       "minimum": 0
+      },
+      "type": "array",
+      "title": "Vendor Carrier Ids"
+     }
+    },
+    "type": "object",
+    "required": [
+     "vendor_carrier_ids"
+    ],
+    "title": "CreateCarrierRatesRequest"
+   },
+   "shipping_31211b_api__v1__response_models__logistics__profile_response__ProfileResponse": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "vendor_id": {
+      "type": "integer",
+      "title": "Vendor Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "status": {
+      "type": "object",
+      "title": "Status"
+     },
+     "is_default": {
+      "type": "boolean",
+      "title": "Is Default",
+      "default": false
+     },
+     "created_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Created At"
+     },
+     "product_count": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Product Count"
+     },
+     "immediate_hint_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Immediate Hint Type"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "vendor_id",
+     "title",
+     "status",
+     "created_at"
+    ],
+    "title": "ProfileResponse"
+   }
+  }
+ },
+ "servers": [
+  {
+   "url": "https://openapi.basalam.com",
+   "description": "Production Gateway"
+  }
+ ]
+}

@@ -16,6 +16,7 @@ class MessageResource implements \JsonSerializable
     private MessageSender $sender;
     private MessageContent $content;
     private ?BaseMessageResource $repliedMessage;
+    private ?int $forwardFrom;
 
     public function __construct(
         int                  $id,
@@ -26,7 +27,8 @@ class MessageResource implements \JsonSerializable
         MessageSender        $sender,
         MessageContent       $content,
         ?string              $seenAt = null,
-        ?BaseMessageResource $repliedMessage = null
+        ?BaseMessageResource $repliedMessage = null,
+        ?int                 $forwardFrom = null
     )
     {
         $this->id = $id;
@@ -38,6 +40,7 @@ class MessageResource implements \JsonSerializable
         $this->content = $content;
         $this->seenAt = $seenAt;
         $this->repliedMessage = $repliedMessage;
+        $this->forwardFrom = $forwardFrom;
     }
 
     public static function fromArray(array $data): self
@@ -51,7 +54,8 @@ class MessageResource implements \JsonSerializable
             MessageSender::fromArray($data['sender']),
             MessageContent::fromArray($data['content']),
             $data['seen_at'] ?? null,
-            isset($data['replied_message']) ? BaseMessageResource::fromArray($data['replied_message']) : null
+            isset($data['replied_message']) ? BaseMessageResource::fromArray($data['replied_message']) : null,
+            $data['forward_from'] ?? null
         );
     }
 
@@ -73,6 +77,10 @@ class MessageResource implements \JsonSerializable
 
         if ($this->repliedMessage !== null) {
             $data['replied_message'] = $this->repliedMessage->toArray();
+        }
+
+        if ($this->forwardFrom !== null) {
+            $data['forward_from'] = $this->forwardFrom;
         }
 
         return $data;
@@ -127,5 +135,10 @@ class MessageResource implements \JsonSerializable
     public function getRepliedMessage(): ?BaseMessageResource
     {
         return $this->repliedMessage;
+    }
+
+    public function getForwardFrom(): ?int
+    {
+        return $this->forwardFrom;
     }
 }

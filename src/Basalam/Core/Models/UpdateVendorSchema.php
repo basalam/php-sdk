@@ -38,6 +38,7 @@ class UpdateVendorSchema implements \JsonSerializable
     public ?int $product_sort_type;
     public ?string $identifier;
     public ?int $info_verification_status;
+    public ?array $geoLocation;
 
     public function __construct(array $data = [])
     {
@@ -77,6 +78,7 @@ class UpdateVendorSchema implements \JsonSerializable
         $this->product_sort_type = $data['product_sort_type'] ?? null;
         $this->identifier = $data['identifier'] ?? null;
         $this->info_verification_status = $data['info_verification_status'] ?? null;
+        $this->geoLocation = $data['geo_location'] ?? null;
     }
 
     public function toArray(): array
@@ -87,6 +89,8 @@ class UpdateVendorSchema implements \JsonSerializable
             if ($value !== null) {
                 if ($key === 'legal_data' && $value instanceof VendorLegalDataSchema) {
                     $result[$key] = $value->toArray();
+                } elseif ($key === 'geoLocation') {
+                    $result['geo_location'] = $value;
                 } else {
                     $result[$key] = $value;
                 }
@@ -99,5 +103,10 @@ class UpdateVendorSchema implements \JsonSerializable
     public function jsonSerialize(): array
     {
         return $this->toArray();
+    }
+
+    public function getGeoLocation(): ?array
+    {
+        return $this->geoLocation;
     }
 }

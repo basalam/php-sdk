@@ -19,6 +19,7 @@ class CustomerItemResponse implements JsonSerializable
     private ParcelOrder $order;
     private Product $product;
     private ?Variation $variation;
+    private ?int $maxRefundAmount;
 
     public function __construct(
         int                $id,
@@ -30,7 +31,8 @@ class CustomerItemResponse implements JsonSerializable
         ParcelOrder        $order,
         Product            $product,
         ?ItemLastStatus    $lastItemStatus = null,
-        ?Variation         $variation = null
+        ?Variation         $variation = null,
+        ?int               $maxRefundAmount = null
     )
     {
         $this->id = $id;
@@ -43,6 +45,7 @@ class CustomerItemResponse implements JsonSerializable
         $this->product = $product;
         $this->lastItemStatus = $lastItemStatus;
         $this->variation = $variation;
+        $this->maxRefundAmount = $maxRefundAmount;
     }
 
     public static function fromArray(array $data): self
@@ -57,7 +60,8 @@ class CustomerItemResponse implements JsonSerializable
             ParcelOrder::fromArray($data['order']),
             Product::fromArray($data['product']),
             isset($data['last_item_status']) ? ItemLastStatus::fromArray($data['last_item_status']) : null,
-            isset($data['variation']) ? Variation::fromArray($data['variation']) : null
+            isset($data['variation']) ? Variation::fromArray($data['variation']) : null,
+            $data['max_refund_amount'] ?? null
         );
     }
 
@@ -112,6 +116,11 @@ class CustomerItemResponse implements JsonSerializable
         return $this->variation;
     }
 
+    public function getMaxRefundAmount(): ?int
+    {
+        return $this->maxRefundAmount;
+    }
+
     public function toArray(): array
     {
         return [
@@ -125,6 +134,7 @@ class CustomerItemResponse implements JsonSerializable
             'order' => $this->order->toArray(),
             'product' => $this->product->toArray(),
             'variation' => $this->variation?->toArray(),
+            'max_refund_amount' => $this->maxRefundAmount,
         ];
     }
 

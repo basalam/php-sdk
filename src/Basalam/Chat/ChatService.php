@@ -34,12 +34,16 @@ class ChatService extends BaseClient
      * @param MessageRequest $request
      * @param string|null $userAgent
      * @param string|null $xClientInfo
+     * @param string|null $xRealIp
+     * @param string|null $xForwardedFor
      * @return MessageResponse
      */
     public function createMessage(
         MessageRequest $request,
         ?string        $userAgent = null,
-        ?string        $xClientInfo = null
+        ?string        $xClientInfo = null,
+        ?string        $xRealIp = null,
+        ?string        $xForwardedFor = null
     ): MessageResponse
     {
         $requestData = $request->toArray();
@@ -53,6 +57,12 @@ class ChatService extends BaseClient
         if ($xClientInfo !== null) {
             $headers['X-Client-Info'] = $xClientInfo;
         }
+        if ($xRealIp !== null) {
+            $headers['X-Real-IP'] = $xRealIp;
+        }
+        if ($xForwardedFor !== null) {
+            $headers['X-Forwarded-For'] = $xForwardedFor;
+        }
 
         $response = $this->post($endpoint, $request->toArray(), [], $headers);
         return MessageResponse::fromArray($response);
@@ -65,13 +75,15 @@ class ChatService extends BaseClient
      * @param string|null $xCreationTags
      * @param string|null $xUserSession
      * @param string|null $xClientInfo
+     * @param string|null $xRealIp
      * @return CreateChatResponse
      */
     public function createChat(
         CreateChatRequest $request,
         ?string           $xCreationTags = null,
         ?string           $xUserSession = null,
-        ?string           $xClientInfo = null
+        ?string           $xClientInfo = null,
+        ?string           $xRealIp = null
     ): CreateChatResponse
     {
         $endpoint = '/v1/chats';
@@ -85,6 +97,9 @@ class ChatService extends BaseClient
         }
         if ($xClientInfo !== null) {
             $headers['X-Client-Info'] = $xClientInfo;
+        }
+        if ($xRealIp !== null) {
+            $headers['X-Real-IP'] = $xRealIp;
         }
 
         $response = $this->post($endpoint, $request->toArray(), [], $headers);

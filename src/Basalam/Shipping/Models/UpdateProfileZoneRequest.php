@@ -1,0 +1,43 @@
+<?php
+
+namespace Basalam\Shipping\Models;
+
+/**
+ * UpdateProfileZoneRequest model.
+ */
+class UpdateProfileZoneRequest implements \JsonSerializable
+{
+    private ?array $locationIds;
+
+    public function __construct(
+        ?array $locationIds
+    ) {
+        $this->locationIds = $locationIds;
+    }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            $data['location_ids'] ?? null
+        );
+    }
+
+    public function toArray(): array
+    {
+        $result = [];
+        if ($this->locationIds !== null) {
+            $result['location_ids'] = $this->locationIds;
+        }
+        return $result;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return $this->toArray();
+    }
+
+    public function getLocationIds(): ?array
+    {
+        return $this->locationIds;
+    }
+}

@@ -10,6 +10,9 @@ use Basalam\Exceptions\BasalamException;
 use Basalam\Order\OrderService;
 use Basalam\OrderProcessing\OrderProcessingService;
 use Basalam\Search\SearchService;
+use Basalam\Shipping\ShippingService;
+use Basalam\Story\StoryService;
+use Basalam\Apps\AppsService;
 use Basalam\Upload\UploadService;
 use Basalam\Wallet\WalletService;
 use Basalam\Webhook\WebhookService;
@@ -37,6 +40,9 @@ use Basalam\Webhook\WebhookService;
  * @property \Basalam\Upload\UploadService $upload Upload service for file uploads
  * @property \Basalam\Chat\ChatService $chat Chat service for messaging
  * @property \Basalam\Webhook\WebhookService $webhook Webhook service for webhook management
+ * @property \Basalam\Shipping\ShippingService $shipping Shipping service for profiles, zones, carriers and rates
+ * @property \Basalam\Story\StoryService $story Story service for stories, reels and feeds
+ * @property \Basalam\Apps\AppsService $apps Apps service for appstore payments, plans and subscriptions
  * 
  * CoreService Methods:
  * @method \Basalam\Core\Models\ProductListResponse getVendorProducts(int $vendorId, ?\Basalam\Core\Models\GetVendorProductsSchema $queryParams = null) * Get vendor products
@@ -50,13 +56,16 @@ use Basalam\Webhook\WebhookService;
  * @method \Basalam\Core\Models\BulkProductsUpdatesCountResponse getProductsBulkActionRequestsCount(int $vendorId) * Get products bulk action requests count
  * @method \Basalam\Core\Models\BulkProductsUpdatesListResponse getProductsBulkActionRequests(int $vendorId, int $page = 1, int $perPage = 10) * Get products bulk action requests
  * @method \Basalam\Core\Models\ProductListResponse getProducts(?\Basalam\Core\Models\GetProductsQuerySchema $queryParams = null, ?string $prefer = 'return=minimal') * Get products list
+ * @method \Basalam\Core\Models\ProductPriceHistoryResponse getProductPriceHistory(int $productId, ?string $startTime = null, ?string $endTime = null) * Read product price history.
  * @method \Basalam\Core\Models\ProductResponseSchema createProduct(int $vendorId, \Basalam\Core\Models\ProductRequestSchema $request, array $photoFiles = [], mixed $videoFile = null) * Create product with optional automatic file upload
  * @method \Basalam\Core\Models\ProductResponseSchema getProduct(int $productId, ?string $prefer = 'return=minimal') * Get product details
  * @method \Basalam\Core\Models\ProductResponseSchema updateProduct(int $productId, \Basalam\Core\Models\ProductRequestSchema $request, array $photoFiles = [], mixed $videoFile = null) * Update product with optional automatic file upload
  * @method \Basalam\Core\Models\ProductResponseSchema updateProductVariation(int $productId, int $variationId, \Basalam\Core\Models\UpdateProductVariationSchema $request) * Update product variation
  * @method \Basalam\Core\Models\UnsuccessfulBulkUpdateProducts getProductsUnsuccessfulBulkActionRequests(int $requestId, int $page = 1, int $perPage = 10) * Get products unsuccessful bulk action requests
  * @method array createDiscount(int $vendorId, \Basalam\Core\Models\CreateDiscountRequestSchema $request) * Create discount for products
+ * @method array createProductReminder(int $productId) * Create a product reminder (stock/price availability notification).
  * @method array deleteDiscount(int $vendorId, \Basalam\Core\Models\DeleteDiscountRequestSchema $request) * Delete discount for products
+ * @method array deleteProductReminder(int $productId) * Delete a product reminder.
  * @method array deleteShelveProduct(int $shelveId, int $productId) * Delete product from shelve
  * @method array getProductShelves(int $productId) * Get product shelves
  * @method array getShelveProducts(int $shelveId, ?string $title = null) * Get shelve products list
@@ -111,6 +120,9 @@ use Basalam\Webhook\WebhookService;
  * @method \Basalam\OrderProcessing\Models\OrderStatsResponse getOrdersStats(string $resourceCount, ?int $vendorId = null, ?int $productId = null, ?int $customerId = null, ?string $couponCode = null, ?string $cacheControl = null) * Get order statistics.
  * @method \Basalam\OrderProcessing\Models\OrdersResponse getCustomerOrders(?\Basalam\OrderProcessing\Models\OrderFilter $filters = null) * Get a list of customer orders.
  * @method \Basalam\OrderProcessing\Models\ParcelResponse getOrderParcel(int $parcelId) * Get details of a specific order parcel.
+ * @method \Basalam\OrderProcessing\Models\ResultResponse setOrderParcelPosted(int $parcelId, \Basalam\OrderProcessing\Models\PostedOrderRequest $request) * Confirm that a parcel has been posted.
+ * @method \Basalam\OrderProcessing\Models\ResultResponse setOrderParcelPreparation(int $parcelId) * Confirm that a parcel has entered the preparation phase.
+ * @method array getCustomerOrderParcelHints(int $orderId) * Get parcel hints (auxiliary information) for a customer order.
  * 
  * SearchService Methods:
  * @method array searchProducts(\Basalam\Search\Models\ProductSearchModel $request) * Search for products.
@@ -123,11 +135,20 @@ use Basalam\Webhook\WebhookService;
  * @method \Basalam\Chat\Models\BooleanResponse deleteMessage(\Basalam\Chat\Models\DeleteMessageRequest $request) * Delete messages
  * @method \Basalam\Chat\Models\BooleanResponse forwardMessage(\Basalam\Chat\Models\ForwardMessageRequest $request, ?string $userAgent = null, ?string $xClientInfo = null) * Forward messages to other chats
  * @method \Basalam\Chat\Models\ChatListResponse getChats(\Basalam\Chat\Models\GetChatsRequest $request) * Get chats list
- * @method \Basalam\Chat\Models\CreateChatResponse createChat(\Basalam\Chat\Models\CreateChatRequest $request, ?string $xCreationTags = null, ?string $xUserSession = null, ?string $xClientInfo = null) * Create a chat
+ * @method \Basalam\Chat\Models\CreateChatResponse createChat(\Basalam\Chat\Models\CreateChatRequest $request, ?string $xCreationTags = null, ?string $xUserSession = null, ?string $xClientInfo = null, ?string $xRealIp = null) * Create a chat
  * @method \Basalam\Chat\Models\GetMessagesResponse getMessages(\Basalam\Chat\Models\GetMessagesRequest $request) * Get messages from a chat
- * @method \Basalam\Chat\Models\MessageResponse createMessage(\Basalam\Chat\Models\MessageRequest $request, ?string $userAgent = null, ?string $xClientInfo = null) * Create a message
+ * @method \Basalam\Chat\Models\MessageResponse createMessage(\Basalam\Chat\Models\MessageRequest $request, ?string $userAgent = null, ?string $xClientInfo = null, ?string $xRealIp = null, ?string $xForwardedFor = null) * Create a message
  * @method \Basalam\Chat\Models\MessageResponse editMessage(\Basalam\Chat\Models\EditMessageRequest $request, ?string $xClientInfo = null) * Edit a message
  * @method \Basalam\Chat\Models\UnseenChatCountResponse getUnseenChatCount() * Get unseen chat count
+ * @method \Basalam\Chat\Models\BotApiResponse deleteWebhookDelete(string $token) * Delete webhook (DELETE method)
+ * @method \Basalam\Chat\Models\BotApiResponse deleteWebhookGet(string $token) * Delete webhook (GET method)
+ * @method \Basalam\Chat\Models\BotApiResponse deleteWebhookPost(string $token) * Delete webhook (POST method)
+ * @method \Basalam\Chat\Models\BotApiResponse getWebhookInfo(string $token) * Get webhook info (GET method)
+ * @method \Basalam\Chat\Models\BotApiResponse getWebhookInfoPost(string $token) * Get webhook info (POST method)
+ * @method \Basalam\Chat\Models\BotApiResponse getMe(string $token) * Get bot information (GET method)
+ * @method \Basalam\Chat\Models\BotApiResponse getMePost(string $token) * Get bot information (POST method)
+ * @method \Basalam\Chat\Models\BotApiResponse logOut(string $token) * Log out (GET method)
+ * @method \Basalam\Chat\Models\BotApiResponse logOutPost(string $token) * Log out (POST method)
  * 
  * WebhookService Methods:
  * @method \Basalam\Webhook\Models\ClientListResource getWebhookCustomers(?int $page = 1, ?int $perPage = 10, ?int $webhookId = null) * Get a list of webhook customers.
@@ -142,6 +163,66 @@ use Basalam\Webhook\WebhookService;
  * @method \Basalam\Webhook\Models\WebhookRegisteredOnListResource getRegisteredWebhooks(?int $page = 1, ?int $perPage = 10, ?int $serviceId = null) * Get webhooks that the customer is registered on.
  * @method \Basalam\Webhook\Models\WebhookResource createWebhook(\Basalam\Webhook\Models\CreateWebhookRequest $request) * Create a new webhook.
  * @method \Basalam\Webhook\Models\WebhookResource updateWebhook(int $webhookId, \Basalam\Webhook\Models\UpdateWebhookRequest $request) * Update a webhook.
+ * 
+ * ShippingService Methods:
+ * @method \Basalam\Shipping\Models\BulkResponseVendorCarrierResponse readVendorCarriers(?int $status = null, ?int $vendorId = null, ?string $prefer = null) * Read Vendor Carriers.
+ * @method \Basalam\Shipping\Models\ProfileListPaginationResponse readVendorProfiles(?int $page = null, ?int $perPage = null, ?int $vendorId = null) * Read Vendor Profiles.
+ * @method \Basalam\Shipping\Models\BatchUpdateProfileProductsFreeShippingRulesResponse batchUpdateProfileProductsFreeShippingRules(\Basalam\Shipping\Models\BatchUpdateProfileProductsFreeShippingRulesRequest $request) * بروزرسانی دسته‌ای قوانین ارسال رایگان محصولات.
+ * @method \Basalam\Shipping\Models\CreateProfileProductResponse createProfileProducts(int $profileId, \Basalam\Shipping\Models\CreateProfileProductsRequest $request) * Create Profile Products.
+ * @method \Basalam\Shipping\Models\GetProfileProductFreeShippingRulesResponse getProfileProductFreeShippingRules(int $productId) * دریافت تنظیمات ارسال رایگان محصول.
+ * @method \Basalam\Shipping\Models\OkResponse deleteProfileProduct(int $productId) * Delete Profile Product.
+ * @method \Basalam\Shipping\Models\ProductsResponseCursorPagination readProfileProducts(?int $profileIdEq = null, ?int $profileIdNe = null, ?string $productTitleLike = null, ?string $sort = null, ?int $perPage = null, ?int $vendorId = null, ?string $cursor = null) * Read Profile Products.
+ * @method \Basalam\Shipping\Models\ProfileProductsResponseCursorPagination getProfileProducts(int $profileId, ?string $productTitleLike = null, ?array $neverFreeZoneIds = null, ?array $conditionalZoneIds = null, ?string $sort = null, ?int $perPage = null, ?string $cursor = null) * Get Profile Products.
+ * @method \Basalam\Shipping\Models\PublicProductZonesResponse getProductShippingInfo(int $productId) * Get Product Shipping Info.
+ * @method \Basalam\Shipping\Models\BulkResponseNestedLocationResponse readProfileUncoveredLocations(int $profileId) * Read Profile Uncovered Locations.
+ * @method \Basalam\Shipping\Models\OffsetPaginationResponseZoneListResponse readProfileZones(int $profileId, ?int $page = null, ?int $perPage = null) * Read Profile Zones.
+ * @method \Basalam\Shipping\Models\OkResponse deleteProfile(int $profileId) * Delete Profile.
+ * @method \Basalam\Shipping\Models\ProfileResponse createProfile(\Basalam\Shipping\Models\CreateProfileRequest $request) * Create Profile.
+ * @method \Basalam\Shipping\Models\ProfileResponse getProfile(int $profileId) * Get Profile.
+ * @method \Basalam\Shipping\Models\ProfileResponse updateProfile(int $profileId, \Basalam\Shipping\Models\UpdateProfileRequest $request) * Update Profile.
+ * @method \Basalam\Shipping\Models\ProfileStrategyResponse createProfileStrategy(\Basalam\Shipping\Models\ProfileStrategyRequest $request) * Create Profile Strategy.
+ * @method \Basalam\Shipping\Models\ProfileStrategyResponse readProfileStrategy(?int $vendorId = null) * Read Profile Strategy.
+ * @method \Basalam\Shipping\Models\ZoneResponse createProfileZone(int $profileId, \Basalam\Shipping\Models\CreateProfileZoneRequest $request) * Create Profile Zone.
+ * @method \Basalam\Shipping\Models\BulkResponseCarrierResponse readCarriers() * Read Carriers.
+ * @method \Basalam\Shipping\Models\BulkResponseNestedLocationResponse readLocations() * Read Locations.
+ * @method \Basalam\Shipping\Models\DeliveryEstimatesListResponse getDeliveryEstimates(?int $vendorId = null) * Get Delivery Estimates.
+ * @method \Basalam\Shipping\Models\OffsetPaginationResponseZoneCarrierResponse readZoneCarriers(int $zoneId, ?int $page = null, ?int $perPage = null) * Read Zone Carriers.
+ * @method \Basalam\Shipping\Models\OffsetPaginationResponseZonesOwnRatesResponse readZoneOwnRates(int $zoneId, ?int $page = null, ?int $perPage = null) * Read Zone Own Rates.
+ * @method \Basalam\Shipping\Models\OkResponse deleteCarrierRate(int $carrierRateId) * Delete Carrier Rate.
+ * @method \Basalam\Shipping\Models\OkResponse deleteOwnRate(int $ownRateId) * Delete Own Rate.
+ * @method \Basalam\Shipping\Models\OkResponse deleteZone(int $zoneId) * Delete Zone.
+ * @method \Basalam\Shipping\Models\ZoneCarriersResponse getCarrierRate(int $carrierRateId) * Get Carrier Rate.
+ * @method \Basalam\Shipping\Models\ZoneCarriersResponse updateCarrierRate(int $carrierRateId, \Basalam\Shipping\Models\UpdateCarrierRateRequest $request) * Update Carrier Rate.
+ * @method \Basalam\Shipping\Models\ZoneResponse getZone(int $zoneId) * Get Zone.
+ * @method \Basalam\Shipping\Models\ZoneResponse updateZone(int $zoneId, \Basalam\Shipping\Models\UpdateProfileZoneRequest $request) * Update Zone.
+ * @method \Basalam\Shipping\Models\ZonesOwnRatesResponse getOwnRate(int $ownRateId) * Get Own Rate.
+ * @method array createZoneCarrierRate(int $zoneId, \Basalam\Shipping\Models\CreateCarrierRateRequest $request) * Create Zone Carrier Rate.
+ * @method array createZoneOwnRates(int $zoneId, \Basalam\Shipping\Models\CreateZoneOwnRatesRequest $request) * Create Zone Own Rates.
+ * @method array setZoneCarrierRates(int $zoneId, \Basalam\Shipping\Models\CreateCarrierRatesRequest $request) * Set Zone Carrier Rates.
+ * @method array updateOwnRates(int $ownRateId, \Basalam\Shipping\Models\UpdateOwnRatesRequest $request) * Update Own Rates.
+ * 
+ * StoryService Methods:
+ * @method array getUserReels(int $userId, ?int $limit = null, ?int $lastIdx = null, ?string $authorization = null, ?string $auth = null) * Get User Reels.
+ * @method array createReel(\Basalam\Story\Models\CreateReelBody $request, ?string $authorization = null, ?string $auth = null) * Create Reel.
+ * @method array createStory(\Basalam\Story\Models\CreateStoryBody $request, ?string $authorization = null, ?string $auth = null) * Create Story.
+ * @method array deleteReel(int $reelId, ?string $authorization = null, ?string $auth = null) * Delete Reel.
+ * @method array discovery(?string $deviceId = null, ?int $cityId = null, ?array $categoryIds = null, ?int $nextIdx = null, ?int $count = null, ?bool $regenerate = null, ?bool $skipImpression = null, ?bool $refresh = null, ?string $authorization = null, ?string $auth = null) * Discovery.
+ * @method array hashtagFeed(string $hashtag, ?int $count = null, ?int $lastId = null, ?string $authorization = null, ?string $auth = null) * Hashtag Feed.
+ * @method array likeReel(int $reelId, \Basalam\Story\Models\LikeReelBody $request, ?string $authorization = null, ?string $auth = null) * Like Reel.
+ * @method array myReels(?int $limit = null, ?int $lastIdx = null, ?bool $isConfirmed = null, ?string $statusFilter = null, ?string $authorization = null, ?string $auth = null) * My Reels.
+ * @method array myStories(?int $count = null, ?bool $activeOnly = null, ?int $lastId = null, ?string $authorization = null, ?string $auth = null) * My Stories V3.
+ * @method array updateReel(int $reelId, \Basalam\Story\Models\UpdateReelBody $request, ?string $authorization = null, ?string $auth = null) * Update Reel.
+ * 
+ * AppsService Methods:
+ * @method \Basalam\Apps\Models\PreTransactionResource createPreTransaction(\Basalam\Apps\Models\CreatePreTransactionRequest $request, ?string $xGatewaySecret = null) * ایجاد پیش‌تراکنش.
+ * @method \Basalam\Apps\Models\TransactionListResource listTransactions(?int $page = null, ?int $perPage = null, ?int $status = null, ?string $fromDate = null, ?string $toDate = null, ?string $xGatewaySecret = null) * تاریخچه تراکنشات.
+ * @method \Basalam\Apps\Models\TransactionPublicResource inquiryTransaction(string $hashId, ?string $xGatewaySecret = null) * استعلام وضعیت تراکنش.
+ * @method \Basalam\Apps\Models\TransactionPublicResource verifyTransaction(string $hashId, ?string $xGatewaySecret = null) * تایید دستی تراکنش.
+ * @method \Basalam\Apps\Models\PlanListResource listPlans() * لیست پلن‌های من.
+ * @method \Basalam\Apps\Models\PlanSubscriptionListResource listPlanSubscriptions(?int $planId = null, ?int $status = null, ?int $customerId = null, ?int $page = null, ?int $perPage = null) * اشتراک‌های پلن‌های من.
+ * @method \Basalam\Apps\Models\PlanSubscriptionResource getPlanSubscription(int $subscriptionId) * جزئیات اشتراک فروخته‌شده.
+ * @method \Basalam\Apps\Models\TransactionListResource listUnverified(?int $page = null, ?int $perPage = null, ?string $xGatewaySecret = null) * تراکنشات تایید نشده.
+ * @method array getMethods(?bool $includeDisabled = null, ?string $xGatewaySecret = null) * لیست روش‌های پرداخت.
  * 
  */
 class BasalamClient
@@ -179,6 +260,18 @@ class BasalamClient
      */
     public WebhookService $webhook;
     /**
+     * @var ShippingService Shipping service client
+     */
+    public ShippingService $shipping;
+    /**
+     * @var StoryService Story service client
+     */
+    public StoryService $story;
+    /**
+     * @var AppsService Apps (Appstore Payment) service client
+     */
+    public AppsService $apps;
+    /**
      * @var BaseAuth Authentication instance
      */
     private BaseAuth $auth;
@@ -211,6 +304,9 @@ class BasalamClient
         $this->upload = new UploadService($auth, $this->config);
         $this->chat = new ChatService($auth, $this->config);
         $this->webhook = new WebhookService($auth, $this->config);
+        $this->shipping = new ShippingService($auth, $this->config);
+        $this->story = new StoryService($auth, $this->config);
+        $this->apps = new AppsService($auth, $this->config);
 
         // Store services for dynamic method lookup
         $this->services = [
@@ -222,6 +318,9 @@ class BasalamClient
             $this->upload,
             $this->chat,
             $this->webhook,
+            $this->shipping,
+            $this->story,
+            $this->apps,
         ];
     }
 
@@ -336,6 +435,9 @@ class BasalamClient
             'upload' => $this->upload,
             'chat' => $this->chat,
             'webhook' => $this->webhook,
+            'shipping' => $this->shipping,
+            'story' => $this->story,
+            'apps' => $this->apps,
         ];
 
         if (isset($serviceMap[$name])) {
@@ -355,7 +457,7 @@ class BasalamClient
     {
         $serviceNames = [
             'core', 'wallet', 'order', 'orderProcessing', 'order_processing',
-            'search', 'upload', 'chat', 'webhook'
+            'search', 'upload', 'chat', 'webhook', 'shipping', 'story', 'apps'
         ];
 
         return in_array($name, $serviceNames, true);

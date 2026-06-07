@@ -1,0 +1,2710 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "Basalam OpenAPI Gateway",
+  "version": "1.0.0",
+  "description": "Filtered OpenAPI endpoints from core service"
+ },
+ "paths": {
+  "/v1/pay/methods": {
+   "get": {
+    "tags": [
+     "Appstore Payment"
+    ],
+    "summary": "لیست روش‌های پرداخت",
+    "description": "روش‌های پرداخت فعال این درگاه را برمی‌گرداند.",
+    "operationId": "get_methods_v1_pay_methods_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "include_disabled",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": false,
+       "title": "Include Disabled"
+      }
+     },
+     {
+      "name": "X-Gateway-Secret",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "کلید مخفی درگاه پرداخت. از پنل توسعه‌دهندگان دریافت کنید.",
+       "title": "X-Gateway-Secret"
+      },
+      "description": "کلید مخفی درگاه پرداخت. از پنل توسعه‌دهندگان دریافت کنید."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/appstore_993c80_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/pay/transactions": {
+   "get": {
+    "tags": [
+     "Appstore Payment"
+    ],
+    "summary": "تاریخچه تراکنشات",
+    "description": "لیست تراکنشات این درگاه را با امکان فیلتر برمی‌گرداند.",
+    "operationId": "list_transactions_v1_pay_transactions_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "default": 1,
+       "title": "Page"
+      }
+     },
+     {
+      "name": "per_page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 50,
+       "minimum": 1,
+       "default": 10,
+       "title": "Per Page"
+      }
+     },
+     {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "name": "from_date",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "From Date"
+      }
+     },
+     {
+      "name": "to_date",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "To Date"
+      }
+     },
+     {
+      "name": "X-Gateway-Secret",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "کلید مخفی درگاه پرداخت. از پنل توسعه‌دهندگان دریافت کنید.",
+       "title": "X-Gateway-Secret"
+      },
+      "description": "کلید مخفی درگاه پرداخت. از پنل توسعه‌دهندگان دریافت کنید."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/appstore_993c80_TransactionListResource"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/appstore_993c80_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/pay/transactions/unverified": {
+   "get": {
+    "tags": [
+     "Appstore Payment"
+    ],
+    "summary": "تراکنشات تایید نشده",
+    "description": "تراکنش‌هایی که پرداخت انجام شده اما تایید نشده‌اند (وضعیت `unverified` — id=5) را برمی‌گرداند.\n\nبرای تایید هر تراکنش از `POST /pay/transactions/{hash_id}/verify` استفاده کنید.",
+    "operationId": "list_unverified_v1_pay_transactions_unverified_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "default": 1,
+       "title": "Page"
+      }
+     },
+     {
+      "name": "per_page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 50,
+       "minimum": 1,
+       "default": 10,
+       "title": "Per Page"
+      }
+     },
+     {
+      "name": "X-Gateway-Secret",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "کلید مخفی درگاه پرداخت. از پنل توسعه‌دهندگان دریافت کنید.",
+       "title": "X-Gateway-Secret"
+      },
+      "description": "کلید مخفی درگاه پرداخت. از پنل توسعه‌دهندگان دریافت کنید."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/appstore_993c80_TransactionListResource"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/appstore_993c80_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/pay/transactions/{hash_id}/inquiry": {
+   "get": {
+    "tags": [
+     "Appstore Payment"
+    ],
+    "summary": "استعلام وضعیت تراکنش",
+    "description": "وضعیت تراکنش را مستقیماً از باسلام استعلام می‌گیرد و رکورد محلی را به‌روز می‌کند.",
+    "operationId": "inquiry_transaction_v1_pay_transactions__hash_id__inquiry_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "hash_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Hash Id"
+      }
+     },
+     {
+      "name": "X-Gateway-Secret",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "کلید مخفی درگاه پرداخت. از پنل توسعه‌دهندگان دریافت کنید.",
+       "title": "X-Gateway-Secret"
+      },
+      "description": "کلید مخفی درگاه پرداخت. از پنل توسعه‌دهندگان دریافت کنید."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/appstore_993c80_TransactionPublicResource"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/appstore_993c80_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/pay/transactions/{hash_id}/verify": {
+   "post": {
+    "tags": [
+     "Appstore Payment"
+    ],
+    "summary": "تایید دستی تراکنش",
+    "description": "تراکنش‌هایی که در وضعیت `unverified` (id=5) هستند را به‌صورت دستی تایید می‌کند.\n\nپس از تایید موفق، وضعیت به `success` (id=3) تغییر می‌کند. در صورت تایید قبلی، خطای ۴۲۲ برمی‌گردد.",
+    "operationId": "verify_transaction_v1_pay_transactions__hash_id__verify_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "hash_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Hash Id"
+      }
+     },
+     {
+      "name": "X-Gateway-Secret",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "کلید مخفی درگاه پرداخت. از پنل توسعه‌دهندگان دریافت کنید.",
+       "title": "X-Gateway-Secret"
+      },
+      "description": "کلید مخفی درگاه پرداخت. از پنل توسعه‌دهندگان دریافت کنید."
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/appstore_993c80_TransactionPublicResource"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/appstore_993c80_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/pay/pre-transactions": {
+   "post": {
+    "tags": [
+     "Appstore Payment"
+    ],
+    "summary": "ایجاد پیش‌تراکنش",
+    "description": "یک پیش‌تراکنش ایجاد می‌کند (جریان صفحه پرداخت پلتفرم). نیاز به هدر `X-Gateway-Secret` دارد.\n\n**خرید اشتراک:** با ارسال `plan_id` (به‌همراه `user_id` که الزامی است)، به‌جای پیش‌تراکنش معمولی یک پیش‌پرداخت خرید اشتراک برای آن کاربر ساخته می‌شود. در این حالت `app_id` به‌صورت خودکار از روی `callback_url` (میان اپ‌های فعال همان توسعه‌دهنده) پیدا می‌شود و `auto_renew` برابر `false` در نظر گرفته می‌شود. پلن باید متعلق به همان توسعه‌دهنده‌ی درگاه باشد.",
+    "operationId": "create_pre_transaction_v1_pay_pre_transactions_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "X-Gateway-Secret",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "کلید مخفی درگاه پرداخت. از پنل توسعه‌دهندگان دریافت کنید.",
+       "title": "X-Gateway-Secret"
+      },
+      "description": "کلید مخفی درگاه پرداخت. از پنل توسعه‌دهندگان دریافت کنید."
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/appstore_993c80_CreatePreTransactionRequest"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/appstore_993c80_PreTransactionResource"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/appstore_993c80_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/plans": {
+   "get": {
+    "tags": [
+     "Appstore Payment"
+    ],
+    "summary": "لیست پلن‌های من",
+    "description": "لیست پلن‌های اشتراک توسعه‌دهنده احراز هویت‌شده را برمی‌گرداند.",
+    "operationId": "list_plans_v1_plans_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/appstore_993c80_PlanListResource"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "Authorization": []
+     }
+    ]
+   }
+  },
+  "/v1/plans/subscriptions": {
+   "get": {
+    "tags": [
+     "Appstore Payment"
+    ],
+    "summary": "اشتراک‌های پلن‌های من",
+    "description": "لیست اشتراک‌های خریداری‌شده از پلن‌های توسعه‌دهنده احراز هویت‌شده را برمی‌گرداند. قابل فیلتر بر اساس plan_id و status (شناسه عددی وضعیت).",
+    "operationId": "list_plan_subscriptions_v1_plans_subscriptions_get",
+    "security": [
+     {
+      "Authorization": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "plan_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "فیلتر بر اساس پلن خاص",
+       "title": "Plan Id"
+      },
+      "description": "فیلتر بر اساس پلن خاص"
+     },
+     {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "فیلتر وضعیت: 1=pending, 2=trial, 3=active, 4=grace_period, 5=cancelled, 6=expired",
+       "title": "Status"
+      },
+      "description": "فیلتر وضعیت: 1=pending, 2=trial, 3=active, 4=grace_period, 5=cancelled, 6=expired"
+     },
+     {
+      "name": "customer_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "فیلتر بر اساس مشتری خاص",
+       "title": "Customer Id"
+      },
+      "description": "فیلتر بر اساس مشتری خاص"
+     },
+     {
+      "name": "page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "description": "شماره صفحه",
+       "default": 1,
+       "title": "Page"
+      },
+      "description": "شماره صفحه"
+     },
+     {
+      "name": "per_page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 100,
+       "minimum": 1,
+       "description": "تعداد در هر صفحه",
+       "default": 20,
+       "title": "Per Page"
+      },
+      "description": "تعداد در هر صفحه"
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/appstore_993c80_PlanSubscriptionListResource"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/appstore_993c80_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/v1/plans/subscriptions/{subscription_id}": {
+   "get": {
+    "tags": [
+     "Appstore Payment"
+    ],
+    "summary": "جزئیات اشتراک فروخته‌شده",
+    "description": "جزئیات یک اشتراک خریداری‌شده از پلن‌های توسعه‌دهنده احراز هویت‌شده را برمی‌گرداند.",
+    "operationId": "get_plan_subscription_v1_plans_subscriptions__subscription_id__get",
+    "security": [
+     {
+      "Authorization": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "subscription_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Subscription Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/appstore_993c80_PlanSubscriptionResource"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/appstore_993c80_HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "appstore_993c80_PlanSubscriptionBillingPeriodResource": {
+    "properties": {
+     "slug": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Slug"
+     },
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     }
+    },
+    "type": "object",
+    "title": "PlanSubscriptionBillingPeriodResource",
+    "description": "نوع دوره صورتحساب پلن — {slug, title}"
+   },
+   "appstore_993c80_EnumObjectResource": {
+    "properties": {
+     "slug": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Slug"
+     },
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     }
+    },
+    "type": "object",
+    "title": "EnumObjectResource"
+   },
+   "appstore_993c80_ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   },
+   "appstore_993c80_PlanResource": {
+    "properties": {
+     "id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id"
+     },
+     "developer_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Developer Id"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "description": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Description"
+     },
+     "price": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Price"
+     },
+     "discount_percent": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Discount Percent"
+     },
+     "effective_price": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Effective Price"
+     },
+     "billing_period_type": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/appstore_993c80_EnumObjectResource"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "billing_period_days": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Billing Period Days"
+     },
+     "trial_days": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Trial Days"
+     },
+     "features": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Features",
+      "default": []
+     },
+     "limitations": {
+      "anyOf": [
+       {
+        "additionalProperties": {
+         "type": "integer"
+        },
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Limitations"
+     },
+     "upgrade_allowed": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Upgrade Allowed"
+     },
+     "downgrade_allowed": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Downgrade Allowed"
+     },
+     "change_mode": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/appstore_993c80_EnumObjectResource"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "status": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/appstore_993c80_StatusObjectResource"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "apps": {
+      "anyOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/appstore_993c80_PlanAppResource"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Apps",
+      "default": []
+     },
+     "created_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Created At"
+     },
+     "updated_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Updated At"
+     }
+    },
+    "type": "object",
+    "title": "PlanResource"
+   },
+   "appstore_993c80_TransactionListResource": {
+    "properties": {
+     "data": {
+      "anyOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/appstore_993c80_TransactionResource"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Data",
+      "default": []
+     },
+     "result_count": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Result Count",
+      "default": 1
+     },
+     "total_count": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Total Count"
+     },
+     "total_page": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Total Page"
+     },
+     "page": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Page",
+      "default": 1
+     },
+     "per_page": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Per Page",
+      "default": 10
+     }
+    },
+    "type": "object",
+    "title": "TransactionListResource"
+   },
+   "appstore_993c80_DeveloperEmbedResource": {
+    "properties": {
+     "id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "email": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Email"
+     },
+     "mobile": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Mobile"
+     }
+    },
+    "type": "object",
+    "title": "DeveloperEmbedResource",
+    "description": "نسخه تعبیه‌شده در سایر ریسورس‌ها - فقط ادمین email/mobile می‌بینه"
+   },
+   "appstore_993c80_PlanSubscriptionStatusResource": {
+    "properties": {
+     "id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id"
+     },
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     },
+     "slug": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Slug"
+     }
+    },
+    "type": "object",
+    "title": "PlanSubscriptionStatusResource"
+   },
+   "appstore_993c80_StatusObjectResource": {
+    "properties": {
+     "id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id"
+     },
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     }
+    },
+    "type": "object",
+    "title": "StatusObjectResource"
+   },
+   "appstore_993c80_TransactionMethodDataResource": {
+    "properties": {
+     "id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id",
+      "description": "شناسه روش پرداخت"
+     },
+     "amount": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Amount",
+      "description": "مبلغ پرداخت‌شده با این روش (ریال)"
+     }
+    },
+    "type": "object",
+    "title": "TransactionMethodDataResource",
+    "description": "آیتم تفکیک روش پرداخت — {id, amount}."
+   },
+   "appstore_993c80_PreTransactionGatewayResource": {
+    "properties": {
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title",
+      "description": "عنوان درگاه"
+     },
+     "logo": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Logo",
+      "description": "آدرس لوگوی درگاه"
+     }
+    },
+    "type": "object",
+    "title": "PreTransactionGatewayResource",
+    "description": "اطلاعات نمایشی درگاه پرداخت."
+   },
+   "appstore_993c80_PlanSubscriptionResource": {
+    "properties": {
+     "id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id"
+     },
+     "plan": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/appstore_993c80_PlanSubscriptionPlanResource"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "customer": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/appstore_993c80_PlanSubscriptionCustomerResource"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "app": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/appstore_993c80_PlanSubscriptionAppResource"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "status": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/appstore_993c80_PlanSubscriptionStatusResource"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "auto_renew": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Auto Renew"
+     },
+     "current_period_start": {
+      "anyOf": [
+       {},
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Current Period Start"
+     },
+     "current_period_end": {
+      "anyOf": [
+       {},
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Current Period End"
+     },
+     "trial_end": {
+      "anyOf": [
+       {},
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Trial End"
+     },
+     "grace_period_end": {
+      "anyOf": [
+       {},
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Grace Period End"
+     },
+     "cancelled_at": {
+      "anyOf": [
+       {},
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Cancelled At"
+     },
+     "created_at": {
+      "anyOf": [
+       {},
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Created At"
+     },
+     "updated_at": {
+      "anyOf": [
+       {},
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Updated At"
+     }
+    },
+    "type": "object",
+    "title": "PlanSubscriptionResource"
+   },
+   "appstore_993c80_CreatePreTransactionRequest": {
+    "properties": {
+     "reference_id": {
+      "type": "string",
+      "maxLength": 255,
+      "title": "Reference Id",
+      "description": "شناسه یکتای سفارش در سیستم شما — نباید تکراری باشد"
+     },
+     "amount": {
+      "type": "integer",
+      "title": "Amount",
+      "description": "مبلغ کل به ریال — حداقل ۱۰٬۰۰۰ ریال (۱۰۰۰ تومان)، حداکثر ۱۰۰٬۰۰۰٬۰۰۰٬۰۰۰ ریال"
+     },
+     "description": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Description",
+      "description": "توضیحات سفارش که در صفحه پرداخت نمایش داده می‌شود"
+     },
+     "callback_url": {
+      "type": "string",
+      "title": "Callback Url",
+      "description": "آدرس بازگشت پس از تکمیل پرداخت — باید با http یا https شروع شود"
+     },
+     "plan_id": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "exclusiveMinimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Plan Id",
+      "description": "شناسه پلن اشتراک (اختیاری) — در صورت ارسال، یک پیش‌پرداخت خرید اشتراک ساخته می‌شود و ارسال user_id الزامی است"
+     },
+     "user_id": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "exclusiveMinimum": 0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "User Id",
+      "description": "شناسه کاربری که اشتراک برای او خریداری می‌شود — هنگام ارسال plan_id الزامی است"
+     }
+    },
+    "type": "object",
+    "required": [
+     "reference_id",
+     "amount",
+     "callback_url"
+    ],
+    "title": "CreatePreTransactionRequest"
+   },
+   "appstore_993c80_PreTransactionPayMethodResource": {
+    "properties": {
+     "id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id",
+      "description": "شناسه روش پرداخت"
+     },
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title",
+      "description": "عنوان روش پرداخت"
+     },
+     "driver": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Driver",
+      "description": "درایور روش پرداخت"
+     },
+     "enabled": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Enabled",
+      "description": "فعال بودن این روش برای پیش‌تراکنش"
+     }
+    },
+    "type": "object",
+    "title": "PreTransactionPayMethodResource",
+    "description": "روش پرداخت قابل استفاده در این پیش‌تراکنش."
+   },
+   "appstore_993c80_PreTransactionAppResource": {
+    "properties": {
+     "id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id",
+      "description": "شناسه اپ"
+     },
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title",
+      "description": "عنوان اپ"
+     },
+     "logo": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Logo",
+      "description": "آدرس لوگوی اپ"
+     },
+     "slug": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Slug",
+      "description": "اسلاگ اپ"
+     },
+     "link": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Link",
+      "description": "لینک اپ"
+     },
+     "cta_link": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Cta Link",
+      "description": "لینک فراخوان (CTA)"
+     },
+     "description": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Description",
+      "description": "توضیحات اپ"
+     }
+    },
+    "type": "object",
+    "title": "PreTransactionAppResource",
+    "description": "اپ مرتبط با callback_url."
+   },
+   "appstore_993c80_PlanAppResource": {
+    "properties": {
+     "id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id"
+     },
+     "slug": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Slug"
+     },
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     },
+     "logo": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Logo"
+     }
+    },
+    "type": "object",
+    "title": "PlanAppResource"
+   },
+   "appstore_993c80_PreTransactionResource": {
+    "properties": {
+     "hash_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Hash Id",
+      "description": "شناسه پیش‌تراکنش — در endpoint های بعدی استفاده می‌شود"
+     },
+     "pay_url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Pay Url",
+      "description": "لینک هدایت کاربر به صفحه پرداخت پلتفرم"
+     },
+     "order": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/appstore_993c80_PreTransactionOrderResource"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "جزئیات سفارش — شامل amount، fee و total_amount"
+     },
+     "expired_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Expired At",
+      "description": "زمان انقضا — فرمت ISO 8601"
+     },
+     "gateway": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/appstore_993c80_PreTransactionGatewayResource"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "اطلاعات نمایشی درگاه — شامل عنوان و لوگو"
+     },
+     "app": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/appstore_993c80_PreTransactionAppResource"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "اپ مرتبط با callback_url — شامل title، logo، slug، link و cta_link"
+     },
+     "pay_methods": {
+      "anyOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/appstore_993c80_PreTransactionPayMethodResource"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Pay Methods",
+      "description": "روش‌های پرداخت موجود برای این درگاه"
+     },
+     "plan": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/appstore_993c80_PreTransactionPlanResource"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "اطلاعات خلاصه پلن — فقط برای پیش‌تراکنش‌های خرید اشتراک؛ در غیر این صورت null"
+     }
+    },
+    "type": "object",
+    "title": "PreTransactionResource"
+   },
+   "appstore_993c80_PlanListResource": {
+    "properties": {
+     "data": {
+      "anyOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/appstore_993c80_PlanResource"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Data",
+      "default": []
+     },
+     "result_count": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Result Count",
+      "default": 1
+     },
+     "total_count": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Total Count"
+     },
+     "total_page": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Total Page"
+     },
+     "page": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Page",
+      "default": 1
+     },
+     "per_page": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Per Page",
+      "default": 10
+     }
+    },
+    "type": "object",
+    "title": "PlanListResource"
+   },
+   "appstore_993c80_TransactionStatusResource": {
+    "properties": {
+     "id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id",
+      "description": "شناسه وضعیت"
+     },
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title",
+      "description": "عنوان وضعیت"
+     },
+     "slug": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Slug",
+      "description": "اسلاگ وضعیت"
+     }
+    },
+    "type": "object",
+    "title": "TransactionStatusResource",
+    "description": "وضعیت تراکنش — {id, title, slug}."
+   },
+   "appstore_993c80_PlanSubscriptionPlanResource": {
+    "properties": {
+     "id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "price": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Price"
+     },
+     "billing_period_type": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/appstore_993c80_PlanSubscriptionBillingPeriodResource"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "trial_days": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Trial Days"
+     }
+    },
+    "type": "object",
+    "title": "PlanSubscriptionPlanResource"
+   },
+   "appstore_993c80_TransactionResource": {
+    "properties": {
+     "hash_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Hash Id",
+      "description": "شناسه عمومی تراکنش"
+     },
+     "gateway_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Gateway Id",
+      "description": "شناسه درگاه"
+     },
+     "reference_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reference Id",
+      "description": "شناسه سفارش در سیستم توسعه‌دهنده"
+     },
+     "amount": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Amount",
+      "description": "مبلغ کل به ریال"
+     },
+     "description": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Description",
+      "description": "توضیحات سفارش"
+     },
+     "callback_url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Callback Url",
+      "description": "آدرس بازگشت پس از پرداخت"
+     },
+     "user_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "User Id",
+      "description": "شناسه کاربر باسلام"
+     },
+     "mobile": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Mobile",
+      "description": "شماره موبایل کاربر"
+     },
+     "methods_data": {
+      "anyOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/appstore_993c80_TransactionMethodDataResource"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Methods Data",
+      "description": "تفکیک روش‌های پرداخت استفاده‌شده — هر آیتم {id, amount}"
+     },
+     "status": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/appstore_993c80_TransactionStatusResource"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "وضعیت تراکنش — شامل id، title و slug"
+     },
+     "pay_url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Pay Url",
+      "description": "لینک پرداخت — فقط در وضعیت pending"
+     },
+     "meta_data": {
+      "anyOf": [
+       {
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Meta Data",
+      "description": "داده‌های خام استعلام/پرداخت از باسلام — ساختار آزاد (مثل pay، verify، inquiry)"
+     },
+     "created_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Created At",
+      "description": "زمان ایجاد"
+     },
+     "updated_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Updated At",
+      "description": "زمان آخرین به‌روزرسانی"
+     },
+     "gateway_domain": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Gateway Domain",
+      "description": "دامنه درگاه — فقط در پاسخ ادمین"
+     },
+     "developer": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/appstore_993c80_DeveloperEmbedResource"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "اطلاعات توسعه‌دهنده — فقط در پاسخ ادمین"
+     },
+     "transaction_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Transaction Id",
+      "description": "شناسه داخلی تراکنش — فقط در پاسخ ادمین"
+     }
+    },
+    "type": "object",
+    "title": "TransactionResource"
+   },
+   "appstore_993c80_PlanSubscriptionAppResource": {
+    "properties": {
+     "id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id"
+     },
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     },
+     "slug": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Slug"
+     }
+    },
+    "type": "object",
+    "title": "PlanSubscriptionAppResource"
+   },
+   "appstore_993c80_PlanSubscriptionListResource": {
+    "properties": {
+     "data": {
+      "anyOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/appstore_993c80_PlanSubscriptionResource"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Data",
+      "default": []
+     },
+     "result_count": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Result Count",
+      "default": 1
+     },
+     "total_count": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Total Count"
+     },
+     "total_page": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Total Page"
+     },
+     "page": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Page",
+      "default": 1
+     },
+     "per_page": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Per Page",
+      "default": 10
+     }
+    },
+    "type": "object",
+    "title": "PlanSubscriptionListResource"
+   },
+   "appstore_993c80_PreTransactionOrderResource": {
+    "properties": {
+     "amount": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Amount",
+      "description": "مبلغ اصلی سفارش (ریال)"
+     },
+     "customer_fee": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Customer Fee",
+      "description": "سهم خریدار از کارمزد (ریال)"
+     },
+     "customer_fee_percentage": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Customer Fee Percentage",
+      "description": "درصد سهم خریدار از کارمزد"
+     },
+     "merchant_fee": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Merchant Fee",
+      "description": "سهم پذیرنده از کارمزد (ریال)"
+     },
+     "merchant_fee_percentage": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Merchant Fee Percentage",
+      "description": "درصد سهم پذیرنده از کارمزد"
+     },
+     "total_fee": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Total Fee",
+      "description": "کل کارمزد (ریال)"
+     },
+     "total_amount": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Total Amount",
+      "description": "مبلغ نهایی قابل پرداخت توسط خریدار (ریال)"
+     }
+    },
+    "type": "object",
+    "title": "PreTransactionOrderResource",
+    "description": "جزئیات مالی سفارش — مبلغ، کارمزد و مبلغ نهایی قابل پرداخت."
+   },
+   "appstore_993c80_PreTransactionPlanBillingPeriodResource": {
+    "properties": {
+     "slug": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Slug",
+      "description": "اسلاگ دوره صورتحساب"
+     },
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title",
+      "description": "عنوان دوره صورتحساب"
+     }
+    },
+    "type": "object",
+    "title": "PreTransactionPlanBillingPeriodResource",
+    "description": "نوع دوره صورتحساب پلن."
+   },
+   "appstore_993c80_HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/appstore_993c80_ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "appstore_993c80_PreTransactionPlanResource": {
+    "properties": {
+     "id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id",
+      "description": "شناسه پلن"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name",
+      "description": "نام پلن"
+     },
+     "description": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Description",
+      "description": "توضیحات پلن"
+     },
+     "price": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Price",
+      "description": "قیمت پلن (ریال)"
+     },
+     "discount_percent": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Discount Percent",
+      "description": "درصد تخفیف"
+     },
+     "effective_price": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Effective Price",
+      "description": "قیمت مؤثر پس از تخفیف (ریال)"
+     },
+     "billing_period_type": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/appstore_993c80_PreTransactionPlanBillingPeriodResource"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "نوع دوره صورتحساب"
+     },
+     "trial_days": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Trial Days",
+      "description": "تعداد روزهای دوره آزمایشی"
+     },
+     "auto_renew": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Auto Renew",
+      "description": "تمدید خودکار انتخاب‌شده توسط کاربر"
+     }
+    },
+    "type": "object",
+    "title": "PreTransactionPlanResource",
+    "description": "اطلاعات خلاصه پلن — فقط برای پیش‌تراکنش‌های خرید اشتراک."
+   },
+   "appstore_993c80_TransactionPublicResource": {
+    "properties": {
+     "hash_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Hash Id",
+      "description": "شناسه عمومی تراکنش"
+     },
+     "gateway_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Gateway Id",
+      "description": "شناسه درگاه"
+     },
+     "reference_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reference Id",
+      "description": "شناسه سفارش در سیستم توسعه‌دهنده"
+     },
+     "amount": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Amount",
+      "description": "مبلغ کل به ریال"
+     },
+     "description": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Description",
+      "description": "توضیحات سفارش"
+     },
+     "callback_url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Callback Url",
+      "description": "آدرس بازگشت پس از پرداخت"
+     },
+     "user_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "User Id",
+      "description": "شناسه کاربر باسلام"
+     },
+     "mobile": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Mobile",
+      "description": "شماره موبایل کاربر"
+     },
+     "methods_data": {
+      "anyOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/appstore_993c80_TransactionMethodDataResource"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Methods Data",
+      "description": "تفکیک روش‌های پرداخت استفاده‌شده — هر آیتم {id, amount}"
+     },
+     "status": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/appstore_993c80_TransactionStatusResource"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "وضعیت تراکنش — شامل id، title و slug"
+     },
+     "pay_url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Pay Url",
+      "description": "لینک پرداخت — فقط در وضعیت pending"
+     },
+     "created_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Created At",
+      "description": "زمان ایجاد"
+     },
+     "updated_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Updated At",
+      "description": "زمان آخرین به‌روزرسانی"
+     }
+    },
+    "type": "object",
+    "title": "TransactionPublicResource"
+   },
+   "appstore_993c80_PlanSubscriptionCustomerResource": {
+    "properties": {
+     "id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     }
+    },
+    "type": "object",
+    "title": "PlanSubscriptionCustomerResource"
+   }
+  }
+ },
+ "servers": [
+  {
+   "url": "https://openapi.basalam.com",
+   "description": "Production Gateway"
+  }
+ ]
+}

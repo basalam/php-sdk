@@ -39,7 +39,7 @@ class WebhookService extends BaseClient
      */
     public function getWebhookServices(): ServiceListResource
     {
-        $endpoint = '/v1/services';
+        $endpoint = '/v1/webhooks/services';
         $response = $this->get($endpoint);
         return ServiceListResource::fromArray($response);
     }
@@ -52,7 +52,7 @@ class WebhookService extends BaseClient
      */
     public function createWebhookService(CreateServiceRequest $request): ServiceResource
     {
-        $endpoint = '/v1/services';
+        $endpoint = '/v1/webhooks/services';
         $response = $this->post($endpoint, $request->toArray());
         return ServiceResource::fromArray($response);
     }

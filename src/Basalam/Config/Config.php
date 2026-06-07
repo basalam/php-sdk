@@ -136,6 +136,21 @@ class Config
                     path: '',
                     apiVersion: 'v1'
                 ),
+                'shipping' => new ServiceConfig(
+                    baseUrl: 'https://openapi.basalam.com',
+                    path: '',
+                    apiVersion: 'v1'
+                ),
+                'story' => new ServiceConfig(
+                    baseUrl: 'https://openapi.basalam.com',
+                    path: '',
+                    apiVersion: 'v1'
+                ),
+                'apps' => new ServiceConfig(
+                    baseUrl: 'https://openapi.basalam.com',
+                    path: '',
+                    apiVersion: 'v1'
+                ),
             ];
         }
     }

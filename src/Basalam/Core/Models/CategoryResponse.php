@@ -11,6 +11,21 @@ class CategoryResponse implements \JsonSerializable
 
     public static function fromArray(array $data): self
     {
+        // Tolerate a "response" envelope (sometimes a JSON-encoded string) that
+        // the gateway may wrap a single category in. Guarded by the absence of
+        // "id" so recursive children parsing is never affected.
+        if (!isset($data['id']) && isset($data['response'])) {
+            $inner = $data['response'];
+            if (is_string($inner)) {
+                $decoded = json_decode($inner, true);
+                if (is_array($decoded)) {
+                    $data = $decoded;
+                }
+            } elseif (is_array($inner)) {
+                $data = $inner;
+            }
+        }
+
         $model = new self();
         $model->id = $data['id'] ?? null;
         $model->title = $data['title'] ?? null;
