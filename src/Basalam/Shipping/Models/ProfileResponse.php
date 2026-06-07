@@ -12,7 +12,7 @@ class ProfileResponse implements \JsonSerializable
     private int $id;
     private int $vendorId;
     private string $title;
-    private array $status;
+    private ?array $status;
     private ?bool $isDefault;
     private ?DateTime $createdAt;
     private ?int $productCount;
@@ -22,7 +22,7 @@ class ProfileResponse implements \JsonSerializable
         int $id,
         int $vendorId,
         string $title,
-        array $status,
+        ?array $status,
         ?bool $isDefault,
         ?DateTime $createdAt,
         ?int $productCount,
@@ -44,7 +44,7 @@ class ProfileResponse implements \JsonSerializable
             $data['id'],
             $data['vendor_id'],
             $data['title'],
-            $data['status'],
+            $data['status'] ?? null,
             $data['is_default'] ?? null,
             isset($data['created_at']) ? new DateTime($data['created_at']) : null,
             $data['product_count'] ?? null,
@@ -92,7 +92,7 @@ class ProfileResponse implements \JsonSerializable
         return $this->title;
     }
 
-    public function getStatus(): array
+    public function getStatus(): ?array
     {
         return $this->status;
     }

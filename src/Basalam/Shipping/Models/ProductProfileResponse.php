@@ -11,7 +11,7 @@ class ProductProfileResponse implements \JsonSerializable
 {
     private int $id;
     private string $title;
-    private array $status;
+    private ?array $status;
     private bool $isDefault;
     private ?DateTime $createdAt;
     private ?DateTime $updatedAt;
@@ -19,7 +19,7 @@ class ProductProfileResponse implements \JsonSerializable
     public function __construct(
         int $id,
         string $title,
-        array $status,
+        ?array $status,
         bool $isDefault,
         ?DateTime $createdAt,
         ?DateTime $updatedAt
@@ -37,7 +37,7 @@ class ProductProfileResponse implements \JsonSerializable
         return new self(
             $data['id'],
             $data['title'],
-            $data['status'],
+            $data['status'] ?? null,
             $data['is_default'],
             isset($data['created_at']) ? new DateTime($data['created_at']) : null,
             isset($data['updated_at']) ? new DateTime($data['updated_at']) : null
@@ -71,7 +71,7 @@ class ProductProfileResponse implements \JsonSerializable
         return $this->title;
     }
 
-    public function getStatus(): array
+    public function getStatus(): ?array
     {
         return $this->status;
     }

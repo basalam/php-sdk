@@ -18,7 +18,7 @@ class CreateCarrierRatesRequest implements \JsonSerializable
     public static function fromArray(array $data): self
     {
         return new self(
-            $data['vendor_carrier_ids']
+            $data['vendor_carrier_ids'] ?? []
         );
     }
 

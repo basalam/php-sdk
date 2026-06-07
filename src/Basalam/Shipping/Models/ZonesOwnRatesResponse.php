@@ -11,7 +11,7 @@ class ZonesOwnRatesResponse implements \JsonSerializable
 {
     private int $id;
     private string $title;
-    private DeliveryEstimatesResponse $deliveryEstimate;
+    private ?DeliveryEstimatesResponse $deliveryEstimate;
     private ?int $cost;
     private bool $isFreightCollect;
     private ?int $shippingDeadline;
@@ -22,7 +22,7 @@ class ZonesOwnRatesResponse implements \JsonSerializable
     private ?array $weightUnit;
     private ?int $minBasketPrice;
     private ?int $maxBasketPrice;
-    private array $status;
+    private ?array $status;
     private string $hint;
     private ?DateTime $createdAt;
     private ?DateTime $updatedAt;
@@ -30,7 +30,7 @@ class ZonesOwnRatesResponse implements \JsonSerializable
     public function __construct(
         int $id,
         string $title,
-        DeliveryEstimatesResponse $deliveryEstimate,
+        ?DeliveryEstimatesResponse $deliveryEstimate,
         ?int $cost,
         bool $isFreightCollect,
         ?int $shippingDeadline,
@@ -41,7 +41,7 @@ class ZonesOwnRatesResponse implements \JsonSerializable
         ?array $weightUnit,
         ?int $minBasketPrice,
         ?int $maxBasketPrice,
-        array $status,
+        ?array $status,
         string $hint,
         ?DateTime $createdAt,
         ?DateTime $updatedAt
@@ -70,7 +70,7 @@ class ZonesOwnRatesResponse implements \JsonSerializable
         return new self(
             $data['id'],
             $data['title'],
-            DeliveryEstimatesResponse::fromArray($data['delivery_estimate']),
+            isset($data['delivery_estimate']) ? DeliveryEstimatesResponse::fromArray($data['delivery_estimate']) : null,
             $data['cost'] ?? null,
             $data['is_freight_collect'],
             $data['shipping_deadline'] ?? null,
@@ -81,7 +81,7 @@ class ZonesOwnRatesResponse implements \JsonSerializable
             $data['weight_unit'] ?? null,
             $data['min_basket_price'] ?? null,
             $data['max_basket_price'] ?? null,
-            $data['status'],
+            $data['status'] ?? null,
             $data['hint'],
             isset($data['created_at']) ? new DateTime($data['created_at']) : null,
             isset($data['updated_at']) ? new DateTime($data['updated_at']) : null
@@ -93,7 +93,7 @@ class ZonesOwnRatesResponse implements \JsonSerializable
         $result = [];
         $result['id'] = $this->id;
         $result['title'] = $this->title;
-        $result['delivery_estimate'] = $this->deliveryEstimate->toArray();
+        $result['delivery_estimate'] = $this->deliveryEstimate !== null ? $this->deliveryEstimate->toArray() : null;
         $result['cost'] = $this->cost;
         $result['is_freight_collect'] = $this->isFreightCollect;
         if ($this->shippingDeadline !== null) {
@@ -140,7 +140,7 @@ class ZonesOwnRatesResponse implements \JsonSerializable
         return $this->title;
     }
 
-    public function getDeliveryEstimate(): DeliveryEstimatesResponse
+    public function getDeliveryEstimate(): ?DeliveryEstimatesResponse
     {
         return $this->deliveryEstimate;
     }
@@ -195,7 +195,7 @@ class ZonesOwnRatesResponse implements \JsonSerializable
         return $this->maxBasketPrice;
     }
 
-    public function getStatus(): array
+    public function getStatus(): ?array
     {
         return $this->status;
     }

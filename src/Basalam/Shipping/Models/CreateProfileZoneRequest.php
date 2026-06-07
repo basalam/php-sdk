@@ -18,7 +18,7 @@ class CreateProfileZoneRequest implements \JsonSerializable
     public static function fromArray(array $data): self
     {
         return new self(
-            $data['location_ids']
+            $data['location_ids'] ?? []
         );
     }
 

@@ -12,8 +12,8 @@ class CarrierResponse implements \JsonSerializable
     private int $id;
     private string $title;
     private string $type;
-    private array $status;
-    private array $config;
+    private ?array $status;
+    private ?array $config;
     private ?string $logoUrl;
     private ?DateTime $createdAt;
     private ?DateTime $updatedAt;
@@ -22,8 +22,8 @@ class CarrierResponse implements \JsonSerializable
         int $id,
         string $title,
         string $type,
-        array $status,
-        array $config,
+        ?array $status,
+        ?array $config,
         ?string $logoUrl,
         ?DateTime $createdAt,
         ?DateTime $updatedAt
@@ -44,8 +44,8 @@ class CarrierResponse implements \JsonSerializable
             $data['id'],
             $data['title'],
             $data['type'],
-            $data['status'],
-            $data['config'],
+            $data['status'] ?? null,
+            $data['config'] ?? null,
             $data['logo_url'] ?? null,
             isset($data['created_at']) ? new DateTime($data['created_at']) : null,
             isset($data['updated_at']) ? new DateTime($data['updated_at']) : null
@@ -86,12 +86,12 @@ class CarrierResponse implements \JsonSerializable
         return $this->type;
     }
 
-    public function getStatus(): array
+    public function getStatus(): ?array
     {
         return $this->status;
     }
 
-    public function getConfig(): array
+    public function getConfig(): ?array
     {
         return $this->config;
     }

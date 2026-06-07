@@ -12,7 +12,7 @@ class ProductResponse implements \JsonSerializable
     private int $id;
     private string $title;
     private int $vendorId;
-    private array $status;
+    private ?array $status;
     private ?string $imageUrl;
     private ?string $defaultShippingRule;
     private ?array $neverFreeZoneIds;
@@ -24,7 +24,7 @@ class ProductResponse implements \JsonSerializable
         int $id,
         string $title,
         int $vendorId,
-        array $status,
+        ?array $status,
         ?string $imageUrl,
         ?string $defaultShippingRule,
         ?array $neverFreeZoneIds,
@@ -50,7 +50,7 @@ class ProductResponse implements \JsonSerializable
             $data['id'],
             $data['title'],
             $data['vendor_id'],
-            $data['status'],
+            $data['status'] ?? null,
             $data['image_url'] ?? null,
             $data['default_shipping_rule'] ?? null,
             $data['never_free_zone_ids'] ?? null,
@@ -96,7 +96,7 @@ class ProductResponse implements \JsonSerializable
         return $this->vendorId;
     }
 
-    public function getStatus(): array
+    public function getStatus(): ?array
     {
         return $this->status;
     }

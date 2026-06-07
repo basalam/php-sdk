@@ -12,9 +12,9 @@ class ProductsResponse implements \JsonSerializable
     private int $id;
     private string $title;
     private int $vendorId;
-    private array $status;
+    private ?array $status;
     private ?string $imageUrl;
-    private ProductProfileResponse $profile;
+    private ?ProductProfileResponse $profile;
     private ?DateTime $createdAt;
     private ?DateTime $updatedAt;
 
@@ -22,9 +22,9 @@ class ProductsResponse implements \JsonSerializable
         int $id,
         string $title,
         int $vendorId,
-        array $status,
+        ?array $status,
         ?string $imageUrl,
-        ProductProfileResponse $profile,
+        ?ProductProfileResponse $profile,
         ?DateTime $createdAt,
         ?DateTime $updatedAt
     ) {
@@ -44,9 +44,9 @@ class ProductsResponse implements \JsonSerializable
             $data['id'],
             $data['title'],
             $data['vendor_id'],
-            $data['status'],
+            $data['status'] ?? null,
             $data['image_url'] ?? null,
-            ProductProfileResponse::fromArray($data['profile']),
+            isset($data['profile']) ? ProductProfileResponse::fromArray($data['profile']) : null,
             isset($data['created_at']) ? new DateTime($data['created_at']) : null,
             isset($data['updated_at']) ? new DateTime($data['updated_at']) : null
         );
@@ -60,7 +60,7 @@ class ProductsResponse implements \JsonSerializable
         $result['vendor_id'] = $this->vendorId;
         $result['status'] = $this->status;
         $result['image_url'] = $this->imageUrl;
-        $result['profile'] = $this->profile->toArray();
+        $result['profile'] = $this->profile !== null ? $this->profile->toArray() : null;
         $result['created_at'] = $this->createdAt !== null ? $this->createdAt->format('Y-m-d H:i:s') : null;
         $result['updated_at'] = $this->updatedAt !== null ? $this->updatedAt->format('Y-m-d H:i:s') : null;
         return $result;
@@ -86,7 +86,7 @@ class ProductsResponse implements \JsonSerializable
         return $this->vendorId;
     }
 
-    public function getStatus(): array
+    public function getStatus(): ?array
     {
         return $this->status;
     }
@@ -96,7 +96,7 @@ class ProductsResponse implements \JsonSerializable
         return $this->imageUrl;
     }
 
-    public function getProfile(): ProductProfileResponse
+    public function getProfile(): ?ProductProfileResponse
     {
         return $this->profile;
     }

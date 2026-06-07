@@ -14,7 +14,7 @@ class ZoneCarrierResponse implements \JsonSerializable
     private int $carrierId;
     private int $vendorCarrierId;
     private string $hint;
-    private array $status;
+    private ?array $status;
     private ?DateTime $createdAt;
     private ?DateTime $updatedAt;
 
@@ -24,7 +24,7 @@ class ZoneCarrierResponse implements \JsonSerializable
         int $carrierId,
         int $vendorCarrierId,
         string $hint,
-        array $status,
+        ?array $status,
         ?DateTime $createdAt,
         ?DateTime $updatedAt
     ) {
@@ -46,7 +46,7 @@ class ZoneCarrierResponse implements \JsonSerializable
             $data['carrier_id'],
             $data['vendor_carrier_id'],
             $data['hint'],
-            $data['status'],
+            $data['status'] ?? null,
             isset($data['created_at']) ? new DateTime($data['created_at']) : null,
             isset($data['updated_at']) ? new DateTime($data['updated_at']) : null
         );
@@ -96,7 +96,7 @@ class ZoneCarrierResponse implements \JsonSerializable
         return $this->hint;
     }
 
-    public function getStatus(): array
+    public function getStatus(): ?array
     {
         return $this->status;
     }

@@ -31,8 +31,8 @@ class BatchUpdateProfileProductsFreeShippingRulesResponse implements \JsonSerial
     {
         return new self(
             $data['updated_count'],
-            $data['updated_product_ids'],
-            $data['not_found_product_ids'],
+            $data['updated_product_ids'] ?? [],
+            $data['not_found_product_ids'] ?? [],
             $data['default_rule'],
             $data['never_free_zone_ids'] ?? null
         );

@@ -17,10 +17,10 @@ information, handle bank account operations, and manage categories and attribute
 | [`createVendor()`](#create-vendor)                                                               | Create new vendor                              | `userId`, `request: CreateVendorSchema`                                 |
 | [`updateVendor()`](#update-vendor)                                                               | Update vendor                                  | `vendorId`, `request: UpdateVendorSchema`                               |
 | [`getVendor()`](#get-vendor)                                                                     | Get vendor details                             | `vendorId`, `prefer`                                                    |
-| [`getDefaultShippingMethods()`](#get-default-shipping-methods)                                   | Get default shipping methods                   | `None`                                                                  |
-| [`getShippingMethods()`](#get-shipping-methods)                                                  | Get shipping methods                           | `ids`, `vendorIds`, `includeDeleted`, `page`, `perPage`                 |
-| [`getWorkingShippingMethods()`](#get-working-shipping-methods)                                   | Get working shipping methods                   | `vendorId`                                                              |
-| [`updateShippingMethods()`](#update-shipping-methods)                                            | Update shipping methods                        | `vendorId`, `request: UpdateShippingMethodSchema`                       |
+| [`getDefaultShippingMethods()`](#get-default-shipping-methods)                                   | ⚠️ **Deprecated** — use Shipping Service       | `None`                                                                  |
+| [`getShippingMethods()`](#get-shipping-methods)                                                  | ⚠️ **Deprecated** — use Shipping Service       | `ids`, `vendorIds`, `includeDeleted`, `page`, `perPage`                 |
+| [`getWorkingShippingMethods()`](#get-working-shipping-methods)                                   | ⚠️ **Deprecated** — use Shipping Service       | `vendorId`                                                              |
+| [`updateShippingMethods()`](#update-shipping-methods)                                            | ⚠️ **Deprecated** — use Shipping Service       | `vendorId`, `request: UpdateShippingMethodSchema`                       |
 | [`getVendorProducts()`](#get-vendor-products)                                                    | Get vendor products                            | `vendorId`, `queryParams: GetVendorProductsSchema`                      |
 | [`updateVendorStatus()`](#update-vendor-status)                                                  | Update vendor status                           | `vendorId`, `request: UpdateVendorStatusSchema`                         |
 | [`createVendorMobileChangeRequest()`](#create-vendor-mobile-change-request)                      | Create vendor mobile change                    | `vendorId`, `request: ChangeVendorMobileRequestSchema`                  |
@@ -36,6 +36,9 @@ information, handle bank account operations, and manage categories and attribute
 | [`getProductsBulkActionRequestsCount()`](#get-products-bulk-action-requests-count)               | Get bulk updates count                         | `vendorId`                                                              |
 | [`getProductsUnsuccessfulBulkActionRequests()`](#get-products-unsuccessful-bulk-action-requests) | Get failed updates                             | `requestId`, `page`, `perPage`                                          |
 | [`getProductShelves()`](#get-product-shelves)                                                    | Get product shelves                            | `productId`                                                             |
+| [`getProductPriceHistory()`](#get-product-price-history)                                         | Get product price history                      | `productId`, `startTime`, `endTime`                                     |
+| [`createProductReminder()`](#create-product-reminder)                                            | Create a product reminder                      | `productId`                                                             |
+| [`deleteProductReminder()`](#delete-product-reminder)                                            | Delete a product reminder                      | `productId`                                                             |
 | [`createDiscount()`](#create-discount)                                                           | Create discount for products                   | `vendorId`, `request: CreateDiscountRequestSchema`                      |
 | [`deleteDiscount()`](#delete-discount)                                                           | Delete discount for products                   | `vendorId`, `request: DeleteDiscountRequestSchema`                      |
 | [`getCurrentUser()`](#get-current-user)                                                          | Get current user info                          | `None`                                                                  |
@@ -135,6 +138,10 @@ function getVendorExample()
     return $vendor;
 }
 ```
+
+> ⚠️ **Deprecated:** The `*ShippingMethods` methods below call the removed
+> `/v1/shipping-methods` endpoints and will fail at runtime. Use the
+> [Shipping Service](shipping.md) (`$client->shipping`) instead.
 
 ### Get Default Shipping Methods
 
@@ -553,6 +560,54 @@ function getProductShelvesExample()
     );
 
     return $shelves;
+}
+```
+
+### Get Product Price History
+
+```php
+function getProductPriceHistoryExample()
+{
+    global $client;
+
+    $history = $client->getProductPriceHistory(
+        productId: 789,
+        startTime: '2024-01-01T00:00:00',
+        endTime: '2024-12-31T23:59:59'
+    );
+
+    foreach ($history->getData() as $item) {
+        echo $item->getChangeTime()->format('Y-m-d') . ": " . $item->getPrice() . "\n";
+    }
+
+    return $history;
+}
+```
+
+### Create Product Reminder
+
+```php
+function createProductReminderExample()
+{
+    global $client;
+
+    // Subscribe to availability/price reminders for a product
+    $result = $client->createProductReminder(productId: 789);
+
+    return $result;
+}
+```
+
+### Delete Product Reminder
+
+```php
+function deleteProductReminderExample()
+{
+    global $client;
+
+    $result = $client->deleteProductReminder(productId: 789);
+
+    return $result;
 }
 ```
 

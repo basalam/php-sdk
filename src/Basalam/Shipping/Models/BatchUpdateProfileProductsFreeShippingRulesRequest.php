@@ -30,7 +30,7 @@ class BatchUpdateProfileProductsFreeShippingRulesRequest implements \JsonSeriali
     public static function fromArray(array $data): self
     {
         return new self(
-            $data['product_ids'],
+            $data['product_ids'] ?? [],
             $data['default_rule'] ?? null,
             $data['never_free_zone_ids'] ?? null,
             $data['zone_operation'] ?? null,

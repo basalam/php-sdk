@@ -12,7 +12,7 @@ class VendorCarrierResponse implements \JsonSerializable
     private int $id;
     private int $carrierId;
     private string $title;
-    private array $status;
+    private ?array $status;
     private string $type;
     private ?string $apiUrl;
     private ?array $config;
@@ -24,7 +24,7 @@ class VendorCarrierResponse implements \JsonSerializable
         int $id,
         int $carrierId,
         string $title,
-        array $status,
+        ?array $status,
         string $type,
         ?string $apiUrl,
         ?array $config,
@@ -50,7 +50,7 @@ class VendorCarrierResponse implements \JsonSerializable
             $data['id'],
             $data['carrier_id'],
             $data['title'],
-            $data['status'],
+            $data['status'] ?? null,
             $data['type'],
             $data['api_url'] ?? null,
             $data['config'] ?? null,
@@ -96,7 +96,7 @@ class VendorCarrierResponse implements \JsonSerializable
         return $this->title;
     }
 
-    public function getStatus(): array
+    public function getStatus(): ?array
     {
         return $this->status;
     }

@@ -11,7 +11,7 @@ class ZoneListResponse implements \JsonSerializable
 {
     private int $id;
     private string $title;
-    private array $status;
+    private ?array $status;
     private ?array $locations;
     private ?DateTime $createdAt;
     private ?ZoneHint $hint;
@@ -20,7 +20,7 @@ class ZoneListResponse implements \JsonSerializable
     public function __construct(
         int $id,
         string $title,
-        array $status,
+        ?array $status,
         ?array $locations,
         ?DateTime $createdAt,
         ?ZoneHint $hint,
@@ -40,7 +40,7 @@ class ZoneListResponse implements \JsonSerializable
         return new self(
             $data['id'],
             $data['title'],
-            $data['status'],
+            $data['status'] ?? null,
             isset($data['locations']) ? array_map(fn($item) => ZonesLocation::fromArray($item), $data['locations']) : null,
             isset($data['created_at']) ? new DateTime($data['created_at']) : null,
             isset($data['hint']) ? ZoneHint::fromArray($data['hint']) : null,
@@ -76,7 +76,7 @@ class ZoneListResponse implements \JsonSerializable
         return $this->title;
     }
 
-    public function getStatus(): array
+    public function getStatus(): ?array
     {
         return $this->status;
     }

@@ -10,8 +10,8 @@ use DateTime;
 class ZoneCarriersResponse implements \JsonSerializable
 {
     private int $id;
-    private array $status;
-    private VendorCarrierResponse $vendorCarrier;
+    private ?array $status;
+    private ?VendorCarrierResponse $vendorCarrier;
     private ?array $config;
     private string $hint;
     private ?DateTime $createdAt;
@@ -19,8 +19,8 @@ class ZoneCarriersResponse implements \JsonSerializable
 
     public function __construct(
         int $id,
-        array $status,
-        VendorCarrierResponse $vendorCarrier,
+        ?array $status,
+        ?VendorCarrierResponse $vendorCarrier,
         ?array $config,
         string $hint,
         ?DateTime $createdAt,
@@ -39,8 +39,8 @@ class ZoneCarriersResponse implements \JsonSerializable
     {
         return new self(
             $data['id'],
-            $data['status'],
-            VendorCarrierResponse::fromArray($data['vendor_carrier']),
+            $data['status'] ?? null,
+            isset($data['vendor_carrier']) ? VendorCarrierResponse::fromArray($data['vendor_carrier']) : null,
             $data['config'] ?? null,
             $data['hint'],
             isset($data['created_at']) ? new DateTime($data['created_at']) : null,
@@ -53,7 +53,7 @@ class ZoneCarriersResponse implements \JsonSerializable
         $result = [];
         $result['id'] = $this->id;
         $result['status'] = $this->status;
-        $result['vendor_carrier'] = $this->vendorCarrier->toArray();
+        $result['vendor_carrier'] = $this->vendorCarrier !== null ? $this->vendorCarrier->toArray() : null;
         $result['config'] = $this->config;
         $result['hint'] = $this->hint;
         $result['created_at'] = $this->createdAt !== null ? $this->createdAt->format('Y-m-d H:i:s') : null;
@@ -71,12 +71,12 @@ class ZoneCarriersResponse implements \JsonSerializable
         return $this->id;
     }
 
-    public function getStatus(): array
+    public function getStatus(): ?array
     {
         return $this->status;
     }
 
-    public function getVendorCarrier(): VendorCarrierResponse
+    public function getVendorCarrier(): ?VendorCarrierResponse
     {
         return $this->vendorCarrier;
     }
