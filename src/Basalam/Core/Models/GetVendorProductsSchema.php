@@ -55,7 +55,11 @@ class GetVendorProductsSchema implements \JsonSerializable
 
         if ($this->title !== null) $result['title'] = $this->title;
         if ($this->category !== null) $result['category'] = $this->category;
-        if ($this->statuses !== null) $result['statuses'] = $this->statuses;
+        		if ($this->statuses !== null) {
+			$result['statuses'] = is_array($this->statuses)
+				? $this->statuses[0]
+				: $this->statuses;
+		}
         if ($this->stock_gte !== null) $result['stock_gte'] = $this->stock_gte;
         if ($this->stock_lte !== null) $result['stock_lte'] = $this->stock_lte;
         if ($this->preparation_day_gte !== null) $result['preparation_day_gte'] = $this->preparation_day_gte;
